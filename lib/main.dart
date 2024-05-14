@@ -10,8 +10,8 @@ void main() {
    * Splash Image 관련 코드
    * Splash Image를 특정 행위가 종료되기 전까지 유지시킬 수 있음
    */
-  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
+  // WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+  // FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   runApp(MaterialApp(
       home: const AceBot(),
