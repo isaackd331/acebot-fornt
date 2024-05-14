@@ -1,3 +1,12 @@
+/**
+ * onPressedFunc: 버튼 누를 시 작동 함수
+ * text: 버튼 내 텍스트
+ * fontSize: 버튼 내 텍스트 폰트 사이즈
+ * textColor: 버튼 내 텍스트 색깔
+ * backgroundColor: 버튼 색깔
+ * borderColor: 버튼 border 색깔
+ */
+
 import 'package:flutter/material.dart';
 
 class BaseOutlineButton extends StatelessWidget {

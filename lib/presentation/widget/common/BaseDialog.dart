@@ -2,7 +2,7 @@
  * 커스텀 AlertDialog
  * title: 제목
  * actions: 제목 하단 내용
- * buttonsList: AlertDialog 하단 버튼(child, textColor, onPressed, backgroundColor 등 요구)
+ * buttonsList: 하단 버튼둘
  */
 
 import 'package:flutter/material.dart';
