@@ -10,6 +10,8 @@ import 'package:acebot_front/presentation/widget/login/LoginForm.dart';
 import 'package:acebot_front/presentation/widget/login/LoginErrorMessage.dart';
 import 'package:acebot_front/presentation/widget/common/BaseOutlineButton.dart';
 
+import 'package:acebot_front/data/authService.dart';
+
 class Login extends StatefulWidget {
   @override
   _LoginState createState() => _LoginState();
@@ -44,6 +46,11 @@ class _LoginState extends State<Login> {
       userPassword = value;
       ableToLogin = (userId.isNotEmpty && userPassword.isNotEmpty);
     });
+  }
+
+  // AuthService login
+  void login(String userId, String userPassword) {
+    AuthService().login(userId, userPassword);
   }
 
   @override
@@ -117,7 +124,9 @@ class _LoginState extends State<Login> {
 
                     Row(children: <Widget>[
                       BaseOutlineButton(
-                          onPressedFunc: () {},
+                          onPressedFunc: () {
+                            ableToLogin ? login(userId, userPassword) : null;
+                          },
                           text: '로그인',
                           fontSize: 16.0,
                           textColor: const Color(0xffffffff),
