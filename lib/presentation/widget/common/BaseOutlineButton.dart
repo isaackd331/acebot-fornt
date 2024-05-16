@@ -29,22 +29,9 @@ class BaseOutlineButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return
-        // OutlinedButton(
-        //     onPressed: onPressedFunc,
-        //     child: Text(text,
-        //         style: TextStyle(
-        //           fontSize: fontSize,
-        //           fontWeight: FontWeight.w600,
-        //         )),
-        //     style: OutlinedButton.styleFrom(
-        //         foregroundColor: textColor,
-        //         backgroundColor: backgroundColor,
-        //         side: BorderSide(color: borderColor, width: 1.0),
-        //         shape: RoundedRectangleBorder(
-        //             borderRadius: BorderRadius.circular(4.0)),
-        //         padding: const EdgeInsets.only(top: 13.0, bottom: 13.0)));
-        Expanded(
+    return Expanded(
+        child: Container(
+            height: 46.0,
             child: OutlinedButton(
                 onPressed: onPressedFunc,
                 child: Text(text,
@@ -58,6 +45,6 @@ class BaseOutlineButton extends StatelessWidget {
                     side: BorderSide(color: borderColor, width: 1.0),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(4.0)),
-                    padding: const EdgeInsets.only(top: 13.0, bottom: 13.0))));
+                    padding: const EdgeInsets.only(top: 13.0, bottom: 13.0)))));
   }
 }
