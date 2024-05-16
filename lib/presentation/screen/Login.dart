@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 
 import 'package:acebot_front/presentation/widget/common/BaseAppBar.dart';
 import 'package:acebot_front/presentation/widget/login/LoginForm.dart';
+import 'package:acebot_front/presentation/widget/login/LoginErrorMessage.dart';
+import 'package:acebot_front/presentation/widget/common/BaseOutlineButton.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -16,18 +18,23 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   String userId = "";
   String userPassword = "";
+  late String loginErrorStatus;
+  bool ableToLogin = false;
 
   @override
   void initState() {
     super.initState();
     userId = "";
     userPassword = "";
+    loginErrorStatus = "";
+    ableToLogin = false;
   }
 
   // 아이디 change Func
   void setUserId(String value) {
     setState(() {
       userId = value;
+      ableToLogin = (userId.isNotEmpty && userPassword.isNotEmpty);
     });
   }
 
@@ -35,6 +42,7 @@ class _LoginState extends State<Login> {
   void setUserPassword(String value) {
     setState(() {
       userPassword = value;
+      ableToLogin = (userId.isNotEmpty && userPassword.isNotEmpty);
     });
   }
 
@@ -96,7 +104,30 @@ class _LoginState extends State<Login> {
                     LoginForm(
                       setUserId: setUserId,
                       setUserPassword: setUserPassword,
-                    )
+                    ),
+
+                    SizedBox(height: 9.0),
+
+                    // ErrorMessage
+                    LoginErrorMessage(
+                      loginErrorStatus: loginErrorStatus,
+                    ),
+
+                    SizedBox(height: 40.0),
+
+                    Row(children: <Widget>[
+                      BaseOutlineButton(
+                          onPressedFunc: () {},
+                          text: '로그인',
+                          fontSize: 16.0,
+                          textColor: const Color(0xffffffff),
+                          backgroundColor: ableToLogin
+                              ? const Color(0xff000000)
+                              : const Color(0xffb3b3b3),
+                          borderColor: ableToLogin
+                              ? const Color(0xff000000)
+                              : const Color(0xffb3b3b3))
+                    ])
                   ]))),
         ));
   }

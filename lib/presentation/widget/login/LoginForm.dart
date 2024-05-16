@@ -67,8 +67,8 @@ class _LoginFormState extends State<LoginForm> {
               decoration: InputDecoration(
                   suffixIcon: !isIdEmpty
                       ? IconButton(
-                          icon:
-                              Icon(Icons.clear, color: const Color(0xff000000)),
+                          icon: Icon(Icons.clear,
+                              color: const Color(0xff000000), size: 24.0),
                           onPressed: () {
                             setState(() {
                               idController.clear();
@@ -103,7 +103,7 @@ class _LoginFormState extends State<LoginForm> {
             SizedBox(height: 12),
             TextField(
               controller: passwordController,
-              onChanged: (value) => {widget.setUserId(value)},
+              onChanged: (value) => {widget.setUserPassword(value)},
               obscureText: passwordInvisible,
               enableSuggestions: false,
               autocorrect: false,
@@ -119,7 +119,7 @@ class _LoginFormState extends State<LoginForm> {
                           children: <Widget>[
                               IconButton(
                                 icon: Icon(Icons.clear,
-                                    color: const Color(0xff000000)),
+                                    color: const Color(0xff000000), size: 24.0),
                                 onPressed: () {
                                   setState(() {
                                     passwordController.clear();
@@ -132,7 +132,8 @@ class _LoginFormState extends State<LoginForm> {
                                     passwordInvisible
                                         ? Icons.visibility_outlined
                                         : Icons.visibility_off_outlined,
-                                    color: const Color(0xff000000)),
+                                    color: const Color(0xff000000),
+                                    size: 24.0),
                                 onPressed: () {
                                   setState(() {
                                     passwordInvisible = !passwordInvisible;
@@ -145,7 +146,8 @@ class _LoginFormState extends State<LoginForm> {
                               passwordInvisible
                                   ? Icons.visibility_outlined
                                   : Icons.visibility_off_outlined,
-                              color: const Color(0xff000000)),
+                              color: const Color(0xff000000),
+                              size: 24.0),
                           onPressed: () {
                             setState(() {
                               passwordInvisible = !passwordInvisible;
