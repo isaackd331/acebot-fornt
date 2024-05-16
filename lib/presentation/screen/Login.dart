@@ -127,7 +127,21 @@ class _LoginState extends State<Login> {
                           borderColor: ableToLogin
                               ? const Color(0xff000000)
                               : const Color(0xffb3b3b3))
-                    ])
+                    ]),
+
+                    SizedBox(height: 16.0),
+
+                    RichText(
+                        textAlign: TextAlign.center,
+                        text: TextSpan(
+                            text: '비밀번호를 잊어버리셨나요?',
+                            recognizer: TapGestureRecognizer()
+                              ..onTap = () => {},
+                            style: TextStyle(
+                              decoration: TextDecoration.underline,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 14.0,
+                            )))
                   ]))),
         ));
   }
