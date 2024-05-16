@@ -8,7 +8,36 @@ import 'package:flutter/material.dart';
 import 'package:acebot_front/presentation/widget/common/BaseAppBar.dart';
 import 'package:acebot_front/presentation/widget/login/LoginForm.dart';
 
-class Login extends StatelessWidget {
+class Login extends StatefulWidget {
+  @override
+  _LoginState createState() => _LoginState();
+}
+
+class _LoginState extends State<Login> {
+  String userId = "";
+  String userPassword = "";
+
+  @override
+  void initState() {
+    super.initState();
+    userId = "";
+    userPassword = "";
+  }
+
+  // 아이디 change Func
+  void setUserId(String value) {
+    setState(() {
+      userId = value;
+    });
+  }
+
+  // 비밀번호 change Func
+  void setUserPassword(String value) {
+    setState(() {
+      userPassword = value;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +93,10 @@ class Login extends StatelessWidget {
                         ])),
 
                     // LoginForm
-                    LoginForm()
+                    LoginForm(
+                      setUserId: setUserId,
+                      setUserPassword: setUserPassword,
+                    )
                   ]))),
         ));
   }
