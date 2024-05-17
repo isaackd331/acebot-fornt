@@ -4,6 +4,7 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:acebot_front/data/http.dart';
 import 'package:acebot_front/presentation/screen/Login.dart';
+import 'package:acebot_front/presentation/screen/Join.dart';
 
 void main() async {
   /**
@@ -23,7 +24,8 @@ void main() async {
 }
 
 class Router {
-  static GoRouter router = GoRouter(
-      initialLocation: '/login',
-      routes: [GoRoute(path: '/login', builder: (_, __) => Login())]);
+  static GoRouter router = GoRouter(initialLocation: '/login', routes: [
+    GoRoute(path: '/login', builder: (_, __) => Login()),
+    GoRoute(path: '/join', builder: (_, __) => Join())
+  ]);
 }
