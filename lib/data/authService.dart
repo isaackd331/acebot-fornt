@@ -7,12 +7,8 @@ import 'package:dio/dio.dart';
 import 'package:acebot_front/data/http.dart';
 
 class AuthService {
-  login(String userId, String userPassword) async {
-    Response res;
-
-    res = await dio.post("/v1/auth/login",
+  login(String userId, String userPassword) {
+    return dio.post("/v1/auth/login",
         data: {"email": userId, "password": userPassword, "redirect": false});
-
-    return res.data;
   }
 }

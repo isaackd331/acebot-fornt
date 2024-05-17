@@ -7,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 
-import 'package:acebot_front/presentation/widget/common/BaseAppBar.dart';
 import 'package:acebot_front/presentation/widget/login/LoginForm.dart';
 import 'package:acebot_front/presentation/widget/login/LoginErrorMessage.dart';
 import 'package:acebot_front/presentation/widget/common/BaseOutlineButton.dart';
@@ -52,22 +51,17 @@ class _LoginState extends State<Login> {
   }
 
   // AuthService login
-  void login(String userId, String userPassword) {
+  Future<void> login(String userId, String userPassword) async {
+    Response res;
     try {
-      if (loginFailedCount < 4) {
-        setState(() {
-          loginErrorStatus = "loginFailed";
-          loginFailedCount += 1;
-        });
-      } else {
-        setState(() {
-          loginErrorStatus = "loginExceeded";
-          loginFailedCount += 1;
-        });
-      }
+      res = await AuthService().login(userId, userPassword);
 
-      // AuthService().login(userId, userPassword);
-    } catch (err) {}
+      print(res.data);
+    } catch (err) {
+      if (err is DioException) {
+        print(err.response?.statusCode);
+      }
+    }
   }
 
   @override
