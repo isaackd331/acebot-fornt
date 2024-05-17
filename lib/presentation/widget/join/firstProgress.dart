@@ -18,6 +18,8 @@ class FirstProgress extends StatefulWidget {
 }
 
 class _FirstProgressState extends State<FirstProgress> {
+  FocusNode idFocusNode = FocusNode();
+  String idPlaceholder = "아이디";
   bool isIdInvalid = false;
   String idInvalidType = "";
   bool isIdEmpty = true;
@@ -26,6 +28,16 @@ class _FirstProgressState extends State<FirstProgress> {
   @override
   void initState() {
     super.initState();
+
+    idFocusNode.addListener(() {
+      idFocusNode.hasFocus
+          ? setState(() {
+              idPlaceholder = "";
+            })
+          : setState(() {
+              idPlaceholder = "아이디";
+            });
+    });
 
     idController.addListener(() {
       setState(() {
@@ -74,6 +86,7 @@ class _FirstProgressState extends State<FirstProgress> {
             ]),
             SizedBox(height: 12),
             TextField(
+              focusNode: idFocusNode,
               controller: idController,
               onChanged: (value) => {widget.setUserId(value)},
               style: TextStyle(
@@ -93,7 +106,7 @@ class _FirstProgressState extends State<FirstProgress> {
                           },
                         )
                       : null,
-                  hintText: "아이디",
+                  hintText: idPlaceholder,
                   hintStyle: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,

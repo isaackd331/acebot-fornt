@@ -8,6 +8,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 import 'package:acebot_front/presentation/widget/common/BaseAppBar.dart';
 import 'package:acebot_front/presentation/widget/join/firstProgress.dart';
+import 'package:acebot_front/presentation/widget/join/secondProgress.dart';
 import 'package:acebot_front/presentation/widget/common/BaseOutlineButton.dart';
 
 class Join extends StatefulWidget {
@@ -28,7 +29,7 @@ class _JoinState extends State<Join> {
   @override
   void initState() {
     super.initState();
-    progress = 1;
+    progress = 2;
     ableToProgress = false;
     userId = "";
     userPassword = "";
@@ -56,6 +57,27 @@ class _JoinState extends State<Join> {
   void setUserId(String value) {
     setState(() {
       userId = value;
+    });
+  }
+
+  // userPassword 업데이트
+  void setUserPassword(String value) {
+    setState(() {
+      userPassword = value;
+    });
+  }
+
+  // userCheckPassword 업데이트
+  void setUserCheckPassword(String value) {
+    setState(() {
+      userCheckPassword = value;
+    });
+  }
+
+  // userName 업데이트
+  void setUserName(String value) {
+    setState(() {
+      userName = value;
     });
   }
 
@@ -97,6 +119,15 @@ class _JoinState extends State<Join> {
                                 setAbleToProgress: setAbleToProgress,
                                 setUserId: setUserId,
                                 userId: userId)
+                            : Container(),
+                        progress == 2
+                            ? SecondProgress(
+                                setProgress: setProgress,
+                                setAbleToProgress: setAbleToProgress,
+                                setUserPassword: setUserPassword,
+                                userPassword: userPassword,
+                                setUserCheckPassword: setUserCheckPassword,
+                                userCheckPassword: userCheckPassword)
                             : Container(),
                         Container(
                             child: Expanded(
