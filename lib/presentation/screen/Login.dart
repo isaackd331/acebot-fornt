@@ -5,6 +5,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
 
 import 'package:acebot_front/presentation/widget/common/BaseAppBar.dart';
 import 'package:acebot_front/presentation/widget/login/LoginForm.dart';
@@ -21,7 +22,8 @@ class Login extends StatefulWidget {
 class _LoginState extends State<Login> {
   String userId = "";
   String userPassword = "";
-  late String loginErrorStatus;
+  late String loginErrorStatus = "";
+  int loginFailedCount = 0;
   bool ableToLogin = false;
 
   @override
@@ -51,14 +53,27 @@ class _LoginState extends State<Login> {
 
   // AuthService login
   void login(String userId, String userPassword) {
-    AuthService().login(userId, userPassword);
+    try {
+      if (loginFailedCount < 4) {
+        setState(() {
+          loginErrorStatus = "loginFailed";
+          loginFailedCount += 1;
+        });
+      } else {
+        setState(() {
+          loginErrorStatus = "loginExceeded";
+          loginFailedCount += 1;
+        });
+      }
+
+      // AuthService().login(userId, userPassword);
+    } catch (err) {}
   }
 
   @override
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: const BaseAppBar(title: '', actions: [], leading: SizedBox()),
       body: Center(
           child: Container(
               padding: const EdgeInsets.fromLTRB(20.0, 116.0, 20.0, 133.0),
