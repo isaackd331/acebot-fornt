@@ -16,20 +16,44 @@ class LoginForm extends StatefulWidget {
 }
 
 class _LoginFormState extends State<LoginForm> {
-  bool passwordInvisible = true;
+  FocusNode idFocusNode = FocusNode();
+  String idPlaceholder = "아이디";
   bool isIdEmpty = true;
-  bool isPasswordEmpty = true;
   TextEditingController idController = TextEditingController();
+  FocusNode passwordFocusNode = FocusNode();
+  String passwordPlaceholder = "비밀번호";
+  bool isPasswordEmpty = true;
+  bool passwordInvisible = true;
   TextEditingController passwordController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
+    idFocusNode.addListener(() {
+      idFocusNode.hasFocus
+          ? setState(() {
+              idPlaceholder = "";
+            })
+          : setState(() {
+              idPlaceholder = "아이디";
+            });
+    });
+
     idController.addListener(() {
       setState(() {
         isIdEmpty = idController.text.isEmpty;
       });
+    });
+
+    passwordFocusNode.addListener(() {
+      passwordFocusNode.hasFocus
+          ? setState(() {
+              passwordPlaceholder = "";
+            })
+          : setState(() {
+              passwordPlaceholder = "비밀번호";
+            });
     });
 
     passwordController.addListener(() {
@@ -58,6 +82,7 @@ class _LoginFormState extends State<LoginForm> {
             ]),
             SizedBox(height: 12),
             TextField(
+              focusNode: idFocusNode,
               controller: idController,
               onChanged: (value) => {widget.setUserId(value)},
               style: TextStyle(
@@ -77,7 +102,7 @@ class _LoginFormState extends State<LoginForm> {
                           },
                         )
                       : null,
-                  hintText: "아이디",
+                  hintText: idPlaceholder,
                   hintStyle: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
@@ -102,6 +127,7 @@ class _LoginFormState extends State<LoginForm> {
             ]),
             SizedBox(height: 12),
             TextField(
+              focusNode: passwordFocusNode,
               controller: passwordController,
               onChanged: (value) => {widget.setUserPassword(value)},
               obscureText: passwordInvisible,
@@ -154,7 +180,7 @@ class _LoginFormState extends State<LoginForm> {
                             });
                           },
                         ),
-                  hintText: "비밀번호",
+                  hintText: passwordPlaceholder,
                   hintStyle: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
