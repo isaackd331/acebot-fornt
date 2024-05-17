@@ -29,6 +29,7 @@ class _JoinState extends State<Join> {
   void initState() {
     super.initState();
     progress = 1;
+    ableToProgress = false;
     userId = "";
     userPassword = "";
     userCheckPassword = "";
@@ -41,6 +42,13 @@ class _JoinState extends State<Join> {
   void setProgress(double value) {
     setState(() {
       progress = value;
+    });
+  }
+
+  // ableToProgress 업데이트
+  void setAbleToProgress(bool value) {
+    setState(() {
+      ableToProgress = value;
     });
   }
 
@@ -86,6 +94,7 @@ class _JoinState extends State<Join> {
                         progress == 1
                             ? FirstProgress(
                                 setProgress: setProgress,
+                                setAbleToProgress: setAbleToProgress,
                                 setUserId: setUserId,
                                 userId: userId)
                             : Container(),
