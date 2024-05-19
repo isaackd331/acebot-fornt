@@ -85,6 +85,7 @@ class _SecondProgressState extends State<SecondProgress> {
     checkPasswordInvisible = true;
   }
 
+  @override
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.only(top: 30.0),

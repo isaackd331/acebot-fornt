@@ -1,5 +1,10 @@
 /**
  * 회원가입 페이지
+ * progress 별 단계
+ * 1: 이메일 입력
+ * 2: 비밀번호 입력
+ * 3: 이름 입력
+ * 4: 직군/업무 입력
  */
 
 import 'package:flutter/material.dart';
@@ -29,8 +34,8 @@ class _JoinState extends State<Join> {
   @override
   void initState() {
     super.initState();
-    progress = 2;
-    ableToProgress = false;
+    progress = 1;
+    ableToProgress = true;
     userId = "";
     userPassword = "";
     userCheckPassword = "";
