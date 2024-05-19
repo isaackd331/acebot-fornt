@@ -1,25 +1,25 @@
 import 'package:flutter/material.dart';
 
-class FirstProgress extends StatefulWidget {
+class ThirdProgress extends StatefulWidget {
   final Function setProgress;
   final Function setAbleToProgress;
-  final Function setUserId;
-  final String userId;
+  final Function setUserName;
+  final String userName;
 
-  const FirstProgress(
+  const ThirdProgress(
       {super.key,
       required this.setProgress,
       required this.setAbleToProgress,
-      required this.setUserId,
-      required this.userId});
+      required this.setUserName,
+      required this.userName});
 
   @override
-  _FirstProgressState createState() => _FirstProgressState();
+  _ThirdProgressState createState() => _ThirdProgressState();
 }
 
-class _FirstProgressState extends State<FirstProgress> {
-  FocusNode idFocusNode = FocusNode();
-  String idPlaceholder = "아이디";
+class _ThirdProgressState extends State<ThirdProgress> {
+  FocusNode nameFocusNode = FocusNode();
+  String namePlaceholder = "아이디";
   bool isIdInvalid = false;
   String idInvalidType = "";
   bool isIdEmpty = true;
@@ -29,13 +29,13 @@ class _FirstProgressState extends State<FirstProgress> {
   void initState() {
     super.initState();
 
-    idFocusNode.addListener(() {
-      idFocusNode.hasFocus
+    nameFocusNode.addListener(() {
+      nameFocusNode.hasFocus
           ? setState(() {
-              idPlaceholder = "";
+              namePlaceholder = "";
             })
           : setState(() {
-              idPlaceholder = "아이디";
+              namePlaceholder = "아이디";
             });
     });
 
@@ -87,9 +87,9 @@ class _FirstProgressState extends State<FirstProgress> {
             ]),
             SizedBox(height: 12),
             TextField(
-              focusNode: idFocusNode,
+              focusNode: nameFocusNode,
               controller: idController,
-              onChanged: (value) => {widget.setUserId(value)},
+              onChanged: (value) => {widget.setUserName(value)},
               style: TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
@@ -102,12 +102,12 @@ class _FirstProgressState extends State<FirstProgress> {
                           onPressed: () {
                             setState(() {
                               idController.clear();
-                              widget.setUserId("");
+                              widget.setUserName("");
                             });
                           },
                         )
                       : null,
-                  hintText: idPlaceholder,
+                  hintText: namePlaceholder,
                   hintStyle: TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,

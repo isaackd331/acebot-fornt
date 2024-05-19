@@ -49,7 +49,7 @@ class _LoginErrorMessageState extends State<LoginErrorMessage> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.loginErrorStatus.length == 0
+    return widget.loginErrorStatus.isEmpty
         ? Container(height: 32.0)
         : Container(
             height: 32.0,
