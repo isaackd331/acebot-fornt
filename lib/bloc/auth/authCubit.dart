@@ -7,7 +7,7 @@ import 'package:acebot_front/models/authModel.dart';
 class AuthCubit extends Cubit<AuthState> {
   final AuthRepository repo;
 
-  AuthCubit({required this.repo}) : super(EmptyDataState());
+  AuthCubit({required this.repo}) : super(EmptyState());
 
   Future<void> pushLoginButtonEvent(String userId, String userPassword) async {
     try {

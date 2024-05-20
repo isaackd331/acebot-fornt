@@ -128,7 +128,7 @@ class _LoginState extends State<Login> {
                             BlocProvider.of<AuthCubit>(context)
                                 .pushLoginButtonEvent(userId, userPassword);
 
-                            if (state is ErrorState) return;
+                            print(state);
                           }
                         },
                         text: '로그인',
