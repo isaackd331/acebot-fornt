@@ -7,7 +7,6 @@ class AuthRepository {
     Response res;
 
     res = await AuthService().getAuthToken(userId, userPassword);
-
     return res.data;
   }
 

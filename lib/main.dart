@@ -5,7 +5,7 @@ import 'package:acebot_front/api/http.dart';
 import 'package:acebot_front/appRouter.dart';
 import 'package:acebot_front/bloc/auth/authCubit.dart';
 import 'package:acebot_front/repository/authRepository.dart';
-import 'package:acebot_front/bloc/events_observer.dart';
+import 'package:acebot_front/bloc/eventsObserver.dart';
 
 void main() async {
   // Dio 인스턴스 생성

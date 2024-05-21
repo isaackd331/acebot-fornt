@@ -102,7 +102,7 @@ class _JoinState extends State<Join> {
                 leading: SizedBox()),
             body: Center(
                 child: Container(
-                    padding: const EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 24.0),
+                    padding: const EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 0.0),
                     child: Column(
                       children: <Widget>[
                         LinearPercentIndicator(

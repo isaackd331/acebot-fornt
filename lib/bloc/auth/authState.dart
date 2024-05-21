@@ -11,8 +11,9 @@ class LoadingState extends AuthState {}
 // 데이터 요청 중 오류 발생 상태
 class ErrorState extends AuthState {
   final String message;
+  final int? statusCode;
 
-  ErrorState({required this.message});
+  ErrorState({required this.message, required this.statusCode});
 }
 
 // 데이터 로드 완료 상태

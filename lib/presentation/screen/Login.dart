@@ -54,11 +54,31 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(child: Scaffold(
-      body: BlocBuilder<AuthCubit, AuthState>(builder: (_, state) {
+    return SafeArea(
+        child: Scaffold(
+      /**
+           * AuthState의 상태에 따라 처리
+           * LoadedState: /home으로 이동
+           * ErrorState: 에러 핸들링
+           */
+      body: BlocListener<AuthCubit, AuthState>(listener: (context, state) {
+        if (state is LoadedState) {
+          print(state.authJson.accessToken);
+        } else if (state is ErrorState) {
+          if (state.statusCode == 422) {
+            setState(() {
+              loginErrorStatus = 'loginFailed';
+            });
+          }
+        }
+      },
+          /**
+       * Screen Widget
+       */
+          child: BlocBuilder<AuthCubit, AuthState>(builder: (_, state) {
         return Center(
             child: Container(
-                padding: const EdgeInsets.fromLTRB(20.0, 116.0, 20.0, 133.0),
+                padding: const EdgeInsets.fromLTRB(20.0, 116.0, 20.0, 0.0),
                 child: Column(children: <Widget>[
                   // ACEBOT Title
                   Row(children: <Widget>[
@@ -127,8 +147,6 @@ class _LoginState extends State<Login> {
                           if (ableToLogin) {
                             BlocProvider.of<AuthCubit>(context)
                                 .pushLoginButtonEvent(userId, userPassword);
-
-                            print(state);
                           }
                         },
                         text: '로그인',
@@ -155,7 +173,7 @@ class _LoginState extends State<Login> {
                             fontSize: 14.0,
                           )))
                 ])));
-      }),
+      })),
     ));
   }
 }

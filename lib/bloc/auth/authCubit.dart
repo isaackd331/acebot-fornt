@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:dio/dio.dart';
 
 import 'package:acebot_front/bloc/auth/authState.dart';
 import 'package:acebot_front/repository/authRepository.dart';
@@ -16,8 +17,9 @@ class AuthCubit extends Cubit<AuthState> {
       final authJson = await repo.authenticate(userId, userPassword);
 
       emit(LoadedState(authJson: AuthModel.fromJson(authJson)));
-    } catch (err) {
-      emit(ErrorState(message: err.toString()));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
     }
   }
 }
