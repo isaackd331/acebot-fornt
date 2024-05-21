@@ -90,6 +90,7 @@ class _JoinState extends State<Join> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
+            resizeToAvoidBottomInset: false,
             appBar: BaseAppBar(
                 title: '회원가입',
                 actions: [
@@ -102,7 +103,7 @@ class _JoinState extends State<Join> {
                 leading: SizedBox()),
             body: Center(
                 child: Container(
-                    padding: const EdgeInsets.only(bottom: 24.0),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                     child: Column(
                       children: <Widget>[
                         LinearPercentIndicator(

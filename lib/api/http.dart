@@ -7,7 +7,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 final dio = Dio();
 void configureDio() async {
-  await dotenv.load(fileName: 'env/.env');
+  await dotenv.load(fileName: 'assets/env/.env');
+
+  print("api: ${dotenv.env['API_BASE_URL']}");
 
   dio.options.baseUrl = dotenv.env['API_BASE_URL'] ?? "";
   dio.options.contentType = 'application/json; charset=UTF-8';

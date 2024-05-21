@@ -12,10 +12,7 @@ void main() async {
   configureDio();
 
   runApp(BlocProvider(
-      create: (_) => AuthCubit(repo: AuthRepository()),
-      child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: AppView())));
+      create: (_) => AuthCubit(repo: AuthRepository()), child: AppView()));
 
   Bloc.observer = EventsObserver();
 }
