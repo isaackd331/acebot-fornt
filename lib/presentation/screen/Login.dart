@@ -33,6 +33,10 @@ class _LoginState extends State<Login> {
     userPassword = "";
     loginErrorStatus = "";
     ableToLogin = false;
+
+    /**
+     * 사용할 Cubit 초기화
+     */
     context.read<AuthCubit>();
   }
 
@@ -61,6 +65,7 @@ class _LoginState extends State<Login> {
            * LoadedState: /home으로 이동
            * ErrorState: 에러 핸들링
            */
+      resizeToAvoidBottomInset: false,
       body: BlocListener<AuthCubit, AuthState>(listener: (context, state) {
         if (state is LoadedState) {
           print(state.authJson.accessToken);
@@ -68,6 +73,10 @@ class _LoginState extends State<Login> {
           if (state.statusCode == 422) {
             setState(() {
               loginErrorStatus = 'loginFailed';
+            });
+          } else if (state.statusCode == 403) {
+            setState(() {
+              loginErrorStatus = 'loginExceeded';
             });
           }
         }
@@ -78,7 +87,7 @@ class _LoginState extends State<Login> {
           child: BlocBuilder<AuthCubit, AuthState>(builder: (_, state) {
         return Center(
             child: Container(
-                padding: const EdgeInsets.fromLTRB(20.0, 116.0, 20.0, 0.0),
+                padding: const EdgeInsets.only(top: 100.0),
                 child: Column(children: <Widget>[
                   // ACEBOT Title
                   Row(children: <Widget>[
@@ -159,9 +168,7 @@ class _LoginState extends State<Login> {
                             ? const Color(0xff000000)
                             : const Color(0xffb3b3b3))
                   ]),
-
                   const SizedBox(height: 16.0),
-
                   RichText(
                       textAlign: TextAlign.center,
                       text: TextSpan(

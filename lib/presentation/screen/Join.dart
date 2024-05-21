@@ -102,7 +102,7 @@ class _JoinState extends State<Join> {
                 leading: SizedBox()),
             body: Center(
                 child: Container(
-                    padding: const EdgeInsets.fromLTRB(20.0, 12.0, 20.0, 0.0),
+                    padding: const EdgeInsets.only(bottom: 24.0),
                     child: Column(
                       children: <Widget>[
                         LinearPercentIndicator(
@@ -134,12 +134,11 @@ class _JoinState extends State<Join> {
                                 setUserCheckPassword: setUserCheckPassword,
                                 userCheckPassword: userCheckPassword)
                             : Container(),
-                        Container(
-                            child: Expanded(
-                                child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: <Widget>[
+                        Expanded(
+                            child: Column(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                mainAxisSize: MainAxisSize.max,
+                                children: <Widget>[
                               Row(children: <Widget>[
                                 BaseOutlineButton(
                                     onPressedFunc: () {
@@ -157,7 +156,7 @@ class _JoinState extends State<Join> {
                                         ? const Color(0xff000000)
                                         : const Color(0xffb3b3b3))
                               ])
-                            ]))),
+                            ])),
                       ],
                     )))));
   }
