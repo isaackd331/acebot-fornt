@@ -89,8 +89,8 @@ class _SecondProgressState extends State<SecondProgress> {
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.only(top: 30.0),
-        child: Column(children: <Widget>[
-          Row(children: <Widget>[
+        child: Column(children: [
+          Row(children: [
             Expanded(
                 child: Text("비밀번호를 입력해 주세요.",
                     style: TextStyle(
@@ -101,7 +101,7 @@ class _SecondProgressState extends State<SecondProgress> {
 
           const SizedBox(height: 16.0),
 
-          Row(children: <Widget>[
+          Row(children: [
             Expanded(
                 child: Text("비밀번호는 영문/숫자/특수문자를\n모두 포함하여 8-30자로 설정해 주세요.",
                     style: TextStyle(
@@ -113,8 +113,8 @@ class _SecondProgressState extends State<SecondProgress> {
           const SizedBox(height: 30.0),
 
           // 비밀번호
-          Column(children: <Widget>[
-            Row(children: <Widget>[
+          Column(children: [
+            Row(children: [
               Expanded(
                   child: Text('비밀번호',
                       style: TextStyle(
@@ -139,7 +139,7 @@ class _SecondProgressState extends State<SecondProgress> {
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
+                          children: [
                               IconButton(
                                   onPressed: () {
                                     setState(() {
@@ -195,8 +195,8 @@ class _SecondProgressState extends State<SecondProgress> {
           SizedBox(height: 52.0),
 
           // 비밀번호 확인
-          Column(children: <Widget>[
-            Row(children: <Widget>[
+          Column(children: [
+            Row(children: [
               Expanded(
                   child: Text('비밀번호 확인',
                       style: TextStyle(
@@ -221,7 +221,7 @@ class _SecondProgressState extends State<SecondProgress> {
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
+                          children: [
                               IconButton(
                                   onPressed: () {
                                     setState(() {

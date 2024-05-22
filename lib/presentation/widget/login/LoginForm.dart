@@ -69,10 +69,10 @@ class _LoginFormState extends State<LoginForm> {
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.only(top: 90.0),
-        child: Column(children: <Widget>[
+        child: Column(children: [
           // 아이디 Input 영역
-          Column(children: <Widget>[
-            Row(children: <Widget>[
+          Column(children: [
+            Row(children: [
               Expanded(
                   child: Text('아이디',
                       style: TextStyle(
@@ -117,8 +117,8 @@ class _LoginFormState extends State<LoginForm> {
           ]),
           SizedBox(height: 28.0),
           // 비밀번호 Input 영역
-          Column(children: <Widget>[
-            Row(children: <Widget>[
+          Column(children: [
+            Row(children: [
               Expanded(
                   child: Text('비밀번호',
                       style: TextStyle(
@@ -143,7 +143,7 @@ class _LoginFormState extends State<LoginForm> {
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
+                          children: [
                               IconButton(
                                   onPressed: () {
                                     setState(() {

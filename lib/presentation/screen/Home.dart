@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'package:acebot_front/presentation/widget/common/BaseAppBar.dart';
+import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
@@ -62,8 +62,8 @@ class _HomeState extends State<Home> {
                   return Center(
                       child: Container(
                           padding: const EdgeInsets.fromLTRB(20, 70, 20, 0),
-                          child: Column(children: <Widget>[
-                            Row(children: <Widget>[
+                          child: Column(children: [
+                            Row(children: [
                               Expanded(
                                   child: RichText(
                                       textAlign: TextAlign.center,

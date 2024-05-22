@@ -66,8 +66,8 @@ class _FirstProgressState extends State<FirstProgress> {
   Widget build(BuildContext context) {
     return Container(
         padding: const EdgeInsets.only(top: 30.0),
-        child: Column(children: <Widget>[
-          Row(children: <Widget>[
+        child: Column(children: [
+          Row(children: [
             Expanded(
                 child: Text("이메일을\n입력해 주세요.",
                     style: TextStyle(
@@ -76,8 +76,8 @@ class _FirstProgressState extends State<FirstProgress> {
                         color: const Color(0xff000000))))
           ]),
           SizedBox(height: 56.0),
-          Column(children: <Widget>[
-            Row(children: <Widget>[
+          Column(children: [
+            Row(children: [
               Expanded(
                   child: Text('아이디',
                       style: TextStyle(
