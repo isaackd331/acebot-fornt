@@ -30,9 +30,9 @@ class BaseDialog extends StatelessWidget {
             child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
+                children: [
                   // TITLE
-                  Row(children: <Widget>[
+                  Row(children: [
                     Expanded(
                       child: Text(
                         title,

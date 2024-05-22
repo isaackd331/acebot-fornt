@@ -11,10 +11,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 
-import 'package:acebot_front/presentation/widget/common/BaseAppBar.dart';
 import 'package:acebot_front/presentation/widget/join/firstProgress.dart';
 import 'package:acebot_front/presentation/widget/join/secondProgress.dart';
-import 'package:acebot_front/presentation/widget/common/BaseOutlineButton.dart';
+import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
+import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
+import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
 class Join extends StatefulWidget {
   @override
@@ -86,80 +87,82 @@ class _JoinState extends State<Join> {
     });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-        child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: BaseAppBar(
-                title: '회원가입',
-                actions: [
-                  IconButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      icon: const Icon(Icons.clear),
-                      padding: const EdgeInsets.all(0))
-                ],
-                leading: SizedBox()),
-            body: Center(
-                child: Container(
-                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
-                    child: Column(
-                      children: <Widget>[
-                        LinearPercentIndicator(
-                            progressColor: const Color(0xff595959),
-                            backgroundColor: const Color(0xffebebeb),
-                            lineHeight: 2.0,
-                            percent: progress / 4),
+  Widget _bodyWidget() {
+    return Center(
+        child: Container(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
+            child: Column(
+              children: [
+                LinearPercentIndicator(
+                    progressColor: const Color(0xff595959),
+                    backgroundColor: const Color(0xffebebeb),
+                    lineHeight: 2.0,
+                    percent: progress / 4),
 
-                        /**
+                /**
                              * Progress = 1 : 이메일 입력
                              * Progress = 2 : 비밀번호 입력
                              * Progress = 3 : 이름 입력
                              * Progress = 4 : 직군/업무 입력
                              * Progress = 5 : 완료 및 시작하기
                              */
-                        progress == 1
-                            ? FirstProgress(
-                                setProgress: setProgress,
-                                setAbleToProgress: setAbleToProgress,
-                                setUserId: setUserId,
-                                userId: userId)
-                            : Container(),
-                        progress == 2
-                            ? SecondProgress(
-                                setProgress: setProgress,
-                                setAbleToProgress: setAbleToProgress,
-                                setUserPassword: setUserPassword,
-                                userPassword: userPassword,
-                                setUserCheckPassword: setUserCheckPassword,
-                                userCheckPassword: userCheckPassword)
-                            : Container(),
-                        Expanded(
-                            child: Column(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                mainAxisSize: MainAxisSize.max,
-                                children: <Widget>[
-                              Row(children: <Widget>[
-                                BaseOutlineButton(
-                                    onPressedFunc: () {
-                                      ableToProgress
-                                          ? setProgress(progress + 1)
-                                          : null;
-                                    },
-                                    text: '다음',
-                                    fontSize: 16.0,
-                                    textColor: const Color(0xffffffff),
-                                    backgroundColor: ableToProgress
-                                        ? const Color(0xff000000)
-                                        : const Color(0xffb3b3b3),
-                                    borderColor: ableToProgress
-                                        ? const Color(0xff000000)
-                                        : const Color(0xffb3b3b3))
-                              ])
-                            ])),
-                      ],
-                    )))));
+                progress == 1
+                    ? FirstProgress(
+                        setProgress: setProgress,
+                        setAbleToProgress: setAbleToProgress,
+                        setUserId: setUserId,
+                        userId: userId)
+                    : Container(),
+                progress == 2
+                    ? SecondProgress(
+                        setProgress: setProgress,
+                        setAbleToProgress: setAbleToProgress,
+                        setUserPassword: setUserPassword,
+                        userPassword: userPassword,
+                        setUserCheckPassword: setUserCheckPassword,
+                        userCheckPassword: userCheckPassword)
+                    : Container(),
+                Expanded(
+                    child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                      const SizedBox(height: 20),
+                      Row(children: [
+                        BaseOutlineButton(
+                            onPressedFunc: () {
+                              ableToProgress ? setProgress(progress + 1) : null;
+                            },
+                            text: '다음',
+                            fontSize: 16.0,
+                            textColor: const Color(0xffffffff),
+                            backgroundColor: ableToProgress
+                                ? const Color(0xff000000)
+                                : const Color(0xffb3b3b3),
+                            borderColor: ableToProgress
+                                ? const Color(0xff000000)
+                                : const Color(0xffb3b3b3))
+                      ])
+                    ]))
+              ],
+            )));
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+        child: Scaffold(
+      appBar: BaseAppBar(
+          title: '회원가입',
+          actions: [
+            IconButton(
+                onPressed: () {
+                  context.pop();
+                },
+                icon: const Icon(Icons.clear),
+                padding: const EdgeInsets.all(0))
+          ],
+          leading: const SizedBox()),
+      body: BaseBody(child: _bodyWidget()),
+    ));
   }
 }
