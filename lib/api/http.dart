@@ -5,7 +5,6 @@
 import 'package:acebot_front/bloc/auth/authState.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/bloc/auth/authCubit.dart';
 

@@ -76,7 +76,7 @@ class _LoginState extends State<Login> {
 
                     context.go('/home');
                   } else if (state is ErrorState) {
-                    if (state.statusCode == 422) {
+                    if (state.statusCode == 404) {
                       setState(() {
                         loginErrorStatus = 'loginFailed';
                       });
