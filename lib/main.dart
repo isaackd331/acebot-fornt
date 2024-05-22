@@ -3,16 +3,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/api/http.dart';
 import 'package:acebot_front/appRouter.dart';
-import 'package:acebot_front/bloc/auth/authCubit.dart';
-import 'package:acebot_front/repository/authRepository.dart';
 import 'package:acebot_front/bloc/eventsObserver.dart';
 
-void main() async {
-  // Dio 인스턴스 생성
-  configureDio();
+import 'package:acebot_front/bloc/auth/authCubit.dart';
+import 'package:acebot_front/repository/authRepository.dart';
+import 'package:acebot_front/bloc/user/selfCubit.dart';
+import 'package:acebot_front/bloc/user/otherCubit.dart';
+import 'package:acebot_front/repository/userRepository.dart';
 
-  runApp(BlocProvider(
-      create: (_) => AuthCubit(repo: AuthRepository()), child: AppView()));
+void main() async {
+  // Cubits
+  final authCubit = AuthCubit(repo: AuthRepository());
+  final selfCubit = SelfCubit(repo: UserRepository());
+  final otherCubit = OtherCubit(repo: UserRepository());
+
+  // Dio 인스턴스 생성
+  configureDio(authCubit);
+
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (_) => authCubit),
+    BlocProvider(create: (_) => selfCubit),
+    BlocProvider(create: (_) => otherCubit),
+  ], child: AppView()));
 
   Bloc.observer = EventsObserver();
 }

@@ -41,6 +41,7 @@ dependencies:
   go_router: ^14.1.1
   percent_indicator: ^4.2.3
   flutter_secure_storage: ^9.2.1
+  carousel_slider: ^4.2.1
 
 dev_dependencies:
   flutter_test:
@@ -59,7 +60,14 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
+  # env files
     - assets/env/.env
+  # icons
+    - assets/icons/icons_history.png
+    - assets/icons/icons_newchat_disabled.png
+    - assets/icons/icons_streamline.png
+  # images
+    - assets/images/acebot_logo.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

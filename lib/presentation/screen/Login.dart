@@ -13,6 +13,7 @@ import 'package:acebot_front/presentation/widget/common/BaseOutlineButton.dart';
 
 import 'package:acebot_front/bloc/auth/authState.dart';
 import 'package:acebot_front/bloc/auth/authCubit.dart';
+import 'package:acebot_front/bloc/user/selfCubit.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -71,9 +72,11 @@ class _LoginState extends State<Login> {
                 child: BlocListener<AuthCubit, AuthState>(
                     listener: (context, state) {
                   if (state is LoadedState) {
-                    print(state.authJson.accessToken);
+                    BlocProvider.of<SelfCubit>(context).getSelfData(userId);
+
+                    context.go('/home');
                   } else if (state is ErrorState) {
-                    if (state.statusCode == 422) {
+                    if (state.statusCode == 404) {
                       setState(() {
                         loginErrorStatus = 'loginFailed';
                       });

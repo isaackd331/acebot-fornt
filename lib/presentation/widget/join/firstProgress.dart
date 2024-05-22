@@ -97,15 +97,16 @@ class _FirstProgressState extends State<FirstProgress> {
               decoration: InputDecoration(
                   suffixIcon: !isIdEmpty
                       ? IconButton(
-                          icon: Icon(Icons.clear,
-                              color: const Color(0xff000000), size: 24.0),
                           onPressed: () {
                             setState(() {
                               idController.clear();
                               widget.setUserId("");
                             });
                           },
-                        )
+                          icon:
+                              Icon(Icons.clear, color: const Color(0xff000000)),
+                          iconSize: 24.0,
+                          padding: const EdgeInsets.all(0))
                       : null,
                   hintText: idPlaceholder,
                   hintStyle: TextStyle(
