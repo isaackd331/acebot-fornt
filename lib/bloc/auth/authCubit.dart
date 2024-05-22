@@ -10,6 +10,7 @@ class AuthCubit extends Cubit<AuthState> {
 
   AuthCubit({required this.repo}) : super(EmptyState());
 
+  // 로그인 버튼 누를 시 이벤트 및 데이터 가공
   Future<void> pushLoginButtonEvent(String userId, String userPassword) async {
     try {
       emit(LoadingState());

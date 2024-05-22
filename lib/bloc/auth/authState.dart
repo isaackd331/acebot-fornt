@@ -2,7 +2,7 @@ import 'package:acebot_front/models/authModel.dart';
 
 abstract class AuthState {}
 
-// 토큰이 없는 상태
+// 데이터 없는 상태
 class EmptyState extends AuthState {}
 
 // 데이터 로드 요청 중 상태

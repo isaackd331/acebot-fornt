@@ -95,10 +95,11 @@ class _JoinState extends State<Join> {
                 title: '회원가입',
                 actions: [
                   IconButton(
-                      icon: Icon(Icons.clear),
                       onPressed: () {
                         context.pop();
-                      })
+                      },
+                      icon: const Icon(Icons.clear),
+                      padding: const EdgeInsets.all(0))
                 ],
                 leading: SizedBox()),
             body: Center(

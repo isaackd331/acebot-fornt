@@ -20,12 +20,20 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> paddedActions = actions.map((action) {
+      return Padding(
+          padding: EdgeInsets.symmetric(vertical: 18), child: action);
+    }).toList();
+
     return AppBar(
+        toolbarHeight: 60.0,
         centerTitle: true,
         titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
         title: Text(title),
-        actions: actions,
-        leading: leading);
+        actions: paddedActions,
+        leading: Padding(
+            padding: EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+            child: leading));
   }
 
   @override

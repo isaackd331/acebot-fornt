@@ -92,15 +92,16 @@ class _LoginFormState extends State<LoginForm> {
               decoration: InputDecoration(
                   suffixIcon: !isIdEmpty
                       ? IconButton(
-                          icon: Icon(Icons.clear,
-                              color: const Color(0xff000000), size: 24.0),
                           onPressed: () {
                             setState(() {
                               idController.clear();
                               widget.setUserId("");
                             });
                           },
-                        )
+                          icon:
+                              Icon(Icons.clear, color: const Color(0xff000000)),
+                          iconSize: 24.0,
+                          padding: const EdgeInsets.all(0))
                       : null,
                   hintText: idPlaceholder,
                   hintStyle: TextStyle(
@@ -144,42 +145,43 @@ class _LoginFormState extends State<LoginForm> {
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
                               IconButton(
-                                icon: Icon(Icons.clear,
-                                    color: const Color(0xff000000), size: 24.0),
-                                onPressed: () {
-                                  setState(() {
-                                    passwordController.clear();
-                                    widget.setUserPassword("");
-                                  });
-                                },
-                              ),
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordController.clear();
+                                      widget.setUserPassword("");
+                                    });
+                                  },
+                                  icon: Icon(Icons.clear,
+                                      color: const Color(0xff000000)),
+                                  iconSize: 24.0,
+                                  padding: const EdgeInsets.all(0)),
                               IconButton(
-                                icon: Icon(
-                                    passwordInvisible
-                                        ? Icons.visibility_outlined
-                                        : Icons.visibility_off_outlined,
-                                    color: const Color(0xff000000),
-                                    size: 24.0),
-                                onPressed: () {
-                                  setState(() {
-                                    passwordInvisible = !passwordInvisible;
-                                  });
-                                },
-                              )
+                                  onPressed: () {
+                                    setState(() {
+                                      passwordInvisible = !passwordInvisible;
+                                    });
+                                  },
+                                  icon: Icon(
+                                      passwordInvisible
+                                          ? Icons.visibility_outlined
+                                          : Icons.visibility_off_outlined,
+                                      color: const Color(0xff000000)),
+                                  iconSize: 24.0,
+                                  padding: const EdgeInsets.all(0))
                             ])
                       : IconButton(
-                          icon: Icon(
-                              passwordInvisible
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: const Color(0xff000000),
-                              size: 24.0),
                           onPressed: () {
                             setState(() {
                               passwordInvisible = !passwordInvisible;
                             });
                           },
-                        ),
+                          icon: Icon(
+                              passwordInvisible
+                                  ? Icons.visibility_outlined
+                                  : Icons.visibility_off_outlined,
+                              color: const Color(0xff000000)),
+                          iconSize: 24.0,
+                          padding: const EdgeInsets.all(0)),
                   hintText: passwordPlaceholder,
                   hintStyle: TextStyle(
                       fontSize: 14.0,

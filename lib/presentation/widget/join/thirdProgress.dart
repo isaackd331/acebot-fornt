@@ -97,15 +97,16 @@ class _ThirdProgressState extends State<ThirdProgress> {
               decoration: InputDecoration(
                   suffixIcon: !isIdEmpty
                       ? IconButton(
-                          icon: Icon(Icons.clear,
-                              color: const Color(0xff000000), size: 24.0),
                           onPressed: () {
                             setState(() {
                               idController.clear();
                               widget.setUserName("");
                             });
                           },
-                        )
+                          icon:
+                              Icon(Icons.clear, color: const Color(0xff000000)),
+                          iconSize: 24.0,
+                          padding: const EdgeInsets.all(0))
                       : null,
                   hintText: namePlaceholder,
                   hintStyle: TextStyle(
