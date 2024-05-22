@@ -125,8 +125,8 @@ class _JoinState extends State<Join> {
                 Expanded(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        mainAxisSize: MainAxisSize.max,
                         children: [
+                      const SizedBox(height: 20),
                       Row(children: [
                         BaseOutlineButton(
                             onPressedFunc: () {
@@ -142,7 +142,7 @@ class _JoinState extends State<Join> {
                                 ? const Color(0xff000000)
                                 : const Color(0xffb3b3b3))
                       ])
-                    ])),
+                    ]))
               ],
             )));
   }
@@ -151,18 +151,18 @@ class _JoinState extends State<Join> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: BaseAppBar(
-                title: '회원가입',
-                actions: [
-                  IconButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      icon: const Icon(Icons.clear),
-                      padding: const EdgeInsets.all(0))
-                ],
-                leading: SizedBox()),
-            body: BaseBody(child: _bodyWidget())));
+      appBar: BaseAppBar(
+          title: '회원가입',
+          actions: [
+            IconButton(
+                onPressed: () {
+                  context.pop();
+                },
+                icon: const Icon(Icons.clear),
+                padding: const EdgeInsets.all(0))
+          ],
+          leading: const SizedBox()),
+      body: BaseBody(child: _bodyWidget()),
+    ));
   }
 }
