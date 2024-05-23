@@ -9,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
+import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -145,7 +146,8 @@ class _HomeState extends State<Home> {
                              * Chatting Wrapper
                              */
                             Container(
-                                padding: const EdgeInsets.all(8),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 5),
                                 decoration: BoxDecoration(
                                     color: const Color(0xfff4f4f4),
                                     borderRadius: BorderRadius.circular(3)),
@@ -164,30 +166,32 @@ class _HomeState extends State<Home> {
                                           padding:
                                               const EdgeInsets.only(bottom: 3)),
                                       Expanded(
-                                          child: TextFormField(
-                                        keyboardType: TextInputType.multiline,
-                                        focusNode: chatFocusNode,
-                                        controller: chatController,
-                                        onChanged: (value) {
-                                          setState(() {
-                                            chatContent = value;
-                                          });
-                                        },
-                                        minLines: 1,
-                                        maxLines: 6,
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500,
-                                            color: Color(0xff000000)),
-                                        decoration: InputDecoration(
-                                          hintText: chatPlaceholder,
-                                          hintStyle: const TextStyle(
+                                        child: NoScrollbarWrapper(
+                                            child: TextFormField(
+                                          keyboardType: TextInputType.multiline,
+                                          focusNode: chatFocusNode,
+                                          controller: chatController,
+                                          onChanged: (value) {
+                                            setState(() {
+                                              chatContent = value;
+                                            });
+                                          },
+                                          minLines: 1,
+                                          maxLines: 6,
+                                          style: const TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w500,
-                                              color: Color(0xff999999)),
-                                          border: InputBorder.none,
-                                        ),
-                                      )),
+                                              color: Color(0xff000000)),
+                                          decoration: InputDecoration(
+                                            hintText: chatPlaceholder,
+                                            hintStyle: const TextStyle(
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: Color(0xff999999)),
+                                            border: InputBorder.none,
+                                          ),
+                                        )),
+                                      ),
                                       IconButton(
                                           onPressed: () {},
                                           icon: const Icon(Icons.arrow_upward,
