@@ -17,6 +17,7 @@ class BeforeEditting extends StatefulWidget {
 }
 
 class _BeforeEdittingState extends State<BeforeEditting> {
+  @override
   void initState() {
     super.initState();
   }
@@ -29,7 +30,7 @@ class _BeforeEdittingState extends State<BeforeEditting> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("내 정보",
+            const Text("내 정보",
                 style: TextStyle(
                     color: Color(0xff000000),
                     fontSize: 20,

@@ -69,19 +69,21 @@ class _MypageState extends State<Mypage> {
                   !isEditting
                       ? IconButton(
                           onPressed: () {},
-                          icon: Icon(Icons.clear),
+                          icon: const Icon(Icons.clear),
                           iconSize: 12,
                           padding: const EdgeInsets.all(0))
                       : IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.clear),
+                          onPressed: () {
+                            setIsEditting(false);
+                          },
+                          icon: const Icon(Icons.clear),
                           iconSize: 12,
                           padding: const EdgeInsets.all(0))
                 ],
                 leading: !isEditting
                     ? IconButton(
                         onPressed: () {},
-                        icon: Icon(Icons.arrow_back_ios_new),
+                        icon: const Icon(Icons.arrow_back_ios_new),
                         iconSize: 15,
                         padding: const EdgeInsets.all(0))
                     : Container()),
