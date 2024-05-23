@@ -67,6 +67,9 @@ flutter:
     - assets/icons/icons_newchat_disabled.png
     - assets/icons/icons_streamline.png
     - assets/icons/icons_classified_docs.png
+    - assets/icons/icons_prompt_active.png
+    - assets/icons/icons_prompt_beta.png
+    - assets/icons/icons_prompt_prompt.png
   # images
     - assets/images/acebot_logo.png
 

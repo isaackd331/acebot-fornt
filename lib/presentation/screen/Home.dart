@@ -3,7 +3,6 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
@@ -156,16 +155,18 @@ class _HomeState extends State<Home> {
                              */
                             (!isChatFocusing && chatContent.isEmpty)
                                 ? PromptCarouselWrapper(itemsData: [
+                                    PromptItem(type: 'beta', content: '텍스트'),
                                     PromptItem(
-                                        type: 'type1', content: 'content1'),
+                                        type: 'beta',
+                                        content:
+                                            '텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트'),
                                     PromptItem(
-                                        type: 'type1', content: 'content1'),
+                                        type: 'beta', content: '텍스트텍스트텍스트'),
                                     PromptItem(
-                                        type: 'type1', content: 'content1'),
+                                        type: 'prompt', content: '텍스트텍스트텍스트'),
                                     PromptItem(
-                                        type: 'type1', content: 'content1'),
-                                    PromptItem(
-                                        type: 'type1', content: 'content1')
+                                        type: 'prompt',
+                                        content: '텍스트텍스트텍스트텍스트텍스트텍스트')
                                   ])
                                 : Container(),
                             const SizedBox(height: 36),

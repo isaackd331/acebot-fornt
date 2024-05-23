@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 
+import 'package:acebot_front/presentation/widget/home/promptCarouselItem.dart';
+
 class PromptItem {
   final String type;
   final String content;
@@ -18,9 +20,10 @@ class PromptCarouselWrapper extends StatelessWidget {
     return CarouselSlider(
         items: itemsData.map((datum) {
           return Builder(builder: (BuildContext context) {
-            return Container(width: 50, color: Colors.red);
+            return PromptCarouselItem(
+                type: datum.type, content: datum.content, isActive: true);
           });
         }).toList(),
-        options: CarouselOptions(height: 30));
+        options: CarouselOptions(height: 65));
   }
 }
