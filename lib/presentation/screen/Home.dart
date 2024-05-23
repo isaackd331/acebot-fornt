@@ -7,9 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
+import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
-import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
   String chatContent = "";
   bool isChatEmpty = true;
   TextEditingController chatController = TextEditingController();
+  bool isUploadButtonClicked = false;
 
   @override
   void initState() {
@@ -53,6 +54,33 @@ class _HomeState extends State<Home> {
      * 사용할 Cubit 초기화
      */
     context.read<SelfCubit>();
+  }
+
+  /**
+   * 채팅 포커싱 여부 업데이트
+   */
+  void setIsChatFocusing(bool value) {
+    setState(() {
+      isChatFocusing = value;
+    });
+  }
+
+  /**
+   * chatContent 업데이트
+   */
+  void setChatContent(String value) {
+    setState(() {
+      chatContent = value;
+    });
+  }
+
+  /**
+   * 채팅 비어있음 여부 업데이트
+   */
+  void setIsChatEmpty(bool value) {
+    setState(() {
+      isChatEmpty = value;
+    });
   }
 
   Widget _bodyWidget() {
@@ -126,8 +154,7 @@ class _HomeState extends State<Home> {
                              * 포커싱될 시 캐로셀 hide
                              * 채팅 박스에 채팅 있을 시 캐로셀 hide
                              */
-                            (!chatFocusNode.hasFocus &&
-                                    chatController.text.isEmpty)
+                            (!isChatFocusing && chatContent.isEmpty)
                                 ? PromptCarouselWrapper(itemsData: [
                                     PromptItem(
                                         type: 'type1', content: 'content1'),
@@ -142,63 +169,10 @@ class _HomeState extends State<Home> {
                                   ])
                                 : Container(),
                             const SizedBox(height: 36),
-                            /**
-                             * Chatting Wrapper
-                             */
-                            Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 5),
-                                decoration: BoxDecoration(
-                                    color: const Color(0xfff4f4f4),
-                                    borderRadius: BorderRadius.circular(3)),
-                                child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Container(
-                                            width: 24,
-                                            height: 24,
-                                            child: Image.asset(
-                                                'assets/icons/icons_classified_docs.png'),
-                                          ),
-                                          color: Color(0xff999999),
-                                          padding:
-                                              const EdgeInsets.only(bottom: 3)),
-                                      Expanded(
-                                        child: NoScrollbarWrapper(
-                                            child: TextFormField(
-                                          keyboardType: TextInputType.multiline,
-                                          focusNode: chatFocusNode,
-                                          controller: chatController,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              chatContent = value;
-                                            });
-                                          },
-                                          minLines: 1,
-                                          maxLines: 6,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color(0xff000000)),
-                                          decoration: InputDecoration(
-                                            hintText: chatPlaceholder,
-                                            hintStyle: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Color(0xff999999)),
-                                            border: InputBorder.none,
-                                          ),
-                                        )),
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.arrow_upward,
-                                              color: Color(0xff999999)),
-                                          padding:
-                                              const EdgeInsets.only(bottom: 3))
-                                    ]))
+                            ChattingWrapper(
+                                setIsChatFocusing: setIsChatFocusing,
+                                setChatContent: setChatContent,
+                                setIsChatEmpty: setIsChatEmpty)
                           ])),
                     ])));
           } else {
