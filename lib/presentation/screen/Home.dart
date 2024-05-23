@@ -224,18 +224,18 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
               onPressed: () {},
-              icon: Image.asset('assets/icons/icons_newchat_disabled.png'),
+              icon: Image.asset('assets/icons/icon_newchat_disabled.png'),
               iconSize: 18,
               padding: const EdgeInsets.all(0)),
           IconButton(
               onPressed: () {},
-              icon: Image.asset('assets/icons/icons_streamline.png'),
+              icon: Image.asset('assets/icons/icon_streamline.png'),
               iconSize: 16,
               padding: const EdgeInsets.all(0)),
         ],
         leading: IconButton(
             onPressed: () {},
-            icon: Image.asset('assets/icons/icons_history.png'),
+            icon: Image.asset('assets/icons/icon_history.png'),
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),

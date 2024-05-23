@@ -63,13 +63,16 @@ flutter:
   # env files
     - assets/env/.env
   # icons
-    - assets/icons/icons_history.png
-    - assets/icons/icons_newchat_disabled.png
-    - assets/icons/icons_streamline.png
-    - assets/icons/icons_classified_docs.png
-    - assets/icons/icons_prompt_active.png
-    - assets/icons/icons_prompt_beta.png
-    - assets/icons/icons_prompt_prompt.png
+    - assets/icons/icon_history.png
+    - assets/icons/icon_newchat_disabled.png
+    - assets/icons/icon_streamline.png
+    - assets/icons/icon_classified_docs.png
+    - assets/icons/icon_prompt_active.png
+    - assets/icons/icon_prompt_beta.png
+    - assets/icons/icon_prompt_prompt.png
+    - assets/icons/icon_record_upload.png
+    - assets/icons/icon_image_upload.png
+    - assets/icons/icon_docs_upload.png
   # images
     - assets/images/acebot_logo.png
 

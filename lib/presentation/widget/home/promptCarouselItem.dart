@@ -35,14 +35,14 @@ class PromptCarouselItem extends StatelessWidget {
                 ? SizedBox(
                     width: 6,
                     height: 6,
-                    child: Image.asset('assets/icons/icons_prompt_active.png'))
+                    child: Image.asset('assets/icons/icon_prompt_active.png'))
                 : Container(),
             const SizedBox(width: 2),
             type == "beta"
                 ? SizedBox(
                     width: 14,
                     height: 14,
-                    child: Image.asset('assets/icons/icons_prompt_beta.png',
+                    child: Image.asset('assets/icons/icon_prompt_beta.png',
                         color: isActive
                             ? const Color(0xff808080)
                             : const Color(0xff5d5d5d)))
@@ -51,7 +51,7 @@ class PromptCarouselItem extends StatelessWidget {
                 ? SizedBox(
                     width: 14,
                     height: 14,
-                    child: Image.asset('assets/icons/icons_prompt_prompt.png',
+                    child: Image.asset('assets/icons/icon_prompt_prompt.png',
                         color: isActive
                             ? const Color(0xff808080)
                             : const Color(0xff5d5d5d)))
