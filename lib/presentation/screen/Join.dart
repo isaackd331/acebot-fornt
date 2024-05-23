@@ -126,6 +126,10 @@ class _JoinState extends State<Join> {
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
+                      /**
+                           * 네이티브 키보드 출현 시 컨텐츠와 버튼이 너무 붙는
+                           * 문제를 해결하기 위해 삽입
+                           */
                       const SizedBox(height: 20),
                       Row(children: [
                         BaseOutlineButton(

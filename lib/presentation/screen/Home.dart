@@ -19,9 +19,34 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+  FocusNode chatFocusNode = FocusNode();
+  bool isChatFocusing = false;
+  String chatPlaceholder = "ACEBOT에게 요청해 보세요";
+  String chatContent = "";
+  bool isChatEmpty = true;
+  TextEditingController chatController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
+
+    chatFocusNode.addListener(() {
+      chatFocusNode.hasFocus
+          ? setState(() {
+              chatPlaceholder = "";
+              isChatFocusing = true;
+            })
+          : setState(() {
+              chatPlaceholder = "ACEBOT에게 요청해 보세요";
+              isChatFocusing = false;
+            });
+    });
+
+    chatController.addListener(() {
+      setState(() {
+        isChatEmpty = chatController.text.isEmpty;
+      });
+    });
 
     /**
      * 사용할 Cubit 초기화
@@ -36,7 +61,7 @@ class _HomeState extends State<Home> {
           if (state is LoadedState) {
             return Center(
                 child: Container(
-                    padding: const EdgeInsets.fromLTRB(20, 70, 20, 0),
+                    padding: const EdgeInsets.fromLTRB(20, 70, 20, 40),
                     child: Column(children: [
                       Row(children: [
                         Expanded(
@@ -90,6 +115,87 @@ class _HomeState extends State<Home> {
                           width: 40,
                           height: 10,
                           child: Image.asset('assets/images/acebot_logo.png')),
+                      Expanded(
+                          child: Column(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                            const SizedBox(height: 20),
+
+                            /**
+                             * 포커싱될 시 캐로셀 hide
+                             * 채팅 박스에 채팅 있을 시 캐로셀 hide
+                             */
+                            (!chatFocusNode.hasFocus &&
+                                    chatController.text.isEmpty)
+                                ? PromptCarouselWrapper(itemsData: [
+                                    PromptItem(
+                                        type: 'type1', content: 'content1'),
+                                    PromptItem(
+                                        type: 'type1', content: 'content1'),
+                                    PromptItem(
+                                        type: 'type1', content: 'content1'),
+                                    PromptItem(
+                                        type: 'type1', content: 'content1'),
+                                    PromptItem(
+                                        type: 'type1', content: 'content1')
+                                  ])
+                                : Container(),
+                            const SizedBox(height: 36),
+                            /**
+                             * Chatting Wrapper
+                             */
+                            Container(
+                                padding: const EdgeInsets.all(8),
+                                decoration: BoxDecoration(
+                                    color: const Color(0xfff4f4f4),
+                                    borderRadius: BorderRadius.circular(3)),
+                                child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: Container(
+                                            width: 24,
+                                            height: 24,
+                                            child: Image.asset(
+                                                'assets/icons/icons_classified_docs.png'),
+                                          ),
+                                          color: Color(0xff999999),
+                                          padding:
+                                              const EdgeInsets.only(bottom: 3)),
+                                      Expanded(
+                                          child: TextFormField(
+                                        keyboardType: TextInputType.multiline,
+                                        focusNode: chatFocusNode,
+                                        controller: chatController,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            chatContent = value;
+                                          });
+                                        },
+                                        minLines: 1,
+                                        maxLines: 6,
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500,
+                                            color: Color(0xff000000)),
+                                        decoration: InputDecoration(
+                                          hintText: chatPlaceholder,
+                                          hintStyle: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.w500,
+                                              color: Color(0xff999999)),
+                                          border: InputBorder.none,
+                                        ),
+                                      )),
+                                      IconButton(
+                                          onPressed: () {},
+                                          icon: const Icon(Icons.arrow_upward,
+                                              color: Color(0xff999999)),
+                                          padding:
+                                              const EdgeInsets.only(bottom: 3))
+                                    ]))
+                          ])),
                     ])));
           } else {
             return Container();
