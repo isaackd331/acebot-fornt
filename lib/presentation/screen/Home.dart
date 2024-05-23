@@ -3,13 +3,12 @@
  */
 
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
+import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
-import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -26,6 +25,8 @@ class _HomeState extends State<Home> {
   String chatContent = "";
   bool isChatEmpty = true;
   TextEditingController chatController = TextEditingController();
+  bool isUploadButtonClicked = false;
+  List<int> promptData = [0, 0, 0, 0];
 
   @override
   void initState() {
@@ -55,6 +56,42 @@ class _HomeState extends State<Home> {
     context.read<SelfCubit>();
   }
 
+  /**
+   * 채팅 포커싱 여부 업데이트
+   */
+  void setIsChatFocusing(bool value) {
+    setState(() {
+      isChatFocusing = value;
+    });
+  }
+
+  /**
+   * chatContent 업데이트
+   */
+  void setChatContent(String value) {
+    setState(() {
+      chatContent = value;
+    });
+  }
+
+  /**
+   * 채팅 비어있음 여부 업데이트
+   */
+  void setIsChatEmpty(bool value) {
+    setState(() {
+      isChatEmpty = value;
+    });
+  }
+
+  /**
+   * 프롬프트 데이터 업데이트
+   */
+  void setPromptData(int idx, int value) {
+    setState(() {
+      promptData[idx] = value;
+    });
+  }
+
   Widget _bodyWidget() {
     return BlocListener<SelfCubit, SelfState>(
         listener: (context, state) {},
@@ -62,7 +99,7 @@ class _HomeState extends State<Home> {
           if (state is LoadedState) {
             return Center(
                 child: Container(
-                    padding: const EdgeInsets.fromLTRB(20, 70, 20, 40),
+                    padding: const EdgeInsets.fromLTRB(20, 70, 20, 20),
                     child: Column(children: [
                       Row(children: [
                         Expanded(
@@ -126,79 +163,50 @@ class _HomeState extends State<Home> {
                              * 포커싱될 시 캐로셀 hide
                              * 채팅 박스에 채팅 있을 시 캐로셀 hide
                              */
-                            (!chatFocusNode.hasFocus &&
-                                    chatController.text.isEmpty)
-                                ? PromptCarouselWrapper(itemsData: [
-                                    PromptItem(
-                                        type: 'type1', content: 'content1'),
-                                    PromptItem(
-                                        type: 'type1', content: 'content1'),
-                                    PromptItem(
-                                        type: 'type1', content: 'content1'),
-                                    PromptItem(
-                                        type: 'type1', content: 'content1'),
-                                    PromptItem(
-                                        type: 'type1', content: 'content1')
-                                  ])
+                            (!isChatFocusing && chatContent.isEmpty)
+                                ? SizedBox(
+                                    height: 314,
+                                    child: ListView.separated(
+                                        itemCount: 4,
+                                        separatorBuilder:
+                                            (BuildContext context, int idx) {
+                                          return const SizedBox(height: 18);
+                                        },
+                                        itemBuilder:
+                                            (BuildContext context, int idx) {
+                                          return Builder(
+                                              builder: (BuildContext context) {
+                                            return PromptCarouselWrapper(
+                                              groupIdx: idx,
+                                              itemsData: [
+                                                PromptItem(
+                                                    type: 'beta',
+                                                    content: '텍스트'),
+                                                PromptItem(
+                                                    type: 'beta',
+                                                    content:
+                                                        '텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트'),
+                                                PromptItem(
+                                                    type: 'beta',
+                                                    content: '텍스트텍스트텍스트'),
+                                                PromptItem(
+                                                    type: 'prompt',
+                                                    content: '텍스트텍스트텍스트'),
+                                                PromptItem(
+                                                    type: 'prompt',
+                                                    content:
+                                                        '텍스트텍스트텍스트텍스트텍스트텍스트')
+                                              ],
+                                              setPromptData: setPromptData,
+                                            );
+                                          });
+                                        }))
                                 : Container(),
-                            const SizedBox(height: 36),
-                            /**
-                             * Chatting Wrapper
-                             */
-                            Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 8, vertical: 5),
-                                decoration: BoxDecoration(
-                                    color: const Color(0xfff4f4f4),
-                                    borderRadius: BorderRadius.circular(3)),
-                                child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: Container(
-                                            width: 24,
-                                            height: 24,
-                                            child: Image.asset(
-                                                'assets/icons/icons_classified_docs.png'),
-                                          ),
-                                          color: Color(0xff999999),
-                                          padding:
-                                              const EdgeInsets.only(bottom: 3)),
-                                      Expanded(
-                                        child: NoScrollbarWrapper(
-                                            child: TextFormField(
-                                          keyboardType: TextInputType.multiline,
-                                          focusNode: chatFocusNode,
-                                          controller: chatController,
-                                          onChanged: (value) {
-                                            setState(() {
-                                              chatContent = value;
-                                            });
-                                          },
-                                          minLines: 1,
-                                          maxLines: 6,
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500,
-                                              color: Color(0xff000000)),
-                                          decoration: InputDecoration(
-                                            hintText: chatPlaceholder,
-                                            hintStyle: const TextStyle(
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w500,
-                                                color: Color(0xff999999)),
-                                            border: InputBorder.none,
-                                          ),
-                                        )),
-                                      ),
-                                      IconButton(
-                                          onPressed: () {},
-                                          icon: const Icon(Icons.arrow_upward,
-                                              color: Color(0xff999999)),
-                                          padding:
-                                              const EdgeInsets.only(bottom: 3))
-                                    ]))
+                            const SizedBox(height: 24),
+                            ChattingWrapper(
+                                setIsChatFocusing: setIsChatFocusing,
+                                setChatContent: setChatContent,
+                                setIsChatEmpty: setIsChatEmpty)
                           ])),
                     ])));
           } else {
@@ -216,18 +224,18 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
               onPressed: () {},
-              icon: Image.asset('assets/icons/icons_newchat_disabled.png'),
+              icon: Image.asset('assets/icons/icon_newchat_disabled.png'),
               iconSize: 18,
               padding: const EdgeInsets.all(0)),
           IconButton(
               onPressed: () {},
-              icon: Image.asset('assets/icons/icons_streamline.png'),
+              icon: Image.asset('assets/icons/icon_streamline.png'),
               iconSize: 16,
               padding: const EdgeInsets.all(0)),
         ],
         leading: IconButton(
             onPressed: () {},
-            icon: Image.asset('assets/icons/icons_history.png'),
+            icon: Image.asset('assets/icons/icon_history.png'),
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),
