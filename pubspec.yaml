@@ -73,6 +73,7 @@ flutter:
     - assets/icons/icon_record_upload.png
     - assets/icons/icon_image_upload.png
     - assets/icons/icon_docs_upload.png
+    - assets/icons/icon_edit.png
   # images
     - assets/images/acebot_logo.png
 
