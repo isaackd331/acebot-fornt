@@ -37,37 +37,48 @@ class PromptCarouselItem extends StatelessWidget {
                     height: 6,
                     child: Image.asset('assets/icons/icons_prompt_active.png'))
                 : Container(),
-            const SizedBox(width: 1),
+            const SizedBox(width: 2),
             type == "beta"
                 ? SizedBox(
                     width: 14,
                     height: 14,
-                    child: Image.asset('assets/icons/icons_prompt_beta.png'))
+                    child: Image.asset('assets/icons/icons_prompt_beta.png',
+                        color: isActive
+                            ? const Color(0xff808080)
+                            : const Color(0xff5d5d5d)))
                 : Container(),
             type == "prompt"
                 ? SizedBox(
                     width: 14,
                     height: 14,
-                    child: Image.asset('assets/icons/icons_prompt_prompt.png'))
+                    child: Image.asset('assets/icons/icons_prompt_prompt.png',
+                        color: isActive
+                            ? const Color(0xff808080)
+                            : const Color(0xff5d5d5d)))
                 : Container(),
+            const SizedBox(width: 2),
             Text(capitalize(type),
-                style: const TextStyle(
+                style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w500,
-                    color: Color(0xff808080)))
+                    color: isActive
+                        ? const Color(0xff808080)
+                        : const Color(0xff5d5d5d)))
           ]),
           const SizedBox(height: 4),
           Row(children: [
             Expanded(
-                child: Text(
-              content,
-              style: const TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-                color: Color(0xff808080),
-              ),
-              textAlign: TextAlign.start,
-            ))
+                child: Text(content,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: isActive
+                          ? const Color(0xff808080)
+                          : const Color(0xff5d5d5d),
+                    ),
+                    textAlign: TextAlign.start,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis))
           ]),
           Expanded(
               child: Align(

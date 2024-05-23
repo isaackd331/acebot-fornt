@@ -26,6 +26,7 @@ class _HomeState extends State<Home> {
   bool isChatEmpty = true;
   TextEditingController chatController = TextEditingController();
   bool isUploadButtonClicked = false;
+  List<int> promptData = [0, 0, 0, 0];
 
   @override
   void initState() {
@@ -82,6 +83,15 @@ class _HomeState extends State<Home> {
     });
   }
 
+  /**
+   * 프롬프트 데이터 업데이트
+   */
+  void setPromptData(int idx, int value) {
+    setState(() {
+      promptData[idx] = value;
+    });
+  }
+
   Widget _bodyWidget() {
     return BlocListener<SelfCubit, SelfState>(
         listener: (context, state) {},
@@ -89,7 +99,7 @@ class _HomeState extends State<Home> {
           if (state is LoadedState) {
             return Center(
                 child: Container(
-                    padding: const EdgeInsets.fromLTRB(20, 70, 20, 40),
+                    padding: const EdgeInsets.fromLTRB(20, 70, 20, 20),
                     child: Column(children: [
                       Row(children: [
                         Expanded(
@@ -154,22 +164,45 @@ class _HomeState extends State<Home> {
                              * 채팅 박스에 채팅 있을 시 캐로셀 hide
                              */
                             (!isChatFocusing && chatContent.isEmpty)
-                                ? PromptCarouselWrapper(itemsData: [
-                                    PromptItem(type: 'beta', content: '텍스트'),
-                                    PromptItem(
-                                        type: 'beta',
-                                        content:
-                                            '텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트'),
-                                    PromptItem(
-                                        type: 'beta', content: '텍스트텍스트텍스트'),
-                                    PromptItem(
-                                        type: 'prompt', content: '텍스트텍스트텍스트'),
-                                    PromptItem(
-                                        type: 'prompt',
-                                        content: '텍스트텍스트텍스트텍스트텍스트텍스트')
-                                  ])
+                                ? SizedBox(
+                                    height: 314,
+                                    child: ListView.separated(
+                                        itemCount: 4,
+                                        separatorBuilder:
+                                            (BuildContext context, int idx) {
+                                          return const SizedBox(height: 18);
+                                        },
+                                        itemBuilder:
+                                            (BuildContext context, int idx) {
+                                          return Builder(
+                                              builder: (BuildContext context) {
+                                            return PromptCarouselWrapper(
+                                              groupIdx: idx,
+                                              itemsData: [
+                                                PromptItem(
+                                                    type: 'beta',
+                                                    content: '텍스트'),
+                                                PromptItem(
+                                                    type: 'beta',
+                                                    content:
+                                                        '텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트'),
+                                                PromptItem(
+                                                    type: 'beta',
+                                                    content: '텍스트텍스트텍스트'),
+                                                PromptItem(
+                                                    type: 'prompt',
+                                                    content: '텍스트텍스트텍스트'),
+                                                PromptItem(
+                                                    type: 'prompt',
+                                                    content:
+                                                        '텍스트텍스트텍스트텍스트텍스트텍스트')
+                                              ],
+                                              setPromptData: setPromptData,
+                                            );
+                                          });
+                                        }))
                                 : Container(),
-                            const SizedBox(height: 36),
+                            const SizedBox(height: 24),
                             ChattingWrapper(
                                 setIsChatFocusing: setIsChatFocusing,
                                 setChatContent: setChatContent,
