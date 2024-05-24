@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseDropdown.dart';
+import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -23,6 +24,7 @@ class _AfterEdittingState extends State<StatefulWidget> {
   String? userName = "";
   String userJob = 'Marketing';
   List<String> userTasks = ['커뮤니케이션', '로드맵 작성', 'SWOT 분석', '경쟁사 분석'];
+  bool isEditted = false;
 
   void initState() {
     super.initState();
@@ -104,6 +106,8 @@ class _AfterEdittingState extends State<StatefulWidget> {
             userTasks.contains(value)
                 ? userTasks.remove(value)
                 : userTasks.add(value);
+
+            isEditted = true;
           });
         },
         child: Container(
@@ -163,6 +167,7 @@ class _AfterEdittingState extends State<StatefulWidget> {
                 onChanged: (value) => {
                   setState(() {
                     userName = value;
+                    isEditted = true;
                   })
                 },
                 style: const TextStyle(
@@ -203,13 +208,28 @@ class _AfterEdittingState extends State<StatefulWidget> {
                   children: _tasksItems
                       .where((task) => task != null)
                       .map((task) => _taskCheckbox(task))
-                      .toList()))
+                      .toList())),
           /**
                        * TODO
-                       * 저장 버튼 만들 것
                        * 저장 버튼 활성화 조건 : 하나 이상 수정
                        * 수정 감지 할 것
                        */
+          const SizedBox(height: 20),
+          Row(children: [
+            BaseOutlineButton(
+                onPressedFunc: () {},
+                text: '저장',
+                fontSize: 16.0,
+                textColor: const Color(0xffffffff),
+                backgroundColor:
+                    // ableToProgress
+                    //     ? const Color(0xff000000) :
+                    const Color(0xffb3b3b3),
+                borderColor:
+                    // ableToProgress
+                    //     ? const Color(0xff000000) :
+                    const Color(0xffb3b3b3))
+          ])
         ]);
       },
     );
