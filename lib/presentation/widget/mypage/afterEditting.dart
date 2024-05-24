@@ -22,7 +22,7 @@ class _AfterEdittingState extends State<StatefulWidget> {
   TextEditingController userNameController = TextEditingController();
   String? userName = "";
   String userJob = 'Marketing';
-  List<String> userTasks = ["커뮤니케이션, 로드맵 작성, SWOT 분석, 경쟁사 분석"];
+  List<String> userTasks = ['커뮤니케이션', '로드맵 작성', 'SWOT 분석', '경쟁사 분석'];
 
   void initState() {
     super.initState();
@@ -57,6 +57,29 @@ class _AfterEdittingState extends State<StatefulWidget> {
     'QA',
   ];
 
+  final List<String> _tasksItems = [
+    '시장 조사',
+    '커뮤니케이션',
+    '예산 집행',
+    '재무 데이터 분석',
+    '리포트 작성',
+    '로드맵 작성',
+    '계약서 작성',
+    '사용자 조사',
+    '홍보 전략 수집',
+    '연구',
+    '재무 데이터 분석',
+    '리포트 작성',
+    '로드맵 작성',
+    'SWOT 분석',
+    '홍보 전략 수립',
+    '분석',
+    '경쟁사 분석',
+    '로드맵 작성',
+    '마케팅 문구 작성',
+    '경쟁사 분석'
+  ];
+
   Widget _listView(String title, Widget child) {
     return Column(children: [
       Row(
@@ -72,6 +95,48 @@ class _AfterEdittingState extends State<StatefulWidget> {
       const SizedBox(height: 8),
       Row(children: [Expanded(child: child)])
     ]);
+  }
+
+  Widget _taskCheckbox(String value) {
+    return GestureDetector(
+        onTap: () {
+          setState(() {
+            userTasks.contains(value)
+                ? userTasks.remove(value)
+                : userTasks.add(value);
+          });
+        },
+        child: Container(
+            height: 32,
+            padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+            decoration: BoxDecoration(
+              color: const Color(0xffffffff),
+              border: Border.all(
+                  color: userTasks.contains(value)
+                      ? const Color(0xff000000)
+                      : const Color(0xffebebeb)),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: Image.asset('assets/icons/icon_check.png',
+                          color: userTasks.contains(value)
+                              ? const Color(0xff000000)
+                              : const Color(0xffebebeb))),
+                  const SizedBox(width: 7),
+                  Text(value,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: userTasks.contains(value)
+                              ? FontWeight.w700
+                              : FontWeight.w500))
+                ])));
   }
 
   @override
@@ -126,7 +191,25 @@ class _AfterEdittingState extends State<StatefulWidget> {
                     });
                   },
                   options: _dropdownItems,
-                  selected: userJob))
+                  selected: userJob)),
+          const SizedBox(height: 28),
+          _listView(
+              '업무',
+              Wrap(
+                  spacing: 8,
+                  runSpacing: 8,
+                  direction: Axis.horizontal,
+                  alignment: WrapAlignment.start,
+                  children: _tasksItems
+                      .where((task) => task != null)
+                      .map((task) => _taskCheckbox(task))
+                      .toList()))
+          /**
+                       * TODO
+                       * 저장 버튼 만들 것
+                       * 저장 버튼 활성화 조건 : 하나 이상 수정
+                       * 수정 감지 할 것
+                       */
         ]);
       },
     );
