@@ -4,6 +4,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
 import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
@@ -234,7 +235,13 @@ class _HomeState extends State<Home> {
               padding: const EdgeInsets.all(0)),
         ],
         leading: IconButton(
-            onPressed: () {},
+            onPressed: () {
+              /**
+               * TEST
+               * go to mypage
+               */
+              context.go('/mypage');
+            },
             icon: Image.asset('assets/icons/icon_history.png'),
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
