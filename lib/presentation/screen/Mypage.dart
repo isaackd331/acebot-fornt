@@ -42,16 +42,14 @@ class _MypageState extends State<Mypage> {
     return BlocListener<SelfCubit, SelfState>(
         listener: (context, state) {},
         child: BlocBuilder<SelfCubit, SelfState>(builder: (_, state) {
-          /**
-           * TODO
-           * 퍼블리싱 끝난 후 state is LoadedState로 변경
-           */
-          if (state is! LoadedState) {
+          if (state is LoadedState) {
             return Center(
                 child: Container(
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
                     child: !isEditting
-                        ? BeforeEditting(setIsEditting: setIsEditting)
+                        ? BeforeEditting(
+                            setIsEditting: setIsEditting,
+                          )
                         : Container()));
           } else {
             return Container();

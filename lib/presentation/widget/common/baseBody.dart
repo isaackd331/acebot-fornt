@@ -6,6 +6,8 @@
 
 import 'package:flutter/material.dart';
 
+import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
+
 class BaseBody extends StatelessWidget {
   final Widget child;
 
@@ -15,10 +17,12 @@ class BaseBody extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(children: [
       Expanded(child: LayoutBuilder(builder: (context, constraint) {
-        return SingleChildScrollView(
-            child: ConstrainedBox(
-                constraints: BoxConstraints(minHeight: constraint.maxHeight),
-                child: IntrinsicHeight(child: child)));
+        return NoScrollbarWrapper(
+            child: SingleChildScrollView(
+                child: ConstrainedBox(
+                    constraints:
+                        BoxConstraints(minHeight: constraint.maxHeight),
+                    child: IntrinsicHeight(child: child))));
       }))
     ]);
   }
