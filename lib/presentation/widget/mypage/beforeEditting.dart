@@ -24,6 +24,11 @@ class _BeforeEdittingState extends State<BeforeEditting> {
   @override
   void initState() {
     super.initState();
+
+    /**
+     * 사용할 Cubit 초기화
+     */
+    context.read<SelfCubit>();
   }
 
   Widget _listView(String title, List<Widget> child) {

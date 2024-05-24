@@ -42,6 +42,7 @@ dependencies:
   percent_indicator: ^4.2.3
   flutter_secure_storage: ^9.2.1
   carousel_slider: ^4.2.1
+  dropdown_button2: ^2.3.9
 
 dev_dependencies:
   flutter_test:
@@ -74,6 +75,7 @@ flutter:
     - assets/icons/icon_image_upload.png
     - assets/icons/icon_docs_upload.png
     - assets/icons/icon_edit.png
+    - assets/icons/icon_curved_down.png
   # images
     - assets/images/acebot_logo.png
 

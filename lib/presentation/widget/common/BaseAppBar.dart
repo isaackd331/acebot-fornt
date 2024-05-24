@@ -28,7 +28,10 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
     return AppBar(
         toolbarHeight: 60.0,
         centerTitle: true,
-        titleTextStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+        titleTextStyle: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Color(0xff000000)),
         title: Text(title),
         actions: paddedActions,
         leading: Padding(

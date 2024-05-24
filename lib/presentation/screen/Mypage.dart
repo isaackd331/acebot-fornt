@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 import 'package:acebot_front/presentation/widget/mypage/beforeEditting.dart';
+import 'package:acebot_front/presentation/widget/mypage/afterEditting.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -39,22 +40,20 @@ class _MypageState extends State<Mypage> {
   }
 
   Widget _bodyWidget() {
-    return BlocListener<SelfCubit, SelfState>(
-        listener: (context, state) {},
-        child: BlocBuilder<SelfCubit, SelfState>(builder: (_, state) {
-          if (state is LoadedState) {
-            return Center(
-                child: Container(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: !isEditting
-                        ? BeforeEditting(
-                            setIsEditting: setIsEditting,
-                          )
-                        : Container()));
-          } else {
-            return Container();
-          }
-        }));
+    return BlocBuilder<SelfCubit, SelfState>(builder: (_, state) {
+      if (state is LoadedState) {
+        return Center(
+            child: Container(
+                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
+                child: !isEditting
+                    ? BeforeEditting(
+                        setIsEditting: setIsEditting,
+                      )
+                    : AfterEditting()));
+      } else {
+        return Container();
+      }
+    });
   }
 
   @override
@@ -62,11 +61,13 @@ class _MypageState extends State<Mypage> {
     return SafeArea(
         child: Scaffold(
             appBar: BaseAppBar(
-                title: !isEditting ? '내 정보 관리' : '내 정보 수정',
+                title: !isEditting ? '마이페이지' : '개인 정보 수정',
                 actions: [
                   !isEditting
                       ? IconButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            setIsEditting(true);
+                          },
                           icon: const Icon(Icons.clear),
                           iconSize: 12,
                           padding: const EdgeInsets.all(0))

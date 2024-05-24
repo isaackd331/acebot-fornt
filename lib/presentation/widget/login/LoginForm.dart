@@ -31,13 +31,9 @@ class _LoginFormState extends State<LoginForm> {
     super.initState();
 
     idFocusNode.addListener(() {
-      idFocusNode.hasFocus
-          ? setState(() {
-              idPlaceholder = "";
-            })
-          : setState(() {
-              idPlaceholder = "아이디";
-            });
+      setState(() {
+        idPlaceholder = idFocusNode.hasFocus ? "" : "아이디";
+      });
     });
 
     idController.addListener(() {
