@@ -2,10 +2,12 @@
  * 마이페이지 수정 후
  */
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseDropdown.dart';
+import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -23,6 +25,14 @@ class _AfterEdittingState extends State<StatefulWidget> {
   String? userName = "";
   String userJob = 'Marketing';
   List<String> userTasks = ['커뮤니케이션', '로드맵 작성', 'SWOT 분석', '경쟁사 분석'];
+
+  /**
+   * 수정 여부 파악
+   */
+  bool isEditted = false;
+  late String initialUserName;
+  late String initialUserJob;
+  late List<String> initialUserTasks;
 
   void initState() {
     super.initState();
@@ -43,6 +53,17 @@ class _AfterEdittingState extends State<StatefulWidget> {
      * 사용할 Cubit 초기화
      */
     context.read<SelfCubit>();
+
+    /**
+     * isEditted 초기값 설정
+     */
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        initialUserName = userNameController.text;
+        initialUserJob = userJob;
+        initialUserTasks = List.from(userTasks);
+      });
+    });
   }
 
   final List<String> _dropdownItems = [
@@ -104,6 +125,8 @@ class _AfterEdittingState extends State<StatefulWidget> {
             userTasks.contains(value)
                 ? userTasks.remove(value)
                 : userTasks.add(value);
+
+            isEditted = true;
           });
         },
         child: Container(
@@ -149,7 +172,20 @@ class _AfterEdittingState extends State<StatefulWidget> {
            */
           WidgetsBinding.instance.addPostFrameCallback((_) {
             setState(() {
+              /**
+               * TODO
+               * UserJson 데이터 추가 시 수정 필요
+               * userJon userTasks(현재 로컬 데이터로 사용 중)
+               */
               userName = state.userJson.name!;
+
+              if (userName != initialUserName ||
+                  userJob != initialUserJob ||
+                  !listEquals(userTasks, initialUserTasks)) {
+                isEditted = true;
+              } else {
+                isEditted = false;
+              }
             });
           });
         }
@@ -163,6 +199,7 @@ class _AfterEdittingState extends State<StatefulWidget> {
                 onChanged: (value) => {
                   setState(() {
                     userName = value;
+                    isEditted = true;
                   })
                 },
                 style: const TextStyle(
@@ -203,13 +240,21 @@ class _AfterEdittingState extends State<StatefulWidget> {
                   children: _tasksItems
                       .where((task) => task != null)
                       .map((task) => _taskCheckbox(task))
-                      .toList()))
-          /**
-                       * TODO
-                       * 저장 버튼 만들 것
-                       * 저장 버튼 활성화 조건 : 하나 이상 수정
-                       * 수정 감지 할 것
-                       */
+                      .toList())),
+          const SizedBox(height: 20),
+          Row(children: [
+            BaseOutlineButton(
+                onPressedFunc: () {},
+                text: '저장',
+                fontSize: 16.0,
+                textColor: const Color(0xffffffff),
+                backgroundColor: isEditted
+                    ? const Color(0xff000000)
+                    : const Color(0xffb3b3b3),
+                borderColor: isEditted
+                    ? const Color(0xff000000)
+                    : const Color(0xffb3b3b3))
+          ])
         ]);
       },
     );
