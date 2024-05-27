@@ -58,11 +58,13 @@ class _AfterEdittingState extends State<StatefulWidget> {
      * isEditted 초기값 설정
      */
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        initialUserName = userNameController.text;
-        initialUserJob = userJob;
-        initialUserTasks = List.from(userTasks);
-      });
+      if(mounted) {
+        setState(() {
+          initialUserName = userNameController.text;
+          initialUserJob = userJob;
+          initialUserTasks = List.from(userTasks);
+        });
+      }
     });
   }
 
@@ -171,22 +173,25 @@ class _AfterEdittingState extends State<StatefulWidget> {
            * 위젯이 완전히 빌드 된 후 setState 작동되도록
            */
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            setState(() {
-              /**
-               * TODO
-               * UserJson 데이터 추가 시 수정 필요
-               * userJon userTasks(현재 로컬 데이터로 사용 중)
-               */
-              userName = state.userJson.name!;
+            if(mounted) {
+              setState(() {
+                /**
+                 * TODO
+                 * UserJson 데이터 추가 시 수정 필요
+                 * userJon userTasks(현재 로컬 데이터로 사용 중)
+                 */
+                userName = state.userJson.name!;
+                initialUserName = state.userJson.name!;
 
-              if (userName != initialUserName ||
-                  userJob != initialUserJob ||
-                  !listEquals(userTasks, initialUserTasks)) {
-                isEditted = true;
-              } else {
-                isEditted = false;
-              }
-            });
+                if (userName != initialUserName ||
+                    userJob != initialUserJob ||
+                    !listEquals(userTasks, initialUserTasks)) {
+                  isEditted = true;
+                } else {
+                  isEditted = false;
+                }
+              });
+            }
           });
         }
 
