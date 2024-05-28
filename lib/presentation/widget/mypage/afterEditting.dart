@@ -1,10 +1,10 @@
-/**
- * 마이페이지 수정 후
- */
+/// 마이페이지 수정 후
+library;
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseDropdown.dart';
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
@@ -13,6 +13,8 @@ import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 
 class AfterEditting extends StatefulWidget {
+  const AfterEditting({super.key});
+
   @override
   _AfterEdittingState createState() => _AfterEdittingState();
 }
@@ -26,14 +28,13 @@ class _AfterEdittingState extends State<StatefulWidget> {
   String userJob = 'Marketing';
   List<String> userTasks = ['커뮤니케이션', '로드맵 작성', 'SWOT 분석', '경쟁사 분석'];
 
-  /**
-   * 수정 여부 파악
-   */
+  /// 수정 여부 파악
   bool isEditted = false;
   late String initialUserName;
   late String initialUserJob;
   late List<String> initialUserTasks;
 
+  @override
   void initState() {
     super.initState();
 
@@ -68,6 +69,7 @@ class _AfterEdittingState extends State<StatefulWidget> {
     });
   }
 
+  /// 직군 드롭다운 아이템 설정
   final List<String> _dropdownItems = [
     'Marketing',
     'Sales',
@@ -80,6 +82,7 @@ class _AfterEdittingState extends State<StatefulWidget> {
     'QA',
   ];
 
+  /// 업무 체크박스 아이템 설정
   final List<String> _tasksItems = [
     '시장 조사',
     '커뮤니케이션',
@@ -249,7 +252,14 @@ class _AfterEdittingState extends State<StatefulWidget> {
           const SizedBox(height: 20),
           Row(children: [
             BaseOutlineButton(
-                onPressedFunc: () {},
+                onPressedFunc: () {
+                  if (isEditted) {
+                    /**
+                     * TODO
+                     * Toast Message + Edit Function
+                     */
+                  }
+                },
                 text: '저장',
                 fontSize: 16.0,
                 textColor: const Color(0xffffffff),
