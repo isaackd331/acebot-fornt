@@ -45,7 +45,17 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  void dispose() {
+    super.dispose();
+
+    /**
+     * 홈페이지에서 벗어날 시 remove
+     */
+    if(overlayEntry.mounted) {
+      overlayEntry.remove();
+    }
+  }
+
   /**
    * Overlay Builder
    */
@@ -144,6 +154,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
               );
   });
 
+  @override
+  Widget build(BuildContext context) {
     return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
         Expanded(
             child: Container(
@@ -207,10 +219,6 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                 borderRadius: BorderRadius.circular(3)),
             child: IconButton(
               onPressed: () {
-                /**
-                 * setState가 들어갈 시 새로 빌드하여 entry id값이 변함
-                 * 따라서 기존 entry 값을 찾지 못하고 mounted를 적절히 찾지 못함
-                 */
                 OverlayState overlayState = Overlay.of(context);
 
                 if(!overlayEntry.mounted) {
@@ -218,8 +226,12 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                 } else {
                   overlayEntry.remove();
                 }
+
+                setState(() {
+                  isUploadButtonClicked = !isUploadButtonClicked;
+                });
               },
-              icon: !overlayEntry.mounted
+              icon: !isUploadButtonClicked
                   ? const Icon(Icons.add,
                       color: Color(0xffffffff), key: ValueKey('beforeClicked'))
                   : const Icon(Icons.clear,
