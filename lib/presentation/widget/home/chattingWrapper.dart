@@ -1,4 +1,10 @@
 /// 홈 화면 채팅 영역
+
+/**
+ * TODO
+ * 권한 체크
+ * 업로드
+ *  */ 
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
