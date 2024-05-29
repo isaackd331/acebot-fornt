@@ -1,11 +1,14 @@
-/**
- * 홈 화면 채팅 영역
- */
+/// 홈 화면 채팅 영역
 
+/**
+ * TODO
+ * 권한 체크
+ * 업로드
+ *  */ 
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
-import 'package:flutter/widgets.dart';
 
 class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;
@@ -28,6 +31,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
   TextEditingController chatController = TextEditingController();
   bool isUploadButtonClicked = false;
 
+  @override
   void initState() {
     super.initState();
 
@@ -47,12 +51,24 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Stack(clipBehavior: Clip.none, children: [
-      isUploadButtonClicked
-          ? Positioned(
-              bottom: 54,
-              right: 0,
+  void dispose() {
+    super.dispose();
+
+    /**
+     * 홈페이지에서 벗어날 시 remove
+     */
+    if(overlayEntry.mounted) {
+      overlayEntry.remove();
+    }
+  }
+
+  /**
+   * Overlay Builder
+   */
+  late final OverlayEntry overlayEntry = OverlayEntry(builder: (BuildContext context) {
+    return Positioned(
+              bottom: 70,
+              right: 20,
               child: Container(
                   width: 142,
                   height: 120,
@@ -62,7 +78,12 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        SizedBox(
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            print('voice upload');
+                          },
+                          child: SizedBox(
                             height: 40,
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -74,13 +95,21 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                       child: Image.asset(
                                           'assets/icons/icon_record_upload.png')),
                                   const SizedBox(width: 8),
-                                  const Text('음성 파일 생성',
-                                      style: TextStyle(
+                                  const DefaultTextStyle(
+                                    style: TextStyle(
                                           color: Color(0xffffffff),
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w400))
-                                ])),
-                        SizedBox(
+                                          fontWeight: FontWeight.w400),
+                                          child: Text('음성 파일 생성')
+                                  )
+                                ]))
+                        ),
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            print('image upload');
+                          },
+                          child: SizedBox(
                             height: 40,
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -92,13 +121,21 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                       child: Image.asset(
                                           'assets/icons/icon_image_upload.png')),
                                   const SizedBox(width: 8),
-                                  const Text('이미지 업로드',
-                                      style: TextStyle(
+                                  const DefaultTextStyle(
+                                    style: TextStyle(
                                           color: Color(0xffffffff),
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w400))
-                                ])),
-                        SizedBox(
+                                          fontWeight: FontWeight.w400),
+                                          child: Text('이미지 업로드')
+                                  )
+                                ]))
+                        ),
+                        GestureDetector(
+                          behavior: HitTestBehavior.translucent,
+                          onTap: () {
+                            print('doc upload');
+                          },
+                          child: SizedBox(
                             height: 40,
                             child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -110,15 +147,22 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                       child: Image.asset(
                                           'assets/icons/icon_docs_upload.png')),
                                   const SizedBox(width: 8),
-                                  const Text('문서 업로드',
-                                      style: TextStyle(
+                                  const DefaultTextStyle(
+                                    style: TextStyle(
                                           color: Color(0xffffffff),
                                           fontSize: 14,
-                                          fontWeight: FontWeight.w400))
-                                ]))
-                      ])))
-          : Container(),
-      Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                                          fontWeight: FontWeight.w400),
+                                          child: Text('문서 업로드')
+                                  )
+                          ])) 
+                        ) 
+                      ]))
+              );
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
         Expanded(
             child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -181,6 +225,14 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                 borderRadius: BorderRadius.circular(3)),
             child: IconButton(
               onPressed: () {
+                OverlayState overlayState = Overlay.of(context);
+
+                if(!overlayEntry.mounted) {
+                  overlayState.insert(overlayEntry);
+                } else {
+                  overlayEntry.remove();
+                }
+
                 setState(() {
                   isUploadButtonClicked = !isUploadButtonClicked;
                 });
@@ -191,7 +243,6 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   : const Icon(Icons.clear,
                       color: Color(0xffffffff), key: ValueKey('afterClicked')),
             )),
-      ])
-    ]);
+      ]);
   }
 }
