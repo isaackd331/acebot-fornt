@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
+import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 
 class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;
@@ -81,9 +82,18 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () async {
-                            final audioStatus = await Permission.audio.status;
-                            if(audioStatus.isDenied) {
-                              print('denied~');
+                            final audioStatus = await Permission.microphone.request();
+
+                            if(audioStatus.isGranted) {
+                              final fileStatus = await Permission.manageExternalStorage.request();
+
+                              if(fileStatus.isGranted) {
+
+                              } else {
+                                BaseToast(content: '해당 기능을 사용하려면\n녹음 및 파일 접근 권한이 필요합니다.', context: context).showToast();
+                              }
+                            } else {
+                              BaseToast(content: '해당 기능을 사용하려면\n녹음 및 파일 접근 권한이 필요합니다.', context: context).showToast();
                             }
                           },
                           child: SizedBox(
