@@ -2,6 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 class RecordingBottomSheet extends StatefulWidget {
+  const RecordingBottomSheet({
+    super.key
+  });
+
   @override
   _RecordingBottomSheetState createState() => _RecordingBottomSheetState();
 }
