@@ -55,7 +55,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
     super.dispose();
 
     /**
-     * 홈페이지에서 벗어날 시 remove
+     * 홈페이지에서 벗어날 시 Overlay remove
      */
     if(overlayEntry.mounted) {
       overlayEntry.remove();
@@ -80,8 +80,11 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                       children: [
                         GestureDetector(
                           behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            print('voice upload');
+                          onTap: () async {
+                            final audioStatus = await Permission.audio.status;
+                            if(audioStatus.isDenied) {
+                              print('denied~');
+                            }
                           },
                           child: SizedBox(
                             height: 40,
