@@ -1,5 +1,11 @@
+/**
+ * TODO
+ * 모바일에서 돌아가는 적당한 Codec 찾아야함
+ */
+
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
 
 class RecordingBottomSheet extends StatefulWidget {
   const RecordingBottomSheet({
@@ -14,10 +20,28 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   bool isRecording = false;
   int elapsedSeconds = 0;
   Timer? _timer;
+  FlutterSoundRecorder? _myRecorder = FlutterSoundRecorder();
+  final Codec _codec = Codec.defaultCodec;
+  final String _recordFilePath = 'test.wma';
+
   
   @override
   void initState() {
     super.initState();
+
+    _myRecorder!.openRecorder();
+  }
+
+  @override
+  void dispose() {
+    pauseTimer();
+    setState(() {
+        isRecording = false;
+      });
+    _myRecorder!.closeRecorder();
+    _myRecorder = null;
+
+    super.dispose();
   }
 
   void startTimer() {
@@ -30,8 +54,35 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
     );
   }
 
+  Future<void> startRecord() async {
+    print('llk');
+
+    await _myRecorder!.startRecorder(
+      toFile: _recordFilePath,
+      codec: _codec,
+    ).then((value) {
+      startTimer();
+
+      setState(() {
+        isRecording = true;
+      });
+    });
+  }
+
   void pauseTimer() {
     _timer!.cancel();
+  }
+
+  Future<void> pauseRecord() async {
+    await _myRecorder!.pauseRecorder().then(
+      (value) {
+        pauseTimer();
+
+        setState(() {
+          isRecording = false;
+        });
+      }
+    );
   }
 
   /**
@@ -121,17 +172,9 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
               GestureDetector(
                 onTap: () {
                   if(isRecording) {
-                    pauseTimer();
-
-                    setState(() {
-                      isRecording = false;
-                    });
+                    pauseRecord();
                   } else {
-                    startTimer();
-
-                    setState(() {
-                      isRecording = true;
-                    });
+                    startRecord();
                   }
                 },
                 child: Container(
