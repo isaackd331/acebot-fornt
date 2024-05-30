@@ -9,6 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
+import 'package:acebot_front/presentation/widget/common/baseToast.dart';
+import 'package:acebot_front/presentation/widget/home/recordUploadBottomSheet.dart';
 
 class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;
@@ -81,9 +83,35 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () async {
-                            final audioStatus = await Permission.audio.status;
-                            if(audioStatus.isDenied) {
-                              print('denied~');
+                            overlayEntry.remove();
+                            setState(() {
+                              isUploadButtonClicked = false;
+                            });
+
+                            final audioStatus = await Permission.microphone.request();
+
+                            if(audioStatus.isGranted) {
+                              final fileStatus = await Permission.manageExternalStorage.request();
+
+                              if(fileStatus.isGranted) {
+                                showModalBottomSheet(context: context, builder: (BuildContext context) {
+                                  return RecordUploadBottomSheet();
+                                });
+                              } else {
+                                BaseToast(content: '해당 기능을 사용하려면\n녹음 및 파일 접근 권한이 필요합니다.', context: context).showToast();
+
+                                  if(await Permission.manageExternalStorage.isPermanentlyDenied) {
+                                  await Future.delayed(Duration(seconds: 3));
+                                  openAppSettings();
+                                }
+                              }
+                            } else {
+                              BaseToast(content: '해당 기능을 사용하려면\n녹음 및 파일 접근 권한이 필요합니다.', context: context).showToast();
+
+                              if(await Permission.microphone.isPermanentlyDenied) {
+                                await Future.delayed(Duration(seconds: 3));
+                                openAppSettings();
+                              }
                             }
                           },
                           child: SizedBox(
@@ -109,7 +137,12 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         ),
                         GestureDetector(
                           behavior: HitTestBehavior.translucent,
-                          onTap: () {
+                          onTap: () async {
+                            overlayEntry.remove();
+                            setState(() {
+                              isUploadButtonClicked = false;
+                            });
+
                             print('image upload');
                           },
                           child: SizedBox(
@@ -135,7 +168,12 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         ),
                         GestureDetector(
                           behavior: HitTestBehavior.translucent,
-                          onTap: () {
+                          onTap: () async {
+                            overlayEntry.remove();
+                            setState(() {
+                              isUploadButtonClicked = false;
+                            });
+
                             print('doc upload');
                           },
                           child: SizedBox(

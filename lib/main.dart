@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:acebot_front/api/http.dart';
 import 'package:acebot_front/appRouter.dart';
@@ -33,6 +34,7 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      builder: FToastBuilder(),
       routerConfig: AppRouter.router,
       theme: ThemeData(fontFamily: "Pretendard"),
     );
