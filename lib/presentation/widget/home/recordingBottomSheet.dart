@@ -1,11 +1,12 @@
 /**
  * TODO
- * 모바일에서 돌아가는 적당한 Codec 찾아야함
+ * 녹음 후 파일 처리 필요
  */
 
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:intl/intl.dart';
 
 class RecordingBottomSheet extends StatefulWidget {
   const RecordingBottomSheet({
@@ -21,9 +22,9 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   int elapsedSeconds = 0;
   Timer? _timer;
   FlutterSoundRecorder? _myRecorder = FlutterSoundRecorder();
-  final Codec _codec = Codec.defaultCodec;
-  final String _recordFilePath = 'test.wma';
-
+  String fileName = '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded';
+  bool isFirstRecord = true;
+  String? recordedUrl;
   
   @override
   void initState() {
@@ -55,12 +56,20 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   }
 
   Future<void> startRecord() async {
-    print('llk');
-
     await _myRecorder!.startRecorder(
-      toFile: _recordFilePath,
-      codec: _codec,
+      toFile: fileName,
     ).then((value) {
+      startTimer();
+
+      setState(() {
+        isRecording = true;
+        isFirstRecord = false;
+      });
+    });
+  }
+
+  Future<void> resumeRecord() async {
+    await _myRecorder!.resumeRecorder().then((value) {
       startTimer();
 
       setState(() {
@@ -83,6 +92,20 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
         });
       }
     );
+  }
+
+  Future<void> stopRecorder() async {
+    await _myRecorder!.stopRecorder().then((value) {
+      String? recordedUrl;
+      recordedUrl = value;
+
+      pauseTimer();
+
+      setState(() {
+        isRecording = false;
+      });
+      print(recordedUrl);
+    });
   }
 
   /**
@@ -126,7 +149,10 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                     )
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      stopRecorder();
+                      Navigator.pop(context);
+                    },
                     child: const Text(
                       '저장',
                       style: TextStyle(
@@ -174,7 +200,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                   if(isRecording) {
                     pauseRecord();
                   } else {
-                    startRecord();
+                    isFirstRecord ? startRecord() : resumeRecord();
                   }
                 },
                 child: Container(
