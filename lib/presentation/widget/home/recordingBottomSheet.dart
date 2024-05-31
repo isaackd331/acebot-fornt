@@ -6,6 +6,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:intl/intl.dart';
 
 class RecordingBottomSheet extends StatefulWidget {
   const RecordingBottomSheet({
@@ -21,9 +22,9 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   int elapsedSeconds = 0;
   Timer? _timer;
   FlutterSoundRecorder? _myRecorder = FlutterSoundRecorder();
-  final String _recordFilePath = 'test';
+  String fileName = '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded';
   bool isFirstRecord = true;
-
+  String? recordedUrl;
   
   @override
   void initState() {
@@ -56,8 +57,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
 
   Future<void> startRecord() async {
     await _myRecorder!.startRecorder(
-      toFile: _recordFilePath,
-      // codec: _codec,
+      toFile: fileName,
     ).then((value) {
       startTimer();
 
@@ -92,6 +92,20 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
         });
       }
     );
+  }
+
+  Future<void> stopRecorder() async {
+    await _myRecorder!.stopRecorder().then((value) {
+      String? recordedUrl;
+      recordedUrl = value;
+
+      pauseTimer();
+
+      setState(() {
+        isRecording = false;
+      });
+      print(recordedUrl);
+    });
   }
 
   /**
@@ -135,7 +149,10 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                     )
                   ),
                   GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      stopRecorder();
+                      Navigator.pop(context);
+                    },
                     child: const Text(
                       '저장',
                       style: TextStyle(
