@@ -143,7 +143,13 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                               isUploadButtonClicked = false;
                             });
 
-                            print('image upload');
+                            final cameraStatus = await Permission.camera.request();
+
+                            if(cameraStatus.isGranted) {
+
+                            } else {
+
+                            }
                           },
                           child: SizedBox(
                             height: 40,
