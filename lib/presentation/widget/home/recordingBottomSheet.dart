@@ -1,6 +1,6 @@
 /**
  * TODO
- * 모바일에서 돌아가는 적당한 Codec 찾아야함
+ * 녹음 후 파일 처리 필요
  */
 
 import 'dart:async';
@@ -21,8 +21,8 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   int elapsedSeconds = 0;
   Timer? _timer;
   FlutterSoundRecorder? _myRecorder = FlutterSoundRecorder();
-  final Codec _codec = Codec.defaultCodec;
-  final String _recordFilePath = 'test.wma';
+  final String _recordFilePath = 'test';
+  bool isFirstRecord = true;
 
   
   @override
@@ -55,12 +55,21 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   }
 
   Future<void> startRecord() async {
-    print('llk');
-
     await _myRecorder!.startRecorder(
       toFile: _recordFilePath,
-      codec: _codec,
+      // codec: _codec,
     ).then((value) {
+      startTimer();
+
+      setState(() {
+        isRecording = true;
+        isFirstRecord = false;
+      });
+    });
+  }
+
+  Future<void> resumeRecord() async {
+    await _myRecorder!.resumeRecorder().then((value) {
       startTimer();
 
       setState(() {
@@ -174,7 +183,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                   if(isRecording) {
                     pauseRecord();
                   } else {
-                    startRecord();
+                    isFirstRecord ? startRecord() : resumeRecord();
                   }
                 },
                 child: Container(
