@@ -8,6 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
 
+import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
+
 class RecordingBottomSheet extends StatefulWidget {
   const RecordingBottomSheet({
     super.key
@@ -25,7 +27,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   String fileName = '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded';
   bool isFirstRecord = true;
   String? recordedUrl;
-  
+
   @override
   void initState() {
     super.initState();
@@ -51,7 +53,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
         setState(() {
           elapsedSeconds++;
         });
-      } 
+      }
     );
   }
 
@@ -96,15 +98,21 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
 
   Future<void> stopRecorder() async {
     await _myRecorder!.stopRecorder().then((value) {
-      String? recordedUrl;
-      recordedUrl = value;
-
       pauseTimer();
 
       setState(() {
         isRecording = false;
+        recordedUrl = value;
       });
-      print(recordedUrl);
+
+      Navigator.pop(context);
+
+      showModalBottomSheet(
+        context: context,
+        builder: (BuildContext context) {
+          return AfterRecordBottomSheet(recordedUrl: recordedUrl);
+        }
+      );
     });
   }
 
@@ -150,8 +158,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      stopRecorder();
-                      Navigator.pop(context);
+                        stopRecorder();
                     },
                     child: const Text(
                       '저장',
@@ -166,7 +173,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
               ),
               const Text(
                 "말씀해주세요.\n귀 기울여 듣고 있어요.",
-                textAlign: TextAlign.center, 
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -221,4 +228,4 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
           )
         );
   }
-} 
+}

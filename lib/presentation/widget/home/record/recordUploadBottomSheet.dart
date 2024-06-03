@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:acebot_front/presentation/widget/home/recordingBottomSheet.dart';
+import 'package:acebot_front/presentation/widget/home/record/recordingBottomSheet.dart';
 
 class RecordUploadBottomSheet extends StatelessWidget {
   @override
