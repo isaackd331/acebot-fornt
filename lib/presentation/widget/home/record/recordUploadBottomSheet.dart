@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:acebot_front/presentation/widget/home/record/recordingBottomSheet.dart';
 
 class RecordUploadBottomSheet extends StatelessWidget {
+  const RecordUploadBottomSheet({super.key});
+
   @override
   Widget build(BuildContext context) {
     return BottomSheet(
@@ -42,13 +44,13 @@ class RecordUploadBottomSheet extends StatelessWidget {
                     onTap: () {
                       Navigator.pop(context);
                       showModalBottomSheet(
-                        context: context, 
+                        context: context,
                         /**
                          * to allow bottomsheet height from 50% to full.
                          */
                         isScrollControlled: true,
                         builder: (BuildContext context) {
-                        return RecordingBottomSheet();
+                        return const RecordingBottomSheet();
                       });
                     },
                     child: Container(

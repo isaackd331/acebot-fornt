@@ -35,11 +35,6 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
       child: Column(
         children: [
           Container(
-            /**
-             * TODO
-             * width가 full로 되도록
-             */
-            width: 20,
             height: 2,
             decoration: BoxDecoration(
               color: speakers == activeCondition ? const Color(0xff000000) : const Color(0xffdadada)
@@ -76,14 +71,28 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
           const SizedBox(height: 36),
           Row(
             mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              _speakers('1명', 1),
-              _speakers('2명', 2),
-              _speakers('3명', 3),
-              _speakers('4명', 4),
-              _speakers('5명 이상', 5),
+              Flexible(
+                flex: 1,
+                child: _speakers('1명', 1)
+              ),
+              Flexible(
+                flex: 1,
+                child: _speakers('2명', 2),
+              ),
+              Flexible(
+                flex: 1,
+                child: _speakers('3명', 3),
+              ),
+              Flexible(
+                flex: 1,
+                child: _speakers('4명', 4),
+              ),
+              Flexible(
+                flex: 1,
+                child: _speakers('5명 이상', 5),
+              ),
             ]
           )
         ]
