@@ -1,7 +1,6 @@
-/**
- * TODO
- * 녹음 후 파일 처리 필요
- */
+/// TODO
+/// 녹음 후 파일 처리 필요
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
@@ -48,7 +47,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   }
 
   void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1),
+    _timer = Timer.periodic(const Duration(seconds: 1),
       (timer) {
         setState(() {
           elapsedSeconds++;
@@ -109,16 +108,18 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
 
       showModalBottomSheet(
         context: context,
+        isScrollControlled: true,
         builder: (BuildContext context) {
-          return AfterRecordBottomSheet(recordedUrl: recordedUrl);
+          return FractionallySizedBox(
+            heightFactor: 0.7,
+            child: AfterRecordBottomSheet(recordedUrl: recordedUrl)
+          );
         }
       );
     });
   }
 
-  /**
-   * calculate elapsedSeconds to MM:SS
-   */
+  /// calculate elapsedSeconds to MM:SS
   String get elapsedTime {
     int minutes = elapsedSeconds ~/ 60;
     int seconds = elapsedSeconds % 60;
