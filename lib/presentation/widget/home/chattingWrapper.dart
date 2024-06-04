@@ -10,7 +10,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
-import 'package:acebot_front/presentation/widget/home/recordUploadBottomSheet.dart';
+import 'package:acebot_front/presentation/widget/home/record/recordUploadBottomSheet.dart';
 
 class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;

@@ -1,12 +1,13 @@
-/**
- * TODO
- * 녹음 후 파일 처리 필요
- */
+/// TODO
+/// 녹음 후 파일 처리 필요
+library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
+
+import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
 
 class RecordingBottomSheet extends StatefulWidget {
   const RecordingBottomSheet({
@@ -25,7 +26,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   String fileName = '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded';
   bool isFirstRecord = true;
   String? recordedUrl;
-  
+
   @override
   void initState() {
     super.initState();
@@ -46,12 +47,12 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   }
 
   void startTimer() {
-    _timer = Timer.periodic(Duration(seconds: 1),
+    _timer = Timer.periodic(const Duration(seconds: 1),
       (timer) {
         setState(() {
           elapsedSeconds++;
         });
-      } 
+      }
     );
   }
 
@@ -96,21 +97,29 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
 
   Future<void> stopRecorder() async {
     await _myRecorder!.stopRecorder().then((value) {
-      String? recordedUrl;
-      recordedUrl = value;
-
       pauseTimer();
 
       setState(() {
         isRecording = false;
+        recordedUrl = value;
       });
-      print(recordedUrl);
+
+      Navigator.pop(context);
+
+      showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (BuildContext context) {
+          return FractionallySizedBox(
+            heightFactor: 0.7,
+            child: AfterRecordBottomSheet(recordedUrl: recordedUrl)
+          );
+        }
+      );
     });
   }
 
-  /**
-   * calculate elapsedSeconds to MM:SS
-   */
+  /// calculate elapsedSeconds to MM:SS
   String get elapsedTime {
     int minutes = elapsedSeconds ~/ 60;
     int seconds = elapsedSeconds % 60;
@@ -150,8 +159,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      stopRecorder();
-                      Navigator.pop(context);
+                        stopRecorder();
                     },
                     child: const Text(
                       '저장',
@@ -166,7 +174,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
               ),
               const Text(
                 "말씀해주세요.\n귀 기울여 듣고 있어요.",
-                textAlign: TextAlign.center, 
+                textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.w600,
@@ -221,4 +229,4 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
           )
         );
   }
-} 
+}
