@@ -4,7 +4,7 @@
  * TODO
  * 권한 체크
  * 업로드
- *  */ 
+ *  */
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -201,8 +201,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                           fontWeight: FontWeight.w400),
                                           child: Text('문서 업로드')
                                   )
-                          ])) 
-                        ) 
+                          ]))
+                        )
                       ]))
               );
   });
