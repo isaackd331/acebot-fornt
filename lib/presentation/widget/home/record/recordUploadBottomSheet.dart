@@ -42,16 +42,16 @@ class RecordUploadBottomSheet extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      Navigator.pop(context);
-                      showModalBottomSheet(
-                        context: context,
-                        /**
-                         * to allow bottomsheet height from 50% to full.
-                         */
-                        isScrollControlled: true,
-                        builder: (BuildContext context) {
-                        return const RecordingBottomSheet();
-                      });
+                      // Navigator.pop(context);
+                      // showModalBottomSheet(
+                      //   context: context,
+                      //   /**
+                      //    * to allow bottomsheet height from 50% to full.
+                      //    */
+                      //   isScrollControlled: true,
+                      //   builder: (BuildContext context) {
+                      //   return const RecordingBottomSheet();
+                      // });
                     },
                     child: Container(
                       width: 160,
