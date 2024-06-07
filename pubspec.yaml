@@ -86,6 +86,7 @@ flutter:
     - assets/icons/icon_check.png
     - assets/icons/icon_recorded_file_upload.png
     - assets/icons/icon_search.png
+    - assets/icons/icon_thread_empty.png
   # images
     - assets/images/acebot_logo.png
 

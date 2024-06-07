@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:acebot_front/presentation/widget/history/threadWidget.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
-import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
 import 'package:acebot_front/bloc/thread/threadState.dart';
@@ -31,7 +31,8 @@ class _HistoryState extends State<History> {
     /**
      * Initialize Cubit
      */
-    context.read<ThreadCubit>();
+    final threadCubit = context.read<ThreadCubit>();
+    threadCubit.init();
   }
 
   @override
@@ -94,28 +95,7 @@ class _HistoryState extends State<History> {
                   border: InputBorder.none
                 )
               ),
-              tabMode == 'thread' ?
-              BlocBuilder<ThreadCubit, ThreadState>(
-                builder: (_, state) {
-                  if(State is! LoadedState) {
-                    return Container();
-                  } else {
-                    return Container();
-                  }
-                }
-              )
-              : Container(),
-              tabMode == 'project' ?
-              BlocBuilder<ThreadCubit, ThreadState>(
-                builder: (_, state) {
-                  if(State is! LoadedState) {
-                    return Container();
-                  } else {
-                    return Container();
-                  }
-                }
-              )
-              : Container()
+              tabMode == 'thread' ? const ThreadWidget() : Container()
             ]
           )
         )

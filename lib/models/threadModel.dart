@@ -1,23 +1,9 @@
-class Item {
-  final int? threadId;
-  final String? title;
-  final String? createdAt;
-  final String? updatedAt;
-
-  Item({
-    required this.threadId,
-    required this.title,
-    required this.createdAt,
-    required this.updatedAt
-  });
-}
-
 class ThreadModel {
   final int? total;
   final int? page;
   final int? size;
   final int? pages;
-  final List<Item> items;
+  final List<dynamic> items;
 
   ThreadModel({
     required this.total,
@@ -32,7 +18,7 @@ class ThreadModel {
     page: json['page'] as int,
     size: json['size'] as int,
     pages: json['pages'] as int,
-    items: json['items'] as List<Item>,
+    items: json['items'] as List<dynamic>,
   );
 
   Map<String, dynamic> toJson() => {
