@@ -85,6 +85,7 @@ flutter:
     - assets/icons/icon_curved_down.png
     - assets/icons/icon_check.png
     - assets/icons/icon_recorded_file_upload.png
+    - assets/icons/icon_search.png
   # images
     - assets/images/acebot_logo.png
 
@@ -130,6 +131,6 @@ flutter:
           weight: 800
         - asset: assets/fonts/Pretendard-Black.otf
           weight: 900
-  
+
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

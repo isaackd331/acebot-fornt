@@ -21,6 +21,8 @@ class History extends StatefulWidget {
 
 class _HistoryState extends State<History> {
   String tabMode = 'thread';
+  TextEditingController searchController = TextEditingController();
+  String searchText = '';
 
   @override
   void initState() {
@@ -51,13 +53,69 @@ class _HistoryState extends State<History> {
             children: [
               Row(
                 mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   tabButton('THREADS', 'thread'),
                   tabButton('PROJECTS', 'project')
                 ]
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                onChanged: (value) {
+                  setState(() {
+                    searchText = value;
+                  });
+                },
+                controller: searchController,
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff000000)
+                ),
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () {},
+                    icon: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child: Image.asset('assets/icons/icon_search.png')
+                    ),
+                    padding: const EdgeInsets.all(0)
+                  ),
+                  hintText: "검색어를 입력해 주세요",
+                  hintStyle: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff939393)
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(vertical: 11.5, horizontal: 8),
+                  filled: true,
+                  fillColor: const Color(0xfff4f4f4),
+                  border: InputBorder.none
+                )
+              ),
+              tabMode == 'thread' ?
+              BlocBuilder<ThreadCubit, ThreadState>(
+                builder: (_, state) {
+                  if(State is! LoadedState) {
+                    return Container();
+                  } else {
+                    return Container();
+                  }
+                }
               )
+              : Container(),
+              tabMode == 'project' ?
+              BlocBuilder<ThreadCubit, ThreadState>(
+                builder: (_, state) {
+                  if(State is! LoadedState) {
+                    return Container();
+                  } else {
+                    return Container();
+                  }
+                }
+              )
+              : Container()
             ]
           )
         )
@@ -65,15 +123,20 @@ class _HistoryState extends State<History> {
       );
   }
 
+  /// 상단 Tab 버튼 making widget
   Widget tabButton(String title, String activeCondition) {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          setState(
-            () {
-              tabMode = activeCondition;
-            }
-          );
+          if(tabMode != activeCondition) {
+            searchController.clear();
+            setState(
+              () {
+                tabMode = activeCondition;
+                searchText = '';
+              }
+            );
+          }
         },
         child: Container(
           padding: const EdgeInsets.symmetric(vertical: 10),
