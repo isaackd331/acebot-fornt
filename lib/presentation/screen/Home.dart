@@ -1,6 +1,5 @@
-/**
- * 홈 페이지
- */
+/// 홈 페이지
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +14,8 @@ import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 
 class Home extends StatefulWidget {
+  const Home({super.key});
+
   @override
   _HomeState createState() => _HomeState();
 }
@@ -57,36 +58,28 @@ class _HomeState extends State<Home> {
     context.read<SelfCubit>();
   }
 
-  /**
-   * 채팅 포커싱 여부 업데이트
-   */
+  /// 채팅 포커싱 여부 업데이트
   void setIsChatFocusing(bool value) {
     setState(() {
       isChatFocusing = value;
     });
   }
 
-  /**
-   * chatContent 업데이트
-   */
+  /// chatContent 업데이트
   void setChatContent(String value) {
     setState(() {
       chatContent = value;
     });
   }
 
-  /**
-   * 채팅 비어있음 여부 업데이트
-   */
+  /// 채팅 비어있음 여부 업데이트
   void setIsChatEmpty(bool value) {
     setState(() {
       isChatEmpty = value;
     });
   }
 
-  /**
-   * 프롬프트 데이터 업데이트
-   */
+  /// 프롬프트 데이터 업데이트
   void setPromptData(int idx, int value) {
     setState(() {
       promptData[idx] = value;
@@ -236,11 +229,7 @@ class _HomeState extends State<Home> {
         ],
         leading: IconButton(
             onPressed: () {
-              /**
-               * TEST
-               * go to mypage
-               */
-              context.go('/mypage');
+              context.go('/history');
             },
             icon: Image.asset('assets/icons/icon_history.png'),
             iconSize: 8,

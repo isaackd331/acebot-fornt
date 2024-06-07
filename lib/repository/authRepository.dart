@@ -8,9 +8,6 @@ class AuthRepository {
 
     res = await AuthService().getAuthToken(userId, userPassword);
 
-    // return 값에 userId를 추가하기
-    final result = res.data;
-
     return res.data;
   }
 

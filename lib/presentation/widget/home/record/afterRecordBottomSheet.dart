@@ -3,7 +3,7 @@ library;
 
 import 'package:flutter/material.dart';
 
-import 'package:acebot_front/presentation/widget/common/BaseOutlineButton.dart';
+import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 
 class AfterRecordBottomSheet extends StatefulWidget {
   final String? recordedUrl;
