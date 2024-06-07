@@ -259,7 +259,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   IconButton(
                       onPressed: () {
                         if(chatController.text.isNotEmpty) {
-                          widget.setIsChatting(true);
+                          // widget.setIsChatting(true);
                         }
                       },
                       icon: Icon(Icons.arrow_upward,
