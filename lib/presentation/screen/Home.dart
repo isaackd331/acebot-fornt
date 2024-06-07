@@ -219,6 +219,10 @@ class _HomeState extends State<Home> {
         }));
   }
 
+  Widget _chatting() {
+    return Container();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -256,7 +260,7 @@ class _HomeState extends State<Home> {
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),
-      body: BaseBody(child: !isChatting ? _beforeChatting() : Container()),
+      body: BaseBody(child: !isChatting ? _beforeChatting() : _chatting()),
     ));
   }
 }
