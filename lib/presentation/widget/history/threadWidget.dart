@@ -22,6 +22,9 @@ class _ThreadWidgetState extends State<ThreadWidget> {
    @override
    void initState() {
     super.initState();
+
+    // initialize Cubit
+    context.read<ThreadCubit>();
    }
 
    @override

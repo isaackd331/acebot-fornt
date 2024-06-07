@@ -6,11 +6,14 @@
 library;
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 import 'package:acebot_front/presentation/widget/home/record/recordUploadBottomSheet.dart';
+
+import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;
@@ -259,7 +262,9 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   IconButton(
                       onPressed: () {
                         if(chatController.text.isNotEmpty) {
-                          // widget.setIsChatting(true);
+                          widget.setIsChatting(true);
+
+                          BlocProvider.of<AnswerCubit>(context).quest(chatController.text);
                         }
                       },
                       icon: Icon(Icons.arrow_upward,

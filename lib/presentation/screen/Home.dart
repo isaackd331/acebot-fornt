@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
 import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
+import 'package:acebot_front/presentation/widget/home/templateWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
@@ -219,10 +220,6 @@ class _HomeState extends State<Home> {
         }));
   }
 
-  Widget _chatting() {
-    return Container();
-  }
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -260,7 +257,7 @@ class _HomeState extends State<Home> {
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),
-      body: BaseBody(child: !isChatting ? _beforeChatting() : _chatting()),
+      body: BaseBody(child: !isChatting ? _beforeChatting() : TemplateWrapper(question: chatContent)),
     ));
   }
 }

@@ -5,8 +5,8 @@ import 'dart:typed_data';
 import 'package:acebot_front/api/answerService.dart';
 import 'package:dio/dio.dart';
 
-class QuestionRepository {
-  Future<StreamSubscription<String>?> createAnswer(int questionId, dynamic state) async {
+class AnswerRepository {
+  Future<StreamSubscription<String>?> createAnswer(int questionId, Function state) async {
      Response<dynamic> res;
 
      res = await AnswerService().getAnswer(questionId);

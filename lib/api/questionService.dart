@@ -1,10 +1,22 @@
+import 'dart:io';
+
 import 'package:acebot_front/api/http.dart';
+import 'package:dio/dio.dart';
 
 class QuestionService {
-  postInitialQuestion(String question) {
-    return dio.post('/v1/questions', data: {
-      'question': question
+  postInitialQuestion(String question, List<File>? files) {
+    FormData formData = FormData.fromMap({
+      "question": question,
+      "files": files
     });
+
+    return dio.post('/v1/questions', data: formData,
+    options: Options(
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
+    )
+    );
   }
 
   feedback(Map<String, bool> feedback, int questionId) {
