@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
 import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
+import 'package:acebot_front/presentation/widget/home/templateWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
@@ -29,6 +30,7 @@ class _HomeState extends State<Home> {
   TextEditingController chatController = TextEditingController();
   bool isUploadButtonClicked = false;
   List<int> promptData = [0, 0, 0, 0];
+  bool isChatting = false;
 
   @override
   void initState() {
@@ -86,7 +88,14 @@ class _HomeState extends State<Home> {
     });
   }
 
-  Widget _bodyWidget() {
+  /// 채팅 시작 여부 업데이트
+  void setIsChatting(bool value) {
+    setState(() {
+      isChatting = value;
+    });
+  }
+
+  Widget _beforeChatting() {
     return BlocListener<SelfCubit, SelfState>(
         listener: (context, state) {},
         child: BlocBuilder<SelfCubit, SelfState>(builder: (_, state) {
@@ -157,7 +166,7 @@ class _HomeState extends State<Home> {
                              * 포커싱될 시 캐로셀 hide
                              * 채팅 박스에 채팅 있을 시 캐로셀 hide
                              */
-                            (!isChatFocusing && chatContent.isEmpty)
+                            (!isChatFocusing)
                                 ? SizedBox(
                                     height: 314,
                                     child: ListView.separated(
@@ -200,7 +209,9 @@ class _HomeState extends State<Home> {
                             ChattingWrapper(
                                 setIsChatFocusing: setIsChatFocusing,
                                 setChatContent: setChatContent,
-                                setIsChatEmpty: setIsChatEmpty)
+                                setIsChatEmpty: setIsChatEmpty,
+                                setIsChatting: setIsChatting
+                                )
                           ])),
                     ])));
           } else {
@@ -217,15 +228,26 @@ class _HomeState extends State<Home> {
         title: '',
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: Image.asset('assets/icons/icon_newchat_disabled.png'),
+              onPressed: () {
+                if(isChatting) {
+                  chatController.clear();
+                  setState(() {
+                    chatContent = '';
+                    isChatting = false;
+                  });
+                }
+              },
+              icon: Image.asset('assets/icons/icon_newchat.png'),
               iconSize: 18,
-              padding: const EdgeInsets.all(0)),
+              padding: const EdgeInsets.all(0),
+              color: isChatting ? const Color(0xff000000) : const Color(0xff5d5d5d)
+            ),
           IconButton(
               onPressed: () {},
               icon: Image.asset('assets/icons/icon_streamline.png'),
               iconSize: 16,
-              padding: const EdgeInsets.all(0)),
+              padding: const EdgeInsets.all(0),
+              ),
         ],
         leading: IconButton(
             onPressed: () {
@@ -235,7 +257,7 @@ class _HomeState extends State<Home> {
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),
-      body: BaseBody(child: _bodyWidget()),
+      body: BaseBody(child: !isChatting ? _beforeChatting() : TemplateWrapper(question: chatContent)),
     ));
   }
 }

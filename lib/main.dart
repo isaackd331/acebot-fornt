@@ -13,6 +13,9 @@ import 'package:acebot_front/bloc/user/otherCubit.dart';
 import 'package:acebot_front/repository/userRepository.dart';
 import 'package:acebot_front/bloc/thread/threadCubit.dart';
 import 'package:acebot_front/repository/threadRepository.dart';
+import 'package:acebot_front/bloc/answer/answerCubit.dart';
+import 'package:acebot_front/repository/answerRepository.dart';
+import 'package:acebot_front/repository/questionRepository.dart';
 
 void main() async {
   /**
@@ -25,6 +28,7 @@ void main() async {
   final selfCubit = SelfCubit(repo: UserRepository());
   final otherCubit = OtherCubit(repo: UserRepository());
   final threadCubit = ThreadCubit(repo: ThreadRepository());
+  final answerCubit = AnswerCubit(qRepo: QuestionRepository(), aRepo: AnswerRepository());
 
   // Dio 인스턴스 생성
   configureDio(authCubit);
@@ -33,7 +37,8 @@ void main() async {
     BlocProvider(create: (_) => authCubit),
     BlocProvider(create: (_) => selfCubit),
     BlocProvider(create: (_) => otherCubit),
-    BlocProvider(create: (_) => threadCubit)
+    BlocProvider(create: (_) => threadCubit),
+    BlocProvider(create: (_) => answerCubit)
   ], child: const AppView()));
 
   Bloc.observer = EventsObserver();

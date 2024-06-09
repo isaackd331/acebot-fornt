@@ -72,7 +72,7 @@ flutter:
     - assets/env/.env
   # icons
     - assets/icons/icon_history.png
-    - assets/icons/icon_newchat_disabled.png
+    - assets/icons/icon_newchat.png
     - assets/icons/icon_streamline.png
     - assets/icons/icon_classified_docs.png
     - assets/icons/icon_prompt_active.png

@@ -1,27 +1,33 @@
 /// 홈 화면 채팅 영역
 
-/**
- * TODO
- * 권한 체크
- * 업로드
- *  */
+/// TODO
+/// 권한 체크
+/// 업로드
+library;
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 import 'package:acebot_front/presentation/widget/home/record/recordUploadBottomSheet.dart';
 
+import 'package:acebot_front/bloc/answer/answerCubit.dart';
+
 class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;
   final Function setChatContent;
   final Function setIsChatEmpty;
+  final Function setIsChatting;
 
   const ChattingWrapper(
       {super.key,
       required this.setIsChatFocusing,
       required this.setChatContent,
-      required this.setIsChatEmpty});
+      required this.setIsChatEmpty,
+      required this.setIsChatting
+      });
 
   @override
   _ChattingWrapperState createState() => _ChattingWrapperState();
@@ -64,9 +70,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
     }
   }
 
-  /**
-   * Overlay Builder
-   */
+  /// Overlay Builder
   late final OverlayEntry overlayEntry = OverlayEntry(builder: (BuildContext context) {
     return Positioned(
               bottom: 70,
@@ -95,13 +99,13 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
 
                               if(fileStatus.isGranted) {
                                 showModalBottomSheet(context: context, builder: (BuildContext context) {
-                                  return RecordUploadBottomSheet();
+                                  return const RecordUploadBottomSheet();
                                 });
                               } else {
                                 BaseToast(content: '해당 기능을 사용하려면\n녹음 및 파일 접근 권한이 필요합니다.', context: context).showToast();
 
                                   if(await Permission.manageExternalStorage.isPermanentlyDenied) {
-                                  await Future.delayed(Duration(seconds: 3));
+                                  await Future.delayed(const Duration(seconds: 3));
                                   openAppSettings();
                                 }
                               }
@@ -109,7 +113,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                               BaseToast(content: '해당 기능을 사용하려면\n녹음 및 파일 접근 권한이 필요합니다.', context: context).showToast();
 
                               if(await Permission.microphone.isPermanentlyDenied) {
-                                await Future.delayed(Duration(seconds: 3));
+                                await Future.delayed(const Duration(seconds: 3));
                                 openAppSettings();
                               }
                             }
@@ -240,7 +244,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                       });
                     },
                     minLines: 1,
-                    maxLines: 6,
+                    maxLines: chatFocusNode.hasFocus ? 6 : 1,
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -256,7 +260,13 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                     ),
                   ))),
                   IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        if(chatController.text.isNotEmpty) {
+                          widget.setIsChatting(true);
+
+                          BlocProvider.of<AnswerCubit>(context).quest(chatController.text);
+                        }
+                      },
                       icon: Icon(Icons.arrow_upward,
                           color: chatController.text.isEmpty
                               ? const Color(0xff999999)

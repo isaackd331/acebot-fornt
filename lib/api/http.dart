@@ -1,6 +1,5 @@
-/**
- * API Interceptor
- */
+/// API Interceptor
+library;
 
 import 'package:acebot_front/bloc/auth/authState.dart';
 import 'package:dio/dio.dart';
