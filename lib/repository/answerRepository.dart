@@ -24,9 +24,9 @@ class AnswerRepository {
                         String refinedData = evt.replaceFirst('data: ', '');
 
                         if(refinedData.isNotEmpty) {
-                          final jsonRes = json.decode(refinedData);
+                          Map<String, dynamic> mapped = json.decode(refinedData);
 
-                          state(jsonRes);
+                          state(mapped);
                         }
                       });
      return null;

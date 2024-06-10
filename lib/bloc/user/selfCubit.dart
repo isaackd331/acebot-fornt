@@ -1,6 +1,5 @@
-/**
- * 앱 사용중인 사용자 자신의 Cubit 정의
- */
+/// 앱 사용중인 사용자 자신의 Cubit 정의
+library;
 
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';

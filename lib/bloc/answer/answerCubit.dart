@@ -18,8 +18,6 @@ class AnswerCubit extends Cubit<AnswerState> {
   // 질문 후 답변 세팅
   Future<void> quest(String question) async {
     void setLoadedState(dynamic value) {
-      print(value);
-
       emit(LoadedState(answerJson: AnswerModel.fromJson(value)));
     }
 
