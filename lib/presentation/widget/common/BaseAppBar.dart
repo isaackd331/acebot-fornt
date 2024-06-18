@@ -1,9 +1,8 @@
-/**
- * 커스텀 앱바
- * title: 제목
- * actions: 제목 기준 우측 버튼들
- * leading: 제목 기준 좌측 버튼
- */
+/// 커스텀 앱바
+/// title: 제목
+/// actions: 제목 기준 우측 버튼들
+/// leading: 제목 기준 좌측 버튼
+library;
 
 import 'package:flutter/material.dart';
 
@@ -22,20 +21,21 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     List<Widget> paddedActions = actions.map((action) {
       return Padding(
-          padding: EdgeInsets.symmetric(vertical: 18), child: action);
+          padding: const EdgeInsets.symmetric(vertical: 18), child: action);
     }).toList();
 
     return AppBar(
         toolbarHeight: 60.0,
         centerTitle: true,
-        titleTextStyle: TextStyle(
+        backgroundColor: const Color(0xffffffff),
+        titleTextStyle: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Color(0xff000000)),
         title: Text(title),
         actions: paddedActions,
         leading: Padding(
-            padding: EdgeInsets.symmetric(vertical: 18, horizontal: 20),
+            padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),
             child: leading));
   }
 
