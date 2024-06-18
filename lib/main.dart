@@ -28,7 +28,8 @@ void main() async {
   final selfCubit = SelfCubit(repo: UserRepository());
   final otherCubit = OtherCubit(repo: UserRepository());
   final threadCubit = ThreadCubit(repo: ThreadRepository());
-  final answerCubit = AnswerCubit(qRepo: QuestionRepository(), aRepo: AnswerRepository());
+  final answerCubit =
+      AnswerCubit(qRepo: QuestionRepository(), aRepo: AnswerRepository());
 
   // Dio 인스턴스 생성
   configureDio(authCubit);
@@ -52,7 +53,9 @@ class AppView extends StatelessWidget {
     return MaterialApp.router(
       builder: FToastBuilder(),
       routerConfig: AppRouter.router,
-      theme: ThemeData(fontFamily: "Pretendard"),
+      theme: ThemeData(
+          fontFamily: "Pretendard",
+          scaffoldBackgroundColor: const Color(0xffffffff)),
     );
   }
 }
