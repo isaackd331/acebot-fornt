@@ -29,16 +29,12 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerCubit, AnswerState>(
-      listener: (context, state) {
-        if(state is LoadedState) {
-        }
-      },
-      child: BlocBuilder<AnswerCubit, AnswerState>(
-        builder: (_, state) {
-          return Container();
-        }
-      )
-    );
+    return BlocListener<AnswerCubit, AnswerState>(listener: (context, state) {
+      if (state is LoadedState) {
+        print(state.answerJson.main_paragraph);
+      }
+    }, child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
+      return Container();
+    }));
   }
 }
