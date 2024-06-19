@@ -4,7 +4,7 @@ class AnswerModel {
   final int? q_id;
   final String? question;
   final String? template_name;
-  final String? main_paragraph;
+  final String main_paragraph;
   final List<dynamic>? sub_paragraph;
   final String? feedback;
   final String? date;
@@ -34,7 +34,7 @@ class AnswerModel {
       q_id: json['q_id'] as int?,
       question: json['question'] as String?,
       template_name: json['template_name'] as String?,
-      main_paragraph: json['main_paragraph'] as String?,
+      main_paragraph: json['main_paragraph'] as String,
       sub_paragraph: json['sub_paragraph'] as List<dynamic>?,
       feedback: json['feedback'] as String?,
       date: json['date'] as String?,
