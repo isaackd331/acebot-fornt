@@ -50,6 +50,7 @@ dependencies:
   intl: ^0.19.0
   path_provider: ^2.1.3
   path: ^1.9.0
+  flutter_markdown: ^0.7.2+1
 
 dev_dependencies:
   flutter_test:
@@ -87,6 +88,8 @@ flutter:
     - assets/icons/icon_recorded_file_upload.png
     - assets/icons/icon_search.png
     - assets/icons/icon_thread_empty.png
+    - assets/icons/icon_answer-start-symbol.png
+    - assets/icons/icon_exaone-logo.png
   # images
     - assets/images/acebot_logo.png
 

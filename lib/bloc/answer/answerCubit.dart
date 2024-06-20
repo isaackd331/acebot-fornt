@@ -10,10 +10,7 @@ class AnswerCubit extends Cubit<AnswerState> {
   final QuestionRepository qRepo;
   final AnswerRepository aRepo;
 
-  AnswerCubit({
-    required this.qRepo,
-    required this.aRepo
-  }) : super(EmptyState());
+  AnswerCubit({required this.qRepo, required this.aRepo}) : super(EmptyState());
 
   // 질문 후 답변 세팅
   Future<void> quest(String question) async {
@@ -31,8 +28,7 @@ class AnswerCubit extends Cubit<AnswerState> {
       await aRepo.createAnswer(questionId, setLoadedState);
     } on DioException catch (err) {
       emit(ErrorState(
-        message: err.toString(), statusCode: err.response?.statusCode
-      ));
+          message: err.toString(), statusCode: err.response?.statusCode));
     }
   }
 }
