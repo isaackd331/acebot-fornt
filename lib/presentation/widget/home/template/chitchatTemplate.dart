@@ -46,7 +46,13 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
               Expanded(
                   child: MarkdownBody(
                 data: mainParagraph,
-                styleSheet: MarkdownStyleSheet(textAlign: WrapAlignment.start),
+                styleSheet: MarkdownStyleSheet(
+                    textAlign: WrapAlignment.start,
+                    p: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff4f4f4f),
+                        height: 1.5)),
               ))
             ]));
       } else {
