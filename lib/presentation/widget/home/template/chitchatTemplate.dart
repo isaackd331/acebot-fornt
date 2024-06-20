@@ -42,7 +42,13 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
       if (state is LoadedState) {
         return Container(
             margin: const EdgeInsets.only(top: 20),
-            child: MarkdownBody(data: mainParagraph));
+            child: Row(children: [
+              Expanded(
+                  child: MarkdownBody(
+                data: mainParagraph,
+                styleSheet: MarkdownStyleSheet(textAlign: WrapAlignment.start),
+              ))
+            ]));
       } else {
         return Container();
       }
