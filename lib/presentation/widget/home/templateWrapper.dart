@@ -11,8 +11,10 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class TemplateWrapper extends StatefulWidget {
   final String question;
+  final int index;
 
-  const TemplateWrapper({super.key, required this.question});
+  const TemplateWrapper(
+      {super.key, required this.question, required this.index});
 
   @override
   _TemplateWrapperState createState() => _TemplateWrapperState();
@@ -37,13 +39,13 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
   Widget _templateSelector() {
     switch (templateName) {
       case 'chitchat':
-        return const ChitChatTemplate();
+        return ChitChatTemplate(index: widget.index);
 
       case 'cur_weather':
-        return const WeatherTemplate();
+        return WeatherTemplate(index: widget.index);
 
       case 'weekly_weather':
-        return const WeatherTemplate();
+        return WeatherTemplate(index: widget.index);
 
       default:
         return Container();
@@ -52,15 +54,18 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerCubit, AnswerState>(listener: (context, state) {
-      if (state is LoadedState) {
+    return BlocListener<AnswerCubit, List<AnswerState>>(
+        listener: (context, state) {
+      AnswerState theState = state[widget.index];
+
+      if (theState is LoadedState) {
         setState(() {
-          templateName = state.answerJson.template_name;
+          templateName = theState.answerJson.template_name;
         });
       }
-    }, child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
+    }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
       return Container(
-          margin: const EdgeInsets.only(top: 40, bottom: 80),
+          margin: const EdgeInsets.symmetric(vertical: 40),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(mainAxisSize: MainAxisSize.max, children: [
             Row(children: [

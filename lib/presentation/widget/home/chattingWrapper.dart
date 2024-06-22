@@ -19,14 +19,16 @@ class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;
   final Function setChatContent;
   final Function setIsChatEmpty;
-  final Function setIsChatting;
+  final Function updateQuestArray;
+  final int questArrayLength;
 
   const ChattingWrapper(
       {super.key,
       required this.setIsChatFocusing,
       required this.setChatContent,
       required this.setIsChatEmpty,
-      required this.setIsChatting});
+      required this.updateQuestArray,
+      required this.questArrayLength});
 
   @override
   _ChattingWrapperState createState() => _ChattingWrapperState();
@@ -264,10 +266,14 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                 IconButton(
                     onPressed: () {
                       if (chatController.text.isNotEmpty) {
-                        widget.setIsChatting(true);
+                        BlocProvider.of<AnswerCubit>(context).ready();
 
-                        BlocProvider.of<AnswerCubit>(context)
-                            .quest(chatController.text);
+                        widget.updateQuestArray(chatController.text);
+
+                        BlocProvider.of<AnswerCubit>(context).quest(
+                            chatController.text, widget.questArrayLength);
+
+                        chatController.clear();
                       }
                     },
                     icon: Icon(Icons.arrow_upward,

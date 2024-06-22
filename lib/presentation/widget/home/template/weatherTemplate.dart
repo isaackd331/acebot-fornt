@@ -6,7 +6,9 @@ import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class WeatherTemplate extends StatefulWidget {
-  const WeatherTemplate({super.key});
+  final int index;
+
+  const WeatherTemplate({super.key, required this.index});
 
   @override
   _WeatherTemplateState createState() => _WeatherTemplateState();
@@ -28,8 +30,6 @@ class _WeatherTemplateState extends State<WeatherTemplate> {
 
   @override
   void dispose() {
-    EmptyState();
-
     super.dispose();
   }
 
@@ -167,16 +167,21 @@ class _WeatherTemplateState extends State<WeatherTemplate> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerCubit, AnswerState>(listener: (context, state) {
-      if (state is LoadedState) {
+    return BlocListener<AnswerCubit, List<AnswerState>>(
+        listener: (context, state) {
+      AnswerState theState = state[widget.index];
+
+      if (theState is LoadedState) {
         setState(() {
-          templateName = state.answerJson.template_name;
-          mainParagraph = state.answerJson.main_paragraph;
-          subParagraph = state.answerJson.sub_paragraph;
+          templateName = theState.answerJson.template_name;
+          mainParagraph = theState.answerJson.main_paragraph;
+          subParagraph = theState.answerJson.sub_paragraph;
         });
       }
-    }, child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
-      if (state is LoadedState) {
+    }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
+      AnswerState theState = state[widget.index];
+
+      if (theState is LoadedState) {
         return SingleChildScrollView(
             child: Container(
                 margin: const EdgeInsets.only(top: 20),

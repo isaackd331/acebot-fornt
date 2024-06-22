@@ -6,7 +6,9 @@ import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class ChitChatTemplate extends StatefulWidget {
-  const ChitChatTemplate({super.key});
+  final int index;
+
+  const ChitChatTemplate({super.key, required this.index});
 
   @override
   _ChitChatTemplateState createState() => _ChitChatTemplateState();
@@ -26,21 +28,24 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
 
   @override
   void dispose() {
-    EmptyState();
-
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerCubit, AnswerState>(listener: (context, state) {
-      if (state is LoadedState) {
+    return BlocListener<AnswerCubit, List<AnswerState>>(
+        listener: (context, state) {
+      AnswerState theState = state[widget.index];
+
+      if (theState is LoadedState) {
         setState(() {
-          mainParagraph = state.answerJson.main_paragraph;
+          mainParagraph = theState.answerJson.main_paragraph;
         });
       }
-    }, child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
-      if (state is LoadedState) {
+    }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
+      AnswerState theState = state[widget.index];
+
+      if (theState is LoadedState) {
         return SingleChildScrollView(
             child: Container(
                 margin: const EdgeInsets.only(top: 20),

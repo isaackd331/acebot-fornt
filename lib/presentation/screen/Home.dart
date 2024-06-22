@@ -13,6 +13,7 @@ import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
+import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -30,7 +31,8 @@ class _HomeState extends State<Home> {
   TextEditingController chatController = TextEditingController();
   bool isUploadButtonClicked = false;
   List<int> promptData = [0, 0, 0, 0];
-  bool isChatting = false;
+  List<String> questArray = [];
+  List<String> testArr = ['test'];
 
   @override
   void initState() {
@@ -88,10 +90,10 @@ class _HomeState extends State<Home> {
     });
   }
 
-  /// 채팅 시작 여부 업데이트
-  void setIsChatting(bool value) {
+  // 질문모음 Array
+  void updateQuestArray(String value) {
     setState(() {
-      isChatting = value;
+      questArray = [...questArray, value];
     });
   }
 
@@ -207,10 +209,12 @@ class _HomeState extends State<Home> {
                                 : Container(),
                             const SizedBox(height: 24),
                             ChattingWrapper(
-                                setIsChatFocusing: setIsChatFocusing,
-                                setChatContent: setChatContent,
-                                setIsChatEmpty: setIsChatEmpty,
-                                setIsChatting: setIsChatting)
+                              setIsChatFocusing: setIsChatFocusing,
+                              setChatContent: setChatContent,
+                              setIsChatEmpty: setIsChatEmpty,
+                              updateQuestArray: updateQuestArray,
+                              questArrayLength: questArray.length,
+                            )
                           ])),
                     ])));
           } else {
@@ -220,23 +224,23 @@ class _HomeState extends State<Home> {
   }
 
   Widget _duringChatting() {
-    List<String> test = ["123", "456", "789"];
-
     return Column(children: [
       SizedBox(
           height: MediaQuery.of(context).size.height + 100,
           child: ListView.builder(
-              itemCount: test.length,
+              itemCount: questArray.length,
               itemBuilder: (BuildContext context, int idx) {
-                return TemplateWrapper(question: test[idx]);
+                return TemplateWrapper(question: questArray[idx], index: idx);
               })),
       Container(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
           child: ChattingWrapper(
-              setIsChatFocusing: setIsChatFocusing,
-              setChatContent: setChatContent,
-              setIsChatEmpty: setIsChatEmpty,
-              setIsChatting: setIsChatting))
+            setIsChatFocusing: setIsChatFocusing,
+            setChatContent: setChatContent,
+            setIsChatEmpty: setIsChatEmpty,
+            updateQuestArray: updateQuestArray,
+            questArrayLength: questArray.length,
+          ))
     ]);
   }
 
@@ -249,18 +253,19 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
               onPressed: () {
-                if (isChatting) {
+                if (questArray.isNotEmpty) {
                   chatController.clear();
                   setState(() {
                     chatContent = '';
-                    isChatting = false;
+                    questArray = [];
                   });
+                  BlocProvider.of<AnswerCubit>(context).clearCubit();
                 }
               },
               icon: Image.asset('assets/icons/icon_newchat.png'),
               iconSize: 18,
               padding: const EdgeInsets.all(0),
-              color: isChatting
+              color: questArray.isNotEmpty
                   ? const Color(0xff000000)
                   : const Color(0xff5d5d5d)),
           IconButton(
@@ -278,8 +283,8 @@ class _HomeState extends State<Home> {
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),
-      body:
-          BaseBody(child: !isChatting ? _beforeChatting() : _duringChatting()),
+      body: BaseBody(
+          child: questArray.isEmpty ? _beforeChatting() : _duringChatting()),
     ));
   }
 }
