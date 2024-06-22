@@ -22,12 +22,13 @@ class AnswerRepository {
         .transform(const Utf8Decoder())
         .transform(const LineSplitter())
         .listen((evt) {
-      String refinedData = evt.replaceFirst('data: ', '');
+      if (evt.contains('data:')) {
+        final String refinedData = evt.split('data:')[1];
 
-      if (refinedData.isNotEmpty) {
-        Map<String, dynamic> mapped = json.decode(refinedData);
-
-        state(mapped);
+        if (refinedData.isNotEmpty) {
+          Map<String, dynamic> mapped = json.decode(refinedData);
+          state(mapped);
+        }
       }
     });
     return null;

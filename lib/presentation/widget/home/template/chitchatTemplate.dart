@@ -14,6 +14,7 @@ class ChitChatTemplate extends StatefulWidget {
 
 class _ChitChatTemplateState extends State<ChitChatTemplate> {
   String mainParagraph = "";
+  List<dynamic>? recommendedPrompt = [];
 
   @override
   void initState() {
@@ -40,21 +41,24 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
       }
     }, child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
       if (state is LoadedState) {
-        return Container(
-            margin: const EdgeInsets.only(top: 20),
-            child: Row(children: [
-              Expanded(
-                  child: MarkdownBody(
-                data: mainParagraph,
-                styleSheet: MarkdownStyleSheet(
-                    textAlign: WrapAlignment.start,
-                    p: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: Color(0xff4f4f4f),
-                        height: 1.5)),
-              ))
-            ]));
+        return SingleChildScrollView(
+            child: Container(
+                margin: const EdgeInsets.only(top: 20),
+                child: Row(children: [
+                  Expanded(
+                      child: MarkdownBody(
+                    data: mainParagraph,
+                    listItemCrossAxisAlignment:
+                        MarkdownListItemCrossAxisAlignment.start,
+                    styleSheet: MarkdownStyleSheet(
+                        textAlign: WrapAlignment.start,
+                        p: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xff4f4f4f),
+                            height: 1.5)),
+                  ))
+                ])));
       } else {
         return Container();
       }
