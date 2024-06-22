@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/home/template/chitchatTemplate.dart';
+import 'package:acebot_front/presentation/widget/home/template/weatherTemplate.dart';
 
 import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
@@ -37,6 +38,12 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
     switch (templateName) {
       case 'chitchat':
         return const ChitChatTemplate();
+
+      case 'cur_weather':
+        return const WeatherTemplate();
+
+      case 'weekly_weather':
+        return const WeatherTemplate();
 
       default:
         return Container();
