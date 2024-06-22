@@ -64,7 +64,7 @@ class _BaseDropdownState extends State<BaseDropdown> {
                 border: Border.all(color: const Color(0xffebebeb)),
                 borderRadius: BorderRadius.circular(4)),
             scrollbarTheme:
-                ScrollbarThemeData(thickness: MaterialStateProperty.all(2)),
+                ScrollbarThemeData(thickness: WidgetStateProperty.all(2)),
             scrollPadding: const EdgeInsets.only(right: 12)),
       ),
     );
