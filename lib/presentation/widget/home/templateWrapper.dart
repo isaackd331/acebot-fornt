@@ -60,7 +60,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
       }
     }, child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
       return Container(
-          margin: const EdgeInsets.only(top: 40),
+          margin: const EdgeInsets.only(top: 40, bottom: 80),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(mainAxisSize: MainAxisSize.max, children: [
             Row(children: [

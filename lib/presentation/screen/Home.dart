@@ -210,14 +210,34 @@ class _HomeState extends State<Home> {
                                 setIsChatFocusing: setIsChatFocusing,
                                 setChatContent: setChatContent,
                                 setIsChatEmpty: setIsChatEmpty,
-                                setIsChatting: setIsChatting
-                                )
+                                setIsChatting: setIsChatting)
                           ])),
                     ])));
           } else {
             return Container();
           }
         }));
+  }
+
+  Widget _duringChatting() {
+    List<String> test = ["123", "456", "789"];
+
+    return Column(children: [
+      SizedBox(
+          height: MediaQuery.of(context).size.height + 100,
+          child: ListView.builder(
+              itemCount: test.length,
+              itemBuilder: (BuildContext context, int idx) {
+                return TemplateWrapper(question: test[idx]);
+              })),
+      Container(
+          padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
+          child: ChattingWrapper(
+              setIsChatFocusing: setIsChatFocusing,
+              setChatContent: setChatContent,
+              setIsChatEmpty: setIsChatEmpty,
+              setIsChatting: setIsChatting))
+    ]);
   }
 
   @override
@@ -229,7 +249,7 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
               onPressed: () {
-                if(isChatting) {
+                if (isChatting) {
                   chatController.clear();
                   setState(() {
                     chatContent = '';
@@ -240,14 +260,15 @@ class _HomeState extends State<Home> {
               icon: Image.asset('assets/icons/icon_newchat.png'),
               iconSize: 18,
               padding: const EdgeInsets.all(0),
-              color: isChatting ? const Color(0xff000000) : const Color(0xff5d5d5d)
-            ),
+              color: isChatting
+                  ? const Color(0xff000000)
+                  : const Color(0xff5d5d5d)),
           IconButton(
-              onPressed: () {},
-              icon: Image.asset('assets/icons/icon_streamline.png'),
-              iconSize: 16,
-              padding: const EdgeInsets.all(0),
-              ),
+            onPressed: () {},
+            icon: Image.asset('assets/icons/icon_streamline.png'),
+            iconSize: 16,
+            padding: const EdgeInsets.all(0),
+          ),
         ],
         leading: IconButton(
             onPressed: () {
@@ -257,7 +278,8 @@ class _HomeState extends State<Home> {
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),
-      body: BaseBody(child: !isChatting ? _beforeChatting() : TemplateWrapper(question: chatContent)),
+      body:
+          BaseBody(child: !isChatting ? _beforeChatting() : _duringChatting()),
     ));
   }
 }
