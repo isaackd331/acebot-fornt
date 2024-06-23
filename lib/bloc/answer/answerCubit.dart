@@ -17,7 +17,7 @@ class AnswerCubit extends Cubit<List<AnswerState>> {
   }
 
   // 질문 후 답변 세팅
-  Future<void> quest(String question, int idx) async {
+  Future<dynamic> quest(String question, int idx) async {
     void setLoadedState(dynamic value) {
       state[idx] = LoadedState(answerJson: AnswerModel.fromJson(value));
 
@@ -31,8 +31,11 @@ class AnswerCubit extends Cubit<List<AnswerState>> {
       final firstRes = await qRepo.createQuestion(question, null);
 
       final questionId = firstRes['questionId'];
+      final threadId = firstRes['threadId'];
 
       await aRepo.createAnswer(questionId, setLoadedState);
+
+      return {"questionId": questionId, "threadId": threadId};
     } on DioException catch (err) {
       state[idx] = ErrorState(
           message: err.toString(), statusCode: err.response?.statusCode);

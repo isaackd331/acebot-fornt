@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/home/template/chitchatTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/template/weatherTemplate.dart';
+import 'package:acebot_front/presentation/widget/home/template/placeTemplate.dart';
 
 import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
@@ -12,16 +13,22 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 class TemplateWrapper extends StatefulWidget {
   final String question;
   final int index;
+  final List<dynamic> idsArray;
+  final Function setChatContent;
 
   const TemplateWrapper(
-      {super.key, required this.question, required this.index});
+      {super.key,
+      required this.question,
+      required this.index,
+      required this.idsArray,
+      required this.setChatContent});
 
   @override
   _TemplateWrapperState createState() => _TemplateWrapperState();
 }
 
 class _TemplateWrapperState extends State<TemplateWrapper> {
-  String? templateName;
+  String? templateName = "";
 
   @override
   void initState() {
@@ -39,13 +46,36 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
   Widget _templateSelector() {
     switch (templateName) {
       case 'chitchat':
-        return ChitChatTemplate(index: widget.index);
+        return ChitChatTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question,
+            setChatContent: widget.setChatContent);
 
       case 'cur_weather':
-        return WeatherTemplate(index: widget.index);
+        return WeatherTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question,
+            setChatContent: widget.setChatContent);
 
       case 'weekly_weather':
-        return WeatherTemplate(index: widget.index);
+        return WeatherTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question,
+            setChatContent: widget.setChatContent);
+
+      case 'place_search':
+        return PlaceTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question,
+            setChatContent: widget.setChatContent);
 
       default:
         return Container();
@@ -64,8 +94,10 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
         });
       }
     }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
+      AnswerState theState = state[widget.index];
+
       return Container(
-          margin: const EdgeInsets.symmetric(vertical: 40),
+          margin: const EdgeInsets.only(top: 40),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(mainAxisSize: MainAxisSize.max, children: [
             Row(children: [
@@ -117,7 +149,32 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
                       fontWeight: FontWeight.w700,
                       color: Color(0xff111111)))
             ]),
-            _templateSelector()
+            theState is LoadingState
+                ? Row(children: [
+                    Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: const Text('Loading...',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 51, 21, 21)))))
+                  ])
+                : Container(),
+            theState is ErrorState
+                ? Row(children: [
+                    Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: const Text(
+                                "시스템에 문제가 발생하였습니다.\n관리자에게 문의바랍니다.",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 51, 21, 21)))))
+                  ])
+                : Container(),
+            theState is LoadedState ? _templateSelector() : Container()
           ]));
     }));
   }

@@ -51,6 +51,7 @@ dependencies:
   path_provider: ^2.1.3
   path: ^1.9.0
   flutter_markdown: ^0.7.2+1
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
@@ -90,12 +91,22 @@ flutter:
     - assets/icons/icon_thread_empty.png
     - assets/icons/icon_answer-start-symbol.png
     - assets/icons/icon_exaone-logo.png
+    - assets/icons/icon_reload.png
+    - assets/icons/icon_feedback-good.png
+    - assets/icons/icon_feedback-bad.png
+    - assets/icons/icon_copy-clipboard.png
+
   # images
+    # 원래는 아이콘 폴더에 들어가야하나 만들어진 위젯을 재활용하기 위해 images 폴더에 삽입
+    - assets/images/icon_error.png
+    - assets/images/ic_star_half.png
+    - assets/images/ic_star_none.png
+    - assets/images/ic_star.png
+
     - assets/images/acebot_logo.png
     - assets/images/cloudy.png
     - assets/images/haze.png
-    # 원래는 아이콘 폴더에 들어가야하나 만들어진 위젯을 재활용하기 위해 images 폴더에 삽입
-    - assets/images/icon_error.png
+    - assets/images/google_map.png
     - assets/images/rainy.png
     - assets/images/snowman.png
     - assets/images/sunny_dark.png
