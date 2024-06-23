@@ -10,13 +10,15 @@ class ChitChatTemplate extends StatefulWidget {
   final int questionId;
   final int threadId;
   final String question;
+  final Function setChatContent;
 
   const ChitChatTemplate(
       {super.key,
       required this.index,
       required this.questionId,
       required this.threadId,
-      required this.question});
+      required this.question,
+      required this.setChatContent});
 
   @override
   _ChitChatTemplateState createState() => _ChitChatTemplateState();
@@ -29,10 +31,6 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
   @override
   void initState() {
     super.initState();
-
-    print(widget.questionId);
-    print(widget.threadId);
-    print(widget.question);
   }
 
   @override

@@ -14,12 +14,14 @@ class TemplateWrapper extends StatefulWidget {
   final String question;
   final int index;
   final List<dynamic> idsArray;
+  final Function setChatContent;
 
   const TemplateWrapper(
       {super.key,
       required this.question,
       required this.index,
-      required this.idsArray});
+      required this.idsArray,
+      required this.setChatContent});
 
   @override
   _TemplateWrapperState createState() => _TemplateWrapperState();
@@ -48,28 +50,32 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
             index: widget.index,
             questionId: widget.idsArray[widget.index]['questionId'],
             threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question);
+            question: widget.question,
+            setChatContent: widget.setChatContent);
 
       case 'cur_weather':
         return WeatherTemplate(
             index: widget.index,
             questionId: widget.idsArray[widget.index]['questionId'],
             threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question);
+            question: widget.question,
+            setChatContent: widget.setChatContent);
 
       case 'weekly_weather':
         return WeatherTemplate(
             index: widget.index,
             questionId: widget.idsArray[widget.index]['questionId'],
             threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question);
+            question: widget.question,
+            setChatContent: widget.setChatContent);
 
       case 'place_search':
         return PlaceTemplate(
             index: widget.index,
             questionId: widget.idsArray[widget.index]['questionId'],
             threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question);
+            question: widget.question,
+            setChatContent: widget.setChatContent);
 
       default:
         return Container();

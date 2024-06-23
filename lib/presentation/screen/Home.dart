@@ -239,7 +239,10 @@ class _HomeState extends State<Home> {
               itemCount: questArray.length,
               itemBuilder: (BuildContext context, int idx) {
                 return TemplateWrapper(
-                    question: questArray[idx], index: idx, idsArray: idsArray);
+                    question: questArray[idx],
+                    index: idx,
+                    idsArray: idsArray,
+                    setChatContent: setChatContent);
               })),
       Container(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),

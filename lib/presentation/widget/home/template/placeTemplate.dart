@@ -11,13 +11,15 @@ class PlaceTemplate extends StatefulWidget {
   final int questionId;
   final int threadId;
   final String question;
+  final Function setChatContent;
 
   const PlaceTemplate(
       {super.key,
       required this.index,
       required this.questionId,
       required this.threadId,
-      required this.question});
+      required this.question,
+      required this.setChatContent});
 
   @override
   _PlaceTemplateState createState() => _PlaceTemplateState();
@@ -214,7 +216,8 @@ class _PlaceTemplateState extends State<PlaceTemplate> {
                               color: Color(0xff4f4f4f),
                               height: 1.5)),
                     ))
-                  ])
+                  ]),
+                  const SizedBox(height: 28)
                 ])));
       } else {
         return Container();
