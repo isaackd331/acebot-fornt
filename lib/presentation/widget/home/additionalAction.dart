@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 
+import 'package:acebot_front/api/answerService.dart';
+
 class AdditionalAction extends StatefulWidget {
   final String mainParagraph;
   final int questionId;
@@ -25,6 +27,8 @@ class AdditionalAction extends StatefulWidget {
 }
 
 class _AdditionalActionState extends State<AdditionalAction> {
+  bool? feedback;
+
   @override
   Widget build(BuildContext context) {
     return Row(children: [
@@ -50,19 +54,49 @@ class _AdditionalActionState extends State<AdditionalAction> {
       ),
       const SizedBox(width: 20),
       IconButton(
-        onPressed: () {},
+        onPressed: () async {
+          if (feedback == null || feedback! == false) {
+            await AnswerService().feedback(widget.questionId, true);
+
+            setState(() {
+              feedback = true;
+            });
+          } else {
+            setState(() {
+              feedback = null;
+            });
+          }
+        },
         icon: SizedBox(
             width: 20,
             height: 20,
-            child: Image.asset('assets/icons/icon_feedback-good.png')),
+            child: Image.asset('assets/icons/icon_feedback-good.png',
+                color: (feedback != null && feedback == true)
+                    ? const Color(0xff000000)
+                    : const Color(0xff666666))),
       ),
       const SizedBox(width: 20),
       IconButton(
-        onPressed: () {},
+        onPressed: () async {
+          await AnswerService().feedback(widget.questionId, false);
+
+          if (feedback == null || feedback! == true) {
+            setState(() {
+              feedback = false;
+            });
+          } else {
+            setState(() {
+              feedback = null;
+            });
+          }
+        },
         icon: SizedBox(
             width: 20,
             height: 20,
-            child: Image.asset('assets/icons/icon_feedback-bad.png')),
+            child: Image.asset('assets/icons/icon_feedback-bad.png',
+                color: (feedback != null && feedback == false)
+                    ? const Color(0xff000000)
+                    : const Color(0xff666666))),
       ),
     ]);
   }
