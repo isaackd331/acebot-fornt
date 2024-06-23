@@ -7,8 +7,16 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class ChitChatTemplate extends StatefulWidget {
   final int index;
+  final int questionId;
+  final int threadId;
+  final String question;
 
-  const ChitChatTemplate({super.key, required this.index});
+  const ChitChatTemplate(
+      {super.key,
+      required this.index,
+      required this.questionId,
+      required this.threadId,
+      required this.question});
 
   @override
   _ChitChatTemplateState createState() => _ChitChatTemplateState();
@@ -22,8 +30,9 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
   void initState() {
     super.initState();
 
-    // initialize cubit
-    context.read<AnswerCubit>();
+    print(widget.questionId);
+    print(widget.threadId);
+    print(widget.question);
   }
 
   @override

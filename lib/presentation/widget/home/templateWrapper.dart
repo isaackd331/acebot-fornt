@@ -13,9 +13,13 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 class TemplateWrapper extends StatefulWidget {
   final String question;
   final int index;
+  final List<dynamic> idsArray;
 
   const TemplateWrapper(
-      {super.key, required this.question, required this.index});
+      {super.key,
+      required this.question,
+      required this.index,
+      required this.idsArray});
 
   @override
   _TemplateWrapperState createState() => _TemplateWrapperState();
@@ -40,16 +44,32 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
   Widget _templateSelector() {
     switch (templateName) {
       case 'chitchat':
-        return ChitChatTemplate(index: widget.index);
+        return ChitChatTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question);
 
       case 'cur_weather':
-        return WeatherTemplate(index: widget.index);
+        return WeatherTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question);
 
       case 'weekly_weather':
-        return WeatherTemplate(index: widget.index);
+        return WeatherTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question);
 
       case 'place_search':
-        return PlaceTemplate(index: widget.index);
+        return PlaceTemplate(
+            index: widget.index,
+            questionId: widget.idsArray[widget.index]['questionId'],
+            threadId: widget.idsArray[widget.index]['threadId'],
+            question: widget.question);
 
       default:
         return Container();

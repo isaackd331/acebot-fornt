@@ -8,8 +8,16 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class PlaceTemplate extends StatefulWidget {
   final int index;
+  final int questionId;
+  final int threadId;
+  final String question;
 
-  const PlaceTemplate({super.key, required this.index});
+  const PlaceTemplate(
+      {super.key,
+      required this.index,
+      required this.questionId,
+      required this.threadId,
+      required this.question});
 
   @override
   _PlaceTemplateState createState() => _PlaceTemplateState();

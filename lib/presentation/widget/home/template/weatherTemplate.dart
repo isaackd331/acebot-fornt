@@ -7,8 +7,16 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class WeatherTemplate extends StatefulWidget {
   final int index;
+  final int questionId;
+  final int threadId;
+  final String question;
 
-  const WeatherTemplate({super.key, required this.index});
+  const WeatherTemplate(
+      {super.key,
+      required this.index,
+      required this.questionId,
+      required this.threadId,
+      required this.question});
 
   @override
   _WeatherTemplateState createState() => _WeatherTemplateState();

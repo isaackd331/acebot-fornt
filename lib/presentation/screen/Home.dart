@@ -32,7 +32,7 @@ class _HomeState extends State<Home> {
   bool isUploadButtonClicked = false;
   List<int> promptData = [0, 0, 0, 0];
   List<String> questArray = [];
-  List<String> testArr = ['test'];
+  List<dynamic> idsArray = [];
 
   @override
   void initState() {
@@ -94,6 +94,13 @@ class _HomeState extends State<Home> {
   void updateQuestArray(String value) {
     setState(() {
       questArray = [...questArray, value];
+    });
+  }
+
+  // 질문모음 questionId 및 threadId Array
+  void updateIdsArray(dynamic value) {
+    setState(() {
+      idsArray = [...idsArray, value];
     });
   }
 
@@ -213,6 +220,7 @@ class _HomeState extends State<Home> {
                               setChatContent: setChatContent,
                               setIsChatEmpty: setIsChatEmpty,
                               updateQuestArray: updateQuestArray,
+                              updateIdsArray: updateIdsArray,
                               questArrayLength: questArray.length,
                             )
                           ])),
@@ -230,7 +238,8 @@ class _HomeState extends State<Home> {
           child: ListView.builder(
               itemCount: questArray.length,
               itemBuilder: (BuildContext context, int idx) {
-                return TemplateWrapper(question: questArray[idx], index: idx);
+                return TemplateWrapper(
+                    question: questArray[idx], index: idx, idsArray: idsArray);
               })),
       Container(
           padding: const EdgeInsets.only(left: 20, right: 20, bottom: 20),
@@ -239,6 +248,7 @@ class _HomeState extends State<Home> {
             setChatContent: setChatContent,
             setIsChatEmpty: setIsChatEmpty,
             updateQuestArray: updateQuestArray,
+            updateIdsArray: updateIdsArray,
             questArrayLength: questArray.length,
           ))
     ]);
@@ -258,6 +268,7 @@ class _HomeState extends State<Home> {
                   setState(() {
                     chatContent = '';
                     questArray = [];
+                    idsArray = [];
                   });
                   BlocProvider.of<AnswerCubit>(context).clearCubit();
                 }

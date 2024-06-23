@@ -20,6 +20,7 @@ class ChattingWrapper extends StatefulWidget {
   final Function setChatContent;
   final Function setIsChatEmpty;
   final Function updateQuestArray;
+  final Function updateIdsArray;
   final int questArrayLength;
 
   const ChattingWrapper(
@@ -28,6 +29,7 @@ class ChattingWrapper extends StatefulWidget {
       required this.setChatContent,
       required this.setIsChatEmpty,
       required this.updateQuestArray,
+      required this.updateIdsArray,
       required this.questArrayLength});
 
   @override
@@ -266,18 +268,20 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                 IconButton(
                     onPressed: () {
                       if (chatController.text.isNotEmpty) {
-                        BlocProvider.of<AnswerCubit>(context).ready();
+                        final answerCubit =
+                            BlocProvider.of<AnswerCubit>(context);
+
+                        answerCubit.ready();
 
                         widget.updateQuestArray(chatController.text);
 
-                        final idsData = BlocProvider.of<AnswerCubit>(context)
-                            .quest(
-                                chatController.text, widget.questArrayLength);
+                        final idsData = answerCubit.quest(
+                            chatController.text, widget.questArrayLength);
 
                         chatController.clear();
 
                         // 추후 questionId와 threadId 활용할 수 있도록 준비
-                        idsData.then((value) => print(value));
+                        idsData.then((value) => widget.updateIdsArray(value));
                       }
                     },
                     icon: Icon(Icons.arrow_upward,
