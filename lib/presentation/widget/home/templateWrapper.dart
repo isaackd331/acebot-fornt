@@ -97,7 +97,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
       AnswerState theState = state[widget.index];
 
       return Container(
-          margin: const EdgeInsets.symmetric(vertical: 40),
+          margin: const EdgeInsets.only(top: 40),
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: Column(mainAxisSize: MainAxisSize.max, children: [
             Row(children: [

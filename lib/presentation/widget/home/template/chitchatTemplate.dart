@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 
+import 'package:acebot_front/presentation/widget/home/additionalAction.dart';
+
 import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
@@ -53,24 +55,33 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
       AnswerState theState = state[widget.index];
 
       if (theState is LoadedState) {
-        return SingleChildScrollView(
-            child: Container(
-                margin: const EdgeInsets.only(top: 20),
-                child: Row(children: [
-                  Expanded(
-                      child: MarkdownBody(
-                    data: mainParagraph,
-                    listItemCrossAxisAlignment:
-                        MarkdownListItemCrossAxisAlignment.start,
-                    styleSheet: MarkdownStyleSheet(
-                        textAlign: WrapAlignment.start,
-                        p: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xff4f4f4f),
-                            height: 1.5)),
-                  ))
-                ])));
+        return Container(
+            margin: const EdgeInsets.only(top: 20),
+            child: Column(children: [
+              Row(children: [
+                Expanded(
+                    child: MarkdownBody(
+                  data: mainParagraph,
+                  listItemCrossAxisAlignment:
+                      MarkdownListItemCrossAxisAlignment.start,
+                  styleSheet: MarkdownStyleSheet(
+                      textAlign: WrapAlignment.start,
+                      p: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff4f4f4f),
+                          height: 1.5)),
+                )),
+              ]),
+              const SizedBox(height: 28),
+              AdditionalAction(
+                  mainParagraph: mainParagraph,
+                  questionId: widget.questionId,
+                  threadId: widget.threadId,
+                  page: 0,
+                  answerArrLength: 0,
+                  setPage: () {})
+            ]));
       } else {
         return Container();
       }
