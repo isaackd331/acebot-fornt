@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/home/template/chitchatTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/template/weatherTemplate.dart';
+import 'package:acebot_front/presentation/widget/home/template/placeTemplate.dart';
 
 import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
@@ -46,6 +47,9 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
 
       case 'weekly_weather':
         return WeatherTemplate(index: widget.index);
+
+      case 'place_search':
+        return PlaceTemplate(index: widget.index);
 
       default:
         return Container();
