@@ -22,7 +22,7 @@ class TemplateWrapper extends StatefulWidget {
 }
 
 class _TemplateWrapperState extends State<TemplateWrapper> {
-  String? templateName;
+  String? templateName = "";
 
   @override
   void initState() {
@@ -68,6 +68,8 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
         });
       }
     }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
+      AnswerState theState = state[widget.index];
+
       return Container(
           margin: const EdgeInsets.symmetric(vertical: 40),
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -121,7 +123,32 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
                       fontWeight: FontWeight.w700,
                       color: Color(0xff111111)))
             ]),
-            _templateSelector()
+            theState is LoadingState
+                ? Row(children: [
+                    Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: const Text('Loading...',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 51, 21, 21)))))
+                  ])
+                : Container(),
+            theState is ErrorState
+                ? Row(children: [
+                    Expanded(
+                        child: Container(
+                            margin: const EdgeInsets.only(top: 20),
+                            child: const Text(
+                                "시스템에 문제가 발생하였습니다.\n관리자에게 문의바랍니다.",
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color.fromARGB(255, 51, 21, 21)))))
+                  ])
+                : Container(),
+            theState is LoadedState ? _templateSelector() : Container()
           ]));
     }));
   }
