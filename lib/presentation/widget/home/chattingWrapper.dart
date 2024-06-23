@@ -270,10 +270,14 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
 
                         widget.updateQuestArray(chatController.text);
 
-                        BlocProvider.of<AnswerCubit>(context).quest(
-                            chatController.text, widget.questArrayLength);
+                        final idsData = BlocProvider.of<AnswerCubit>(context)
+                            .quest(
+                                chatController.text, widget.questArrayLength);
 
                         chatController.clear();
+
+                        // 추후 questionId와 threadId 활용할 수 있도록 준비
+                        idsData.then((value) => print(value));
                       }
                     },
                     icon: Icon(Icons.arrow_upward,
