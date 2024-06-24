@@ -95,14 +95,20 @@ class _HomeState extends State<Home> {
   // 질문모음 Array
   void updateQuestArray(String value) {
     setState(() {
-      questArray = [...questArray, value];
+      // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+      // 1차 개발에서는 한 화면에 한 질문/답변만
+      // questArray = [...questArray, value]
+      questArray = [value];
     });
   }
 
   // 질문모음 questionId 및 threadId Array
   void updateIdsArray(dynamic value) {
     setState(() {
-      idsArray = [...idsArray, value];
+      // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+      // 1차 개발에서는 한 화면에 한 질문/답변만
+      // idsArray = [...idsArray, value];
+      idsArray = [value];
     });
   }
 

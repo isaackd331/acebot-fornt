@@ -275,8 +275,12 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
 
                         widget.updateQuestArray(chatController.text);
 
-                        final idsData = answerCubit.quest(
-                            chatController.text, widget.questArrayLength);
+                        // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+                        // 1차 개발에서는 한 화면에 한 질문/답변만
+                        // final idsData = answerCubit.quest(
+                        //     chatController.text, widget.questArrayLength);
+                        final idsData =
+                            answerCubit.quest(chatController.text, 0);
 
                         chatController.clear();
 
