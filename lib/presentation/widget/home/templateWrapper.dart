@@ -111,6 +111,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
       if (lastState is EmptyState || lastState is LoadingState) {
         scrollToBottom(100);
       } else if (lastState is LoadedState) {
+        print(widget.index);
         scrollToBottom(0);
       }
     }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
