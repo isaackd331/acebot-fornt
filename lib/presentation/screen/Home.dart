@@ -10,6 +10,7 @@ import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
 import 'package:acebot_front/presentation/widget/home/templateWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
+import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -33,6 +34,7 @@ class _HomeState extends State<Home> {
   List<int> promptData = [0, 0, 0, 0];
   List<String> questArray = [];
   List<dynamic> idsArray = [];
+  ScrollController answerListController = ScrollController();
 
   @override
   void initState() {
@@ -232,35 +234,35 @@ class _HomeState extends State<Home> {
   }
 
   Widget _duringChatting() {
-    return Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: SingleChildScrollView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            child: Column(children: [
-              SizedBox(
-                  height: MediaQuery.of(context).size.height - 160,
-                  child: ListView.builder(
-                      itemCount: questArray.length,
-                      itemBuilder: (BuildContext context, int idx) {
-                        return TemplateWrapper(
-                            question: questArray[idx],
-                            index: idx,
-                            idsArray: idsArray,
-                            setChatContent: setChatContent);
-                      })),
-              Container(
-                  padding: const EdgeInsets.only(
-                      top: 40, left: 20, right: 20, bottom: 20),
-                  child: ChattingWrapper(
-                    setIsChatFocusing: setIsChatFocusing,
-                    setChatContent: setChatContent,
-                    setIsChatEmpty: setIsChatEmpty,
-                    updateQuestArray: updateQuestArray,
-                    updateIdsArray: updateIdsArray,
-                    questArrayLength: questArray.length,
-                  ))
-            ])));
+    return Column(children: [
+      Column(
+          children: questArray
+              .asMap()
+              .map((idx, value) => MapEntry(
+                  idx,
+                  TemplateWrapper(
+                      question: value,
+                      index: idx,
+                      idsArray: idsArray,
+                      setChatContent: setChatContent,
+                      answerListController: answerListController)))
+              .values
+              .toList()),
+      Container(
+          padding:
+              const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 20),
+          child: ChattingWrapper(
+            setIsChatFocusing: setIsChatFocusing,
+            setChatContent: setChatContent,
+            setIsChatEmpty: setIsChatEmpty,
+            updateQuestArray: updateQuestArray,
+            updateIdsArray: updateIdsArray,
+            questArrayLength: questArray.length,
+          ))
+    ]);
+    // SingleChildScrollView(
+    //     controller: answerListController,
+    //     child: );
   }
 
   @override
@@ -303,8 +305,20 @@ class _HomeState extends State<Home> {
             iconSize: 8,
             padding: const EdgeInsets.all(0)),
       ),
-      body: BaseBody(
-          child: questArray.isEmpty ? _beforeChatting() : _duringChatting()),
+      body: questArray.isEmpty
+          ? BaseBody(child: _beforeChatting())
+          // scrollController를 쉽게 조작하기 위해 BaseBody의 위젯을 그대로 복붙하였음.
+          : Column(children: [
+              Expanded(child: LayoutBuilder(builder: (context, constraint) {
+                return NoScrollbarWrapper(
+                    child: SingleChildScrollView(
+                        controller: answerListController,
+                        child: ConstrainedBox(
+                            constraints:
+                                BoxConstraints(minHeight: constraint.maxHeight),
+                            child: IntrinsicHeight(child: _duringChatting()))));
+              }))
+            ]),
     ));
   }
 }

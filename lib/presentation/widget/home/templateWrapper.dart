@@ -15,13 +15,15 @@ class TemplateWrapper extends StatefulWidget {
   final int index;
   final List<dynamic> idsArray;
   final Function setChatContent;
+  final ScrollController answerListController;
 
   const TemplateWrapper(
       {super.key,
       required this.question,
       required this.index,
       required this.idsArray,
-      required this.setChatContent});
+      required this.setChatContent,
+      required this.answerListController});
 
   @override
   _TemplateWrapperState createState() => _TemplateWrapperState();
@@ -87,11 +89,29 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
     return BlocListener<AnswerCubit, List<AnswerState>>(
         listener: (context, state) {
       AnswerState theState = state[widget.index];
+      AnswerState lastState = state[state.length - 1];
+
+      scrollToBottom(int duration) {
+        Future.delayed(
+            duration == 0 ? Duration.zero : Duration(milliseconds: duration),
+            () {
+          widget.answerListController.animateTo(
+              widget.answerListController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 100),
+              curve: Curves.easeInOut);
+        });
+      }
 
       if (theState is LoadedState) {
         setState(() {
           templateName = theState.answerJson.template_name;
         });
+      }
+
+      if (lastState is EmptyState || lastState is LoadingState) {
+        scrollToBottom(100);
+      } else if (lastState is LoadedState) {
+        scrollToBottom(0);
       }
     }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
       AnswerState theState = state[widget.index];
