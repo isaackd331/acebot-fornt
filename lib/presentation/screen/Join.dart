@@ -1,11 +1,10 @@
-/**
- * 회원가입 페이지
- * progress 별 단계
- * 1: 이메일 입력
- * 2: 비밀번호 입력
- * 3: 이름 입력
- * 4: 직군/업무 입력
- */
+/// 회원가입 페이지
+/// progress 별 단계
+/// 1: 이메일 입력
+/// 2: 비밀번호 입력
+/// 3: 이름 입력
+/// 4: 직군/업무 입력
+library;
 
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -18,6 +17,8 @@ import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
 class Join extends StatefulWidget {
+  const Join({super.key});
+
   @override
   _JoinState createState() => _JoinState();
 }
@@ -100,12 +101,12 @@ class _JoinState extends State<Join> {
                     percent: progress / 4),
 
                 /**
-                             * Progress = 1 : 이메일 입력
-                             * Progress = 2 : 비밀번호 입력
-                             * Progress = 3 : 이름 입력
-                             * Progress = 4 : 직군/업무 입력
-                             * Progress = 5 : 완료 및 시작하기
-                             */
+                  * Progress = 1 : 이메일 입력
+                  * Progress = 2 : 비밀번호 입력
+                  * Progress = 3 : 이름 입력
+                  * Progress = 4 : 직군/업무 입력
+                  * Progress = 5 : 스텝퍼 미노출, 완료 및 시작하기
+                  */
                 progress == 1
                     ? FirstProgress(
                         setProgress: setProgress,
