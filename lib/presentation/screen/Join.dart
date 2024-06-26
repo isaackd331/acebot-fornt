@@ -89,6 +89,27 @@ class _JoinState extends State<Join> {
   }
 
   Widget _bodyWidget() {
+    Widget progressWidget() {
+      switch (progress) {
+        case 1:
+          return FirstProgress(
+              setProgress: setProgress,
+              setAbleToProgress: setAbleToProgress,
+              setUserId: setUserId,
+              userId: userId);
+        case 2:
+          return SecondProgress(
+              setProgress: setProgress,
+              setAbleToProgress: setAbleToProgress,
+              setUserPassword: setUserPassword,
+              userPassword: userPassword,
+              setUserCheckPassword: setUserCheckPassword,
+              userCheckPassword: userCheckPassword);
+        default:
+          return Container();
+      }
+    }
+
     return Center(
         child: Container(
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
@@ -107,22 +128,7 @@ class _JoinState extends State<Join> {
                   * Progress = 4 : 직군/업무 입력
                   * Progress = 5 : 스텝퍼 미노출, 완료 및 시작하기
                   */
-                progress == 1
-                    ? FirstProgress(
-                        setProgress: setProgress,
-                        setAbleToProgress: setAbleToProgress,
-                        setUserId: setUserId,
-                        userId: userId)
-                    : Container(),
-                progress == 2
-                    ? SecondProgress(
-                        setProgress: setProgress,
-                        setAbleToProgress: setAbleToProgress,
-                        setUserPassword: setUserPassword,
-                        userPassword: userPassword,
-                        setUserCheckPassword: setUserCheckPassword,
-                        userCheckPassword: userCheckPassword)
-                    : Container(),
+                progressWidget(),
                 Expanded(
                     child: Column(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -161,7 +167,7 @@ class _JoinState extends State<Join> {
           actions: [
             IconButton(
                 onPressed: () {
-                  context.pop();
+                  context.go('/login');
                 },
                 icon: const Icon(Icons.clear),
                 padding: const EdgeInsets.all(0))
