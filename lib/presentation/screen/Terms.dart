@@ -17,10 +17,7 @@ class Terms extends StatefulWidget {
 
 class _TermsState extends State<Terms> {
   bool serviceAgreed = false;
-  bool privateCollectAgreed = false;
-  bool sensitiveAgreed = false;
-  bool privateDealAgreed = false;
-  bool isOverFourteen = false;
+  bool privateAgreed = false;
 
   @override
   void initState() {
@@ -32,7 +29,8 @@ class _TermsState extends State<Terms> {
     super.dispose();
   }
 
-  Widget _checkRow(String title, bool state, String termComponent) {
+  Widget _checkRow(
+      String title, bool state, String termComponent, Function tapFunc) {
     Widget termsBottomsheet() {
       switch (termComponent) {
         default:
@@ -47,14 +45,12 @@ class _TermsState extends State<Terms> {
         children: [
           GestureDetector(
               onTap: () {
-                setState(() {
-                  state = !state;
-                });
+                tapFunc();
               },
               child: Row(children: [
                 SizedBox(
-                    width: 24,
-                    height: 24,
+                    width: 16,
+                    height: 16,
                     child: Image.asset('assets/icons/icon_check.png',
                         color: state
                             ? const Color(0xff000000)
@@ -75,8 +71,8 @@ class _TermsState extends State<Terms> {
                       return termsBottomsheet();
                     });
               },
-              icon: const SizedBox(
-                  width: 16, height: 16, child: Icon(Icons.arrow_forward_ios)))
+              icon: const Icon(Icons.arrow_forward_ios),
+              iconSize: 16)
         ]);
   }
 
@@ -100,7 +96,7 @@ class _TermsState extends State<Terms> {
             body: BaseBody(
                 child: Container(
                     margin: const EdgeInsets.only(top: 40),
-                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
                     child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -125,6 +121,92 @@ class _TermsState extends State<Terms> {
                                   fontSize: 20,
                                   color: Color(0xff000000))),
                           const SizedBox(height: 60),
+                          Row(mainAxisSize: MainAxisSize.max, children: [
+                            GestureDetector(
+                                onTap: () {
+                                  if (!serviceAgreed || !privateAgreed) {
+                                    setState(() {
+                                      serviceAgreed = true;
+                                      privateAgreed = true;
+                                    });
+                                  } else {
+                                    setState(() {
+                                      serviceAgreed = false;
+                                      privateAgreed = false;
+                                    });
+                                  }
+                                },
+                                child: Row(children: [
+                                  SizedBox(
+                                      width: 24,
+                                      height: 24,
+                                      child: Image.asset(
+                                          'assets/icons/icon_all-check.png',
+                                          color:
+                                              (serviceAgreed && privateAgreed)
+                                                  ? const Color(0xff000000)
+                                                  : const Color(0xffb3b3b3))),
+                                  const SizedBox(width: 8),
+                                  const Text("약관 전체 동의",
+                                      style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff181818)))
+                                ])),
+                          ]),
+                          const SizedBox(height: 20),
+                          Row(children: [
+                            Expanded(
+                                child: Container(
+                              height: 1,
+                              decoration:
+                                  const BoxDecoration(color: Color(0xff979797)),
+                            ))
+                          ]),
+                          const SizedBox(height: 20),
+                          _checkRow("[필수] 서비스 이용 약관", serviceAgreed, 'test',
+                              () {
+                            setState(() {
+                              serviceAgreed = !serviceAgreed;
+                            });
+                          }),
+                          _checkRow(
+                              "[필수] 개인 정보 수집 및 이용동의", privateAgreed, 'test',
+                              () {
+                            setState(() {
+                              privateAgreed = !privateAgreed;
+                            });
+                          }),
+                          Expanded(
+                              child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                /**
+                           * 네이티브 키보드 출현 시 컨텐츠와 버튼이 너무 붙는
+                           * 문제를 해결하기 위해 삽입
+                           */
+                                const SizedBox(height: 20),
+                                Row(children: [
+                                  BaseOutlineButton(
+                                    onPressedFunc: () {
+                                      if (serviceAgreed && privateAgreed) {
+                                        context.go('/join');
+                                      }
+                                    },
+                                    text: "동의하고 회원가입하기",
+                                    fontSize: 16,
+                                    textColor: const Color(0xffffffff),
+                                    backgroundColor:
+                                        !(serviceAgreed && privateAgreed)
+                                            ? const Color(0xffb3b3b3)
+                                            : const Color(0xff000000),
+                                    borderColor:
+                                        !(serviceAgreed && privateAgreed)
+                                            ? const Color(0xffb3b3b3)
+                                            : const Color(0xff000000),
+                                  )
+                                ])
+                              ])),
                         ])))));
   }
 }
