@@ -1,6 +1,5 @@
-/**
- * 로그인 페이지
- */
+/// 로그인 페이지
+library;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +16,8 @@ import 'package:acebot_front/bloc/auth/authCubit.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 
 class Login extends StatefulWidget {
+  const Login({super.key});
+
   @override
   _LoginState createState() => _LoginState();
 }
@@ -99,14 +100,14 @@ class _LoginState extends State<Login> {
                               style: TextStyle(
                                   fontWeight: FontWeight.w700,
                                   fontSize: 22.0,
-                                  color: const Color(0xff000000)),
+                                  color: Color(0xff000000)),
                               children: <TextSpan>[
                                 TextSpan(
                                     text: 'Universe',
                                     style: TextStyle(
                                         fontWeight: FontWeight.w300,
                                         fontSize: 22.0,
-                                        color: const Color(0xff000000)))
+                                        color: Color(0xff000000)))
                               ]))),
                 ]),
 
@@ -122,18 +123,19 @@ class _LoginState extends State<Login> {
                                   style: const TextStyle(
                                       fontWeight: FontWeight.w400,
                                       fontSize: 14.0,
-                                      color: const Color(0xff000000)),
+                                      color: Color(0xff000000)),
                                   children: <TextSpan>[
                                     TextSpan(
                                         text: '회원가입',
                                         recognizer: TapGestureRecognizer()
-                                          ..onTap = () => context.push('/join'),
+                                          ..onTap =
+                                              () => context.push('/terms'),
                                         style: const TextStyle(
                                             decoration:
                                                 TextDecoration.underline,
                                             fontWeight: FontWeight.w600,
                                             fontSize: 14.0,
-                                            color: const Color(0xff000000)))
+                                            color: Color(0xff000000)))
                                   ])))
                     ])),
 
