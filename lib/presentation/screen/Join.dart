@@ -37,13 +37,27 @@ class _JoinState extends State<Join> {
   void initState() {
     super.initState();
     progress = 1;
-    ableToProgress = true;
+    ableToProgress = false;
     userId = "";
     userPassword = "";
     userCheckPassword = "";
     userName = "";
     userJob = "";
     userTasks = [];
+  }
+
+  @override
+  void dispose() {
+    progress = 1;
+    ableToProgress = false;
+    userId = "";
+    userPassword = "";
+    userCheckPassword = "";
+    userName = "";
+    userJob = "";
+    userTasks = [];
+
+    super.dispose();
   }
 
   // Progress 업데이트
@@ -141,7 +155,11 @@ class _JoinState extends State<Join> {
                       Row(children: [
                         BaseOutlineButton(
                             onPressedFunc: () {
-                              ableToProgress ? setProgress(progress + 1) : null;
+                              if (ableToProgress) {
+                                setProgress(progress + 1);
+
+                                setAbleToProgress(false);
+                              }
                             },
                             text: '다음',
                             fontSize: 16.0,
