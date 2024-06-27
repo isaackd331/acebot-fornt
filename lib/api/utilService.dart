@@ -3,7 +3,7 @@ import 'package:dio/dio.dart';
 
 class UtilService {
   getHomePrompts() {
-    return dio.get("/prompts");
+    return dio.get("/prompts?client_type=App");
   }
 
   getWorksRolesList() {

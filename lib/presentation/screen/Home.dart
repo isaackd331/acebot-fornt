@@ -57,11 +57,6 @@ class _HomeState extends State<Home> {
         isChatEmpty = chatController.text.isEmpty;
       });
     });
-
-    /**
-     * 사용할 Cubit 초기화
-     */
-    context.read<SelfCubit>();
   }
 
   /// 채팅 포커싱 여부 업데이트
@@ -116,126 +111,122 @@ class _HomeState extends State<Home> {
     return BlocListener<SelfCubit, SelfState>(
         listener: (context, state) {},
         child: BlocBuilder<SelfCubit, SelfState>(builder: (_, state) {
-          if (state is LoadedState) {
-            return Center(
-                child: Container(
-                    padding: const EdgeInsets.fromLTRB(20, 70, 20, 20),
-                    child: Column(children: [
-                      Row(children: [
-                        Expanded(
-                            child: RichText(
-                                textAlign: TextAlign.center,
-                                text: const TextSpan(
-                                    text: 'ACEBOT ',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                        color: Color(0xff000000)),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: 'Universe',
-                                          style: TextStyle(
-                                              fontWeight: FontWeight.w300,
-                                              fontSize: 14.0,
-                                              color: Color(0xff000000)))
-                                    ]))),
-                      ]),
-                      const SizedBox(height: 16),
-                      Row(children: [
-                        Expanded(
-                            child: RichText(
-                                textAlign: TextAlign.center,
-                                text: TextSpan(
-                                    text: '안녕하세요, ',
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.w300,
-                                        fontSize: 20.0,
-                                        color: Color(0xff000000),
-                                        height: 1.5),
-                                    children: <TextSpan>[
-                                      TextSpan(
-                                          text: '${state.userJson.name}님',
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.w700,
-                                              fontSize: 20.0,
-                                              color: Color(0xff000000),
-                                              height: 1.5))
-                                    ])))
-                      ]),
-                      const Text('무엇을 도와드릴까요?',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: 20.0,
-                              color: Color(0xff000000),
-                              height: 1.5)),
-                      const SizedBox(height: 20),
-                      SizedBox(
-                          width: 40,
-                          height: 10,
-                          child: Image.asset('assets/images/acebot_logo.png')),
+          return Center(
+              child: Container(
+                  padding: const EdgeInsets.fromLTRB(20, 70, 20, 20),
+                  child: Column(children: [
+                    Row(children: [
                       Expanded(
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                            const SizedBox(height: 20),
+                          child: RichText(
+                              textAlign: TextAlign.center,
+                              text: const TextSpan(
+                                  text: 'ACEBOT ',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
+                                      color: Color(0xff000000)),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: 'Universe',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w300,
+                                            fontSize: 14.0,
+                                            color: Color(0xff000000)))
+                                  ]))),
+                    ]),
+                    const SizedBox(height: 16),
+                    Row(children: [
+                      Expanded(
+                          child: RichText(
+                              textAlign: TextAlign.center,
+                              text: TextSpan(
+                                  text: '안녕하세요, ',
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.w300,
+                                      fontSize: 20.0,
+                                      color: Color(0xff000000),
+                                      height: 1.5),
+                                  children: <TextSpan>[
+                                    TextSpan(
+                                        text: state is LoadedState
+                                            ? '${state.userJson.name}님'
+                                            : '회원님',
+                                        style: const TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 20.0,
+                                            color: Color(0xff000000),
+                                            height: 1.5))
+                                  ])))
+                    ]),
+                    const Text('무엇을 도와드릴까요?',
+                        style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 20.0,
+                            color: Color(0xff000000),
+                            height: 1.5)),
+                    const SizedBox(height: 20),
+                    SizedBox(
+                        width: 40,
+                        height: 10,
+                        child: Image.asset('assets/images/acebot_logo.png')),
+                    Expanded(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                          const SizedBox(height: 20),
 
-                            /**
+                          /**
                              * 포커싱될 시 캐로셀 hide
                              * 채팅 박스에 채팅 있을 시 캐로셀 hide
                              */
-                            (!isChatFocusing)
-                                ? SizedBox(
-                                    height: 314,
-                                    child: ListView.separated(
-                                        itemCount: 4,
-                                        separatorBuilder:
-                                            (BuildContext context, int idx) {
-                                          return const SizedBox(height: 18);
-                                        },
-                                        itemBuilder:
-                                            (BuildContext context, int idx) {
-                                          return Builder(
-                                              builder: (BuildContext context) {
-                                            return PromptCarouselWrapper(
-                                              groupIdx: idx,
-                                              itemsData: [
-                                                PromptItem(
-                                                    type: 'beta',
-                                                    content: '텍스트'),
-                                                PromptItem(
-                                                    type: 'beta',
-                                                    content:
-                                                        '텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트'),
-                                                PromptItem(
-                                                    type: 'beta',
-                                                    content: '텍스트텍스트텍스트'),
-                                                PromptItem(
-                                                    type: 'prompt',
-                                                    content: '텍스트텍스트텍스트'),
-                                                PromptItem(
-                                                    type: 'prompt',
-                                                    content:
-                                                        '텍스트텍스트텍스트텍스트텍스트텍스트')
-                                              ],
-                                              setPromptData: setPromptData,
-                                            );
-                                          });
-                                        }))
-                                : Container(),
-                            const SizedBox(height: 24),
-                            ChattingWrapper(
-                              setIsChatFocusing: setIsChatFocusing,
-                              setChatContent: setChatContent,
-                              setIsChatEmpty: setIsChatEmpty,
-                              updateQuestArray: updateQuestArray,
-                              updateIdsArray: updateIdsArray,
-                              questArrayLength: questArray.length,
-                            )
-                          ])),
-                    ])));
-          } else {
-            return Container();
-          }
+                          (!isChatFocusing)
+                              ? SizedBox(
+                                  height: 314,
+                                  child: ListView.separated(
+                                      itemCount: 4,
+                                      separatorBuilder:
+                                          (BuildContext context, int idx) {
+                                        return const SizedBox(height: 18);
+                                      },
+                                      itemBuilder:
+                                          (BuildContext context, int idx) {
+                                        return Builder(
+                                            builder: (BuildContext context) {
+                                          return PromptCarouselWrapper(
+                                            groupIdx: idx,
+                                            itemsData: [
+                                              PromptItem(
+                                                  type: 'beta', content: '텍스트'),
+                                              PromptItem(
+                                                  type: 'beta',
+                                                  content:
+                                                      '텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트'),
+                                              PromptItem(
+                                                  type: 'beta',
+                                                  content: '텍스트텍스트텍스트'),
+                                              PromptItem(
+                                                  type: 'prompt',
+                                                  content: '텍스트텍스트텍스트'),
+                                              PromptItem(
+                                                  type: 'prompt',
+                                                  content: '텍스트텍스트텍스트텍스트텍스트텍스트')
+                                            ],
+                                            setPromptData: setPromptData,
+                                          );
+                                        });
+                                      }))
+                              : Container(),
+                          const SizedBox(height: 24),
+                          ChattingWrapper(
+                            setIsChatFocusing: setIsChatFocusing,
+                            setChatContent: setChatContent,
+                            setIsChatEmpty: setIsChatEmpty,
+                            updateQuestArray: updateQuestArray,
+                            updateIdsArray: updateIdsArray,
+                            questArrayLength: questArray.length,
+                          )
+                        ])),
+                  ])));
         }));
   }
 
