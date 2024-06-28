@@ -1,14 +1,14 @@
 class PromptModel {
   final String? description;
-  final List<dynamic>? prompt;
+  final List<dynamic> prompts;
 
-  PromptModel({required this.description, required this.prompt});
+  PromptModel({required this.description, required this.prompts});
 
   factory PromptModel.fromJson(Map<String, dynamic> json) => PromptModel(
         description: json['description'] as String?,
-        prompt: json['prompt'] as List<dynamic>?,
+        prompts: json['prompts'] as List<dynamic>,
       );
 
   Map<String, dynamic> toJson() =>
-      {'description': description, 'prompt': prompt};
+      {'description': description, 'prompts': prompts};
 }

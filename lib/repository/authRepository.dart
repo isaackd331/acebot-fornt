@@ -10,19 +10,4 @@ class AuthRepository {
 
     return res.data;
   }
-
-  // 토큰 제거
-  Future<void> removeToken() async {
-    return;
-  }
-
-  // 토큰 재발급
-  Future<void> reissueToken(String refreshToken) async {
-    return;
-  }
-
-  // 토근 소지 여부 확인
-  Future<void> hasToken() async {
-    return;
-  }
 }

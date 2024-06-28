@@ -14,6 +14,7 @@ import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 import 'package:acebot_front/bloc/auth/authState.dart';
 import 'package:acebot_front/bloc/auth/authCubit.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
+import 'package:acebot_front/bloc/prompt/promptCubit.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -68,6 +69,7 @@ class _LoginState extends State<Login> {
            */
       if (state is LoadedState) {
         BlocProvider.of<SelfCubit>(context).getSelfData(userId);
+        BlocProvider.of<PromptCubit>(context).loginSuccess();
 
         context.go('/home');
       } else if (state is ErrorState) {

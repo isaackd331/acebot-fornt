@@ -18,16 +18,16 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 class ChattingWrapper extends StatefulWidget {
   final Function setIsChatFocusing;
   final Function setChatContent;
-  final Function setIsChatEmpty;
   final Function updateQuestArray;
   final Function updateIdsArray;
+  final TextEditingController chatController;
   final int questArrayLength;
 
   const ChattingWrapper(
       {super.key,
       required this.setIsChatFocusing,
       required this.setChatContent,
-      required this.setIsChatEmpty,
+      required this.chatController,
       required this.updateQuestArray,
       required this.updateIdsArray,
       required this.questArrayLength});
@@ -39,7 +39,6 @@ class ChattingWrapper extends StatefulWidget {
 class _ChattingWrapperState extends State<ChattingWrapper> {
   FocusNode chatFocusNode = FocusNode();
   String chatPlaceholder = "ACEBOT에게 요청해 보세요";
-  TextEditingController chatController = TextEditingController();
   bool isUploadButtonClicked = false;
 
   @override
@@ -52,12 +51,6 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
       });
 
       widget.setIsChatFocusing(chatFocusNode.hasFocus);
-    });
-
-    chatController.addListener(() {
-      setState(() {
-        widget.setIsChatEmpty(chatController.text.isEmpty);
-      });
     });
   }
 
@@ -243,7 +236,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         child: TextFormField(
                   keyboardType: TextInputType.multiline,
                   focusNode: chatFocusNode,
-                  controller: chatController,
+                  controller: widget.chatController,
                   onChanged: (value) {
                     setState(() {
                       widget.setChatContent(value);
@@ -267,29 +260,29 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                 ))),
                 IconButton(
                     onPressed: () {
-                      if (chatController.text.isNotEmpty) {
+                      if (widget.chatController.text.isNotEmpty) {
                         final answerCubit =
                             BlocProvider.of<AnswerCubit>(context);
 
                         answerCubit.ready();
 
-                        widget.updateQuestArray(chatController.text);
+                        widget.updateQuestArray(widget.chatController.text);
 
                         // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
                         // 1차 개발에서는 한 화면에 한 질문/답변만
                         // final idsData = answerCubit.quest(
                         //     chatController.text, widget.questArrayLength);
                         final idsData =
-                            answerCubit.quest(chatController.text, 0);
+                            answerCubit.quest(widget.chatController.text, 0);
 
-                        chatController.clear();
+                        widget.chatController.clear();
 
                         // 추후 questionId와 threadId 활용할 수 있도록 준비
                         idsData.then((value) => widget.updateIdsArray(value));
                       }
                     },
                     icon: Icon(Icons.arrow_upward,
-                        color: chatController.text.isEmpty
+                        color: widget.chatController.text.isEmpty
                             ? const Color(0xff999999)
                             : const Color(0xff000000)),
                     padding: const EdgeInsets.only(bottom: 3)),

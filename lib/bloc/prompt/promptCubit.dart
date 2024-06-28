@@ -11,7 +11,7 @@ class PromptCubit extends Cubit<PromptState> {
   PromptCubit({required this.repo}) : super(EmptyState());
 
   // 로그인 성공 시
-  Future<void> loginSuccessed() async {
+  Future<void> loginSuccess() async {
     try {
       emit(LoadingState());
 

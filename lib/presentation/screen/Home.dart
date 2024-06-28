@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:acebot_front/presentation/widget/home/promptCarouselWrapper.dart';
+import 'package:acebot_front/presentation/widget/home/promptCarousel.dart';
 import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
 import 'package:acebot_front/presentation/widget/home/templateWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
@@ -28,7 +28,6 @@ class _HomeState extends State<Home> {
   bool isChatFocusing = false;
   String chatPlaceholder = "ACEBOT에게 요청해 보세요";
   String chatContent = "";
-  bool isChatEmpty = true;
   TextEditingController chatController = TextEditingController();
   bool isUploadButtonClicked = false;
   List<int> promptData = [0, 0, 0, 0];
@@ -51,12 +50,6 @@ class _HomeState extends State<Home> {
               isChatFocusing = false;
             });
     });
-
-    chatController.addListener(() {
-      setState(() {
-        isChatEmpty = chatController.text.isEmpty;
-      });
-    });
   }
 
   /// 채팅 포커싱 여부 업데이트
@@ -71,13 +64,7 @@ class _HomeState extends State<Home> {
     setState(() {
       chatContent = value;
     });
-  }
-
-  /// 채팅 비어있음 여부 업데이트
-  void setIsChatEmpty(bool value) {
-    setState(() {
-      isChatEmpty = value;
-    });
+    chatController.text = value;
   }
 
   /// 프롬프트 데이터 업데이트
@@ -192,27 +179,9 @@ class _HomeState extends State<Home> {
                                           (BuildContext context, int idx) {
                                         return Builder(
                                             builder: (BuildContext context) {
-                                          return PromptCarouselWrapper(
-                                            groupIdx: idx,
-                                            itemsData: [
-                                              PromptItem(
-                                                  type: 'beta', content: '텍스트'),
-                                              PromptItem(
-                                                  type: 'beta',
-                                                  content:
-                                                      '텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트텍스트'),
-                                              PromptItem(
-                                                  type: 'beta',
-                                                  content: '텍스트텍스트텍스트'),
-                                              PromptItem(
-                                                  type: 'prompt',
-                                                  content: '텍스트텍스트텍스트'),
-                                              PromptItem(
-                                                  type: 'prompt',
-                                                  content: '텍스트텍스트텍스트텍스트텍스트텍스트')
-                                            ],
-                                            setPromptData: setPromptData,
-                                          );
+                                          return PromptCarousel(
+                                              setChatContent: setChatContent,
+                                              setPromptData: setPromptData);
                                         });
                                       }))
                               : Container(),
@@ -220,7 +189,7 @@ class _HomeState extends State<Home> {
                           ChattingWrapper(
                             setIsChatFocusing: setIsChatFocusing,
                             setChatContent: setChatContent,
-                            setIsChatEmpty: setIsChatEmpty,
+                            chatController: chatController,
                             updateQuestArray: updateQuestArray,
                             updateIdsArray: updateIdsArray,
                             questArrayLength: questArray.length,
@@ -261,7 +230,7 @@ class _HomeState extends State<Home> {
           child: ChattingWrapper(
             setIsChatFocusing: setIsChatFocusing,
             setChatContent: setChatContent,
-            setIsChatEmpty: setIsChatEmpty,
+            chatController: chatController,
             updateQuestArray: updateQuestArray,
             updateIdsArray: updateIdsArray,
             questArrayLength: questArray.length,
