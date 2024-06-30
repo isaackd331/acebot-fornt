@@ -8,19 +8,21 @@ import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class ChitChatTemplate extends StatefulWidget {
-  final int index;
+  // final int index;
   final int questionId;
   final int threadId;
   final String question;
   final Function setChatContent;
+  final String initMp;
 
   const ChitChatTemplate(
       {super.key,
-      required this.index,
+      // required this.index,
       required this.questionId,
       required this.threadId,
       required this.question,
-      required this.setChatContent});
+      required this.setChatContent,
+      required this.initMp});
 
   @override
   _ChitChatTemplateState createState() => _ChitChatTemplateState();
@@ -33,6 +35,10 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
   @override
   void initState() {
     super.initState();
+
+    setState(() {
+      mainParagraph = widget.initMp;
+    });
   }
 
   @override
@@ -42,17 +48,29 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerCubit, List<AnswerState>>(
-        listener: (context, state) {
-      AnswerState theState = state[widget.index];
+    // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+    // 1차 개발에서는 한 화면에 한 질문/답변만
+    // return BlocListener<AnswerCubit, List<AnswerState>>(
+    return BlocListener<AnswerCubit, AnswerState>(listener: (context, state) {
+      // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+      // 1차 개발에서는 한 화면에 한 질문/답변만
+      // AnswerState theState = state[widget.index];
+      AnswerState theState = state;
 
       if (theState is LoadedState) {
         setState(() {
           mainParagraph = theState.answerJson.main_paragraph;
         });
       }
-    }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
-      AnswerState theState = state[widget.index];
+    },
+        // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+        // 1차 개발에서는 한 화면에 한 질문/답변만
+        // child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
+        child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
+      // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+      // 1차 개발에서는 한 화면에 한 질문/답변만
+      // AnswerState theState = state[widget.index];
+      AnswerState theState = state;
 
       if (theState is LoadedState) {
         return Container(

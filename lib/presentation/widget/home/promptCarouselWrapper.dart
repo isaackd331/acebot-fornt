@@ -12,14 +12,14 @@ class PromptCarouselWrapper extends StatefulWidget {
   final List<dynamic> itemsData;
   final int groupIdx;
   final Function setPromptData;
-  final Function setChatContent;
+  final Function setPromptToChat;
 
   const PromptCarouselWrapper(
       {super.key,
       required this.groupIdx,
       required this.itemsData,
       required this.setPromptData,
-      required this.setChatContent});
+      required this.setPromptToChat});
 
   @override
   _PromptCarouselWrapperState createState() => _PromptCarouselWrapperState();
@@ -45,7 +45,7 @@ class _PromptCarouselWrapperState extends State<PromptCarouselWrapper> {
                 title: datum['title'],
                 tag: datum['tag'],
                 isActive: idx == curIdx,
-                setChatContent: widget.setChatContent);
+                setPromptToChat: widget.setPromptToChat);
           });
         }).toList(),
         options: CarouselOptions(

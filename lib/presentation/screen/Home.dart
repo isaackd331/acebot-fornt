@@ -25,14 +25,18 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   FocusNode chatFocusNode = FocusNode();
-  bool isChatFocusing = false;
   String chatPlaceholder = "ACEBOT에게 요청해 보세요";
   String chatContent = "";
   TextEditingController chatController = TextEditingController();
   bool isUploadButtonClicked = false;
   List<int> promptData = [0, 0, 0, 0];
-  List<String> questArray = [];
-  List<dynamic> idsArray = [];
+  // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+  // 1차 개발에서는 한 화면에 한 질문/답변만
+  // 본래 List Type이 아니므로 명명이 이렇게 되어서는 안되나, 2차 개발에서의 주석 해제 시 혼란을 방지하기 위해 2차 개발 건의 데이터와 명명을 맞춤
+  // List<String> questArray = [];
+  // List<dynamic> idsArray = [];
+  String questArray = '';
+  dynamic idsArray = {};
   ScrollController answerListController = ScrollController();
 
   @override
@@ -43,19 +47,10 @@ class _HomeState extends State<Home> {
       chatFocusNode.hasFocus
           ? setState(() {
               chatPlaceholder = "";
-              isChatFocusing = true;
             })
           : setState(() {
               chatPlaceholder = "ACEBOT에게 요청해 보세요";
-              isChatFocusing = false;
             });
-    });
-  }
-
-  /// 채팅 포커싱 여부 업데이트
-  void setIsChatFocusing(bool value) {
-    setState(() {
-      isChatFocusing = value;
     });
   }
 
@@ -64,6 +59,14 @@ class _HomeState extends State<Home> {
     setState(() {
       chatContent = value;
     });
+  }
+
+  /// prompt setting
+  void setPromptToChat(String value) {
+    setState(() {
+      chatContent = value;
+    });
+
     chatController.text = value;
   }
 
@@ -80,7 +83,7 @@ class _HomeState extends State<Home> {
       // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
       // 1차 개발에서는 한 화면에 한 질문/답변만
       // questArray = [...questArray, value]
-      questArray = [value];
+      questArray = value;
     });
   }
 
@@ -90,7 +93,7 @@ class _HomeState extends State<Home> {
       // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
       // 1차 개발에서는 한 화면에 한 질문/답변만
       // idsArray = [...idsArray, value];
-      idsArray = [value];
+      idsArray = value;
     });
   }
 
@@ -166,7 +169,7 @@ class _HomeState extends State<Home> {
                              * 포커싱될 시 캐로셀 hide
                              * 채팅 박스에 채팅 있을 시 캐로셀 hide
                              */
-                          (!isChatFocusing)
+                          (!chatFocusNode.hasFocus)
                               ? SizedBox(
                                   height: 314,
                                   child: ListView.separated(
@@ -180,18 +183,18 @@ class _HomeState extends State<Home> {
                                         return Builder(
                                             builder: (BuildContext context) {
                                           return PromptCarousel(
-                                              setChatContent: setChatContent,
+                                              setPromptToChat: setPromptToChat,
                                               setPromptData: setPromptData);
                                         });
                                       }))
                               : Container(),
                           const SizedBox(height: 24),
                           ChattingWrapper(
-                            setIsChatFocusing: setIsChatFocusing,
                             setChatContent: setChatContent,
-                            chatController: chatController,
                             updateQuestArray: updateQuestArray,
                             updateIdsArray: updateIdsArray,
+                            chatController: chatController,
+                            chatFocusNode: chatFocusNode,
                             questArrayLength: questArray.length,
                           )
                         ])),
@@ -218,21 +221,21 @@ class _HomeState extends State<Home> {
           //     .toList()
           children: [
             TemplateWrapper(
-                question: questArray[0],
-                index: 0,
-                idsArray: idsArray,
-                setChatContent: setChatContent,
-                answerListController: answerListController)
+              question: questArray,
+              idsArray: idsArray,
+              setChatContent: setChatContent,
+              answerListController: answerListController,
+            )
           ]),
       Container(
           padding:
               const EdgeInsets.only(top: 40, left: 20, right: 20, bottom: 20),
           child: ChattingWrapper(
-            setIsChatFocusing: setIsChatFocusing,
             setChatContent: setChatContent,
-            chatController: chatController,
             updateQuestArray: updateQuestArray,
             updateIdsArray: updateIdsArray,
+            chatController: chatController,
+            chatFocusNode: chatFocusNode,
             questArrayLength: questArray.length,
           ))
     ]);
@@ -251,8 +254,12 @@ class _HomeState extends State<Home> {
                   chatController.clear();
                   setState(() {
                     chatContent = '';
-                    questArray = [];
-                    idsArray = [];
+                    // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+                    // 1차 개발에서는 한 화면에 한 질문/답변만
+                    // questArray = [];
+                    // idsArray = [];
+                    questArray = '';
+                    idsArray = {};
                   });
                   BlocProvider.of<AnswerCubit>(context).clearCubit();
                 }

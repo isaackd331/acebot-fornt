@@ -7,11 +7,11 @@ import 'package:acebot_front/bloc/prompt/promptState.dart';
 import 'package:acebot_front/bloc/prompt/promptCubit.dart';
 
 class PromptCarousel extends StatefulWidget {
-  final Function setChatContent;
+  final Function setPromptToChat;
   final Function setPromptData;
 
   const PromptCarousel(
-      {super.key, required this.setChatContent, required this.setPromptData});
+      {super.key, required this.setPromptToChat, required this.setPromptData});
 
   @override
   _PromptCarouselState createState() => _PromptCarouselState();
@@ -49,7 +49,7 @@ class _PromptCarouselState extends State<PromptCarousel> {
                         groupIdx: idx,
                         itemsData: state.promptJson.prompts[idx],
                         setPromptData: widget.setPromptData,
-                        setChatContent: widget.setChatContent);
+                        setPromptToChat: widget.setPromptToChat);
                   });
                 }));
       } else {

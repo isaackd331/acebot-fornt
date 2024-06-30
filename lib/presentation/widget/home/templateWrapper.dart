@@ -12,15 +12,18 @@ import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class TemplateWrapper extends StatefulWidget {
   final String question;
-  final int index;
-  final List<dynamic> idsArray;
+  // final int index;
+  // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+  // 1차 개발에서는 한 화면에 한 질문/답변만
+  // final List<dynamic> idsArray;
+  final dynamic idsArray;
   final Function setChatContent;
   final ScrollController answerListController;
 
   const TemplateWrapper(
       {super.key,
       required this.question,
-      required this.index,
+      // required this.index,
       required this.idsArray,
       required this.setChatContent,
       required this.answerListController});
@@ -31,13 +34,11 @@ class TemplateWrapper extends StatefulWidget {
 
 class _TemplateWrapperState extends State<TemplateWrapper> {
   String? templateName = "";
+  String mainParagraph = "";
 
   @override
   void initState() {
     super.initState();
-
-    // initialize Cubit
-    context.read<AnswerCubit>();
   }
 
   @override
@@ -49,35 +50,56 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
     switch (templateName) {
       case 'chitchat':
         return ChitChatTemplate(
-            index: widget.index,
-            questionId: widget.idsArray[widget.index]['questionId'],
-            threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question,
-            setChatContent: widget.setChatContent);
+          // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+          // 1차 개발에서는 한 화면에 한 질문/답변만
+          // index: widget.index,
+          // questionId: widget.idsArray[widget.index]['questionId'],
+          // threadId: widget.idsArray[widget.index]['threadId'],
+          questionId: widget.idsArray['questionId'],
+          threadId: widget.idsArray['threadId'],
+          question: widget.question,
+          setChatContent: widget.setChatContent,
+          initMp: mainParagraph,
+        );
 
       case 'cur_weather':
         return WeatherTemplate(
-            index: widget.index,
-            questionId: widget.idsArray[widget.index]['questionId'],
-            threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question,
-            setChatContent: widget.setChatContent);
+          // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+          // 1차 개발에서는 한 화면에 한 질문/답변만
+          // index: widget.index,
+          // questionId: widget.idsArray[widget.index]['questionId'],
+          // threadId: widget.idsArray[widget.index]['threadId'],
+          questionId: widget.idsArray['questionId'],
+          threadId: widget.idsArray['threadId'],
+          question: widget.question,
+          setChatContent: widget.setChatContent, initMp: mainParagraph,
+        );
 
       case 'weekly_weather':
         return WeatherTemplate(
-            index: widget.index,
-            questionId: widget.idsArray[widget.index]['questionId'],
-            threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question,
-            setChatContent: widget.setChatContent);
+          // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+          // 1차 개발에서는 한 화면에 한 질문/답변만
+          // index: widget.index,
+          // questionId: widget.idsArray[widget.index]['questionId'],
+          // threadId: widget.idsArray[widget.index]['threadId'],
+          questionId: widget.idsArray['questionId'],
+          threadId: widget.idsArray['threadId'],
+          question: widget.question,
+          setChatContent: widget.setChatContent, initMp: mainParagraph,
+        );
 
       case 'place_search':
         return PlaceTemplate(
-            index: widget.index,
-            questionId: widget.idsArray[widget.index]['questionId'],
-            threadId: widget.idsArray[widget.index]['threadId'],
-            question: widget.question,
-            setChatContent: widget.setChatContent);
+          // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+          // 1차 개발에서는 한 화면에 한 질문/답변만
+          // index: widget.index,
+          // questionId: widget.idsArray[widget.index]['questionId'],
+          // threadId: widget.idsArray[widget.index]['threadId'],
+          questionId: widget.idsArray['questionId'],
+          threadId: widget.idsArray['threadId'],
+          question: widget.question,
+          setChatContent: widget.setChatContent, initMp: mainParagraph,
+        );
 
       default:
         return Container();
@@ -86,36 +108,58 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AnswerCubit, List<AnswerState>>(
-        listener: (context, state) {
-      AnswerState theState = state[widget.index];
-      AnswerState lastState = state[state.length - 1];
+    // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+    // 1차 개발에서는 한 화면에 한 질문/답변만
+    // return BlocListener<AnswerCubit, List<AnswerState>>(
+    return BlocListener<AnswerCubit, AnswerState>(listener: (context, state) {
+      // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+      // 1차 개발에서는 한 화면에 한 질문/답변만
+      // theState와 lastState를 따로 둘 필요가 없으나, 이후 주석 해제 시를 대비하여 따로 변수를 둠.
+      // AnswerState theState = state[widget.index];
+      // AnswerState lastState = state[state.length - 1];
+      AnswerState theState = state;
+      AnswerState lastState = state;
 
-      scrollToBottom(int duration) {
-        Future.delayed(
-            duration == 0 ? Duration.zero : Duration(milliseconds: duration),
-            () {
-          widget.answerListController.animateTo(
-              widget.answerListController.position.maxScrollExtent,
-              duration: const Duration(milliseconds: 100),
-              curve: Curves.easeInOut);
-        });
+      void scrollToBottom(int duration) {
+        if (widget.answerListController.hasClients) {
+          Future.delayed(
+              duration == 0 ? Duration.zero : Duration(milliseconds: duration),
+              () {
+            widget.answerListController.animateTo(
+                widget.answerListController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 100),
+                curve: Curves.easeInOut);
+          });
+        }
       }
 
-      if (theState is LoadedState) {
+      if (theState is LoadingState) {
+        setState(() {
+          templateName = '';
+        });
+      } else if (theState is LoadedState) {
         setState(() {
           templateName = theState.answerJson.template_name;
+          mainParagraph = theState.answerJson.main_paragraph;
         });
       }
 
-      if (lastState is EmptyState || lastState is LoadingState) {
-        scrollToBottom(100);
-      } else if (lastState is LoadedState) {
-        print(widget.index);
-        scrollToBottom(0);
+      if (widget.answerListController.hasClients) {
+        if (lastState is EmptyState || lastState is LoadingState) {
+          scrollToBottom(100);
+        } else if (lastState is LoadedState) {
+          scrollToBottom(0);
+        }
       }
-    }, child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
-      AnswerState theState = state[widget.index];
+    },
+        // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+        // 1차 개발에서는 한 화면에 한 질문/답변만
+        // child: BlocBuilder<AnswerCubit, List<AnswerState>>(builder: (_, state) {
+        child: BlocBuilder<AnswerCubit, AnswerState>(builder: (_, state) {
+      // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+      // 1차 개발에서는 한 화면에 한 질문/답변만
+      // AnswerState theState = state[widget.index];
+      AnswerState theState = state;
 
       return Container(
           margin: const EdgeInsets.only(top: 40),
@@ -195,7 +239,11 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
                                     color: Color.fromARGB(255, 51, 21, 21)))))
                   ])
                 : Container(),
-            theState is LoadedState ? _templateSelector() : Container()
+            (theState is LoadedState &&
+                    widget.idsArray['questionId'] != null &&
+                    widget.idsArray['threadId'] != null)
+                ? _templateSelector()
+                : Container()
           ]));
     }));
   }

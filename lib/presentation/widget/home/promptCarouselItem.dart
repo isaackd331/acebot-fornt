@@ -8,7 +8,7 @@ class PromptCarouselItem extends StatelessWidget {
   final String title;
   final String tag;
   final bool isActive;
-  final Function setChatContent;
+  final Function setPromptToChat;
 
   const PromptCarouselItem(
       {super.key,
@@ -16,7 +16,7 @@ class PromptCarouselItem extends StatelessWidget {
       required this.title,
       required this.tag,
       required this.isActive,
-      required this.setChatContent});
+      required this.setPromptToChat});
 
   String capitalize(String str) {
     if (str.isEmpty) {
@@ -31,7 +31,7 @@ class PromptCarouselItem extends StatelessWidget {
     return GestureDetector(
         onTap: () {
           if (isActive) {
-            setChatContent(prompt);
+            setPromptToChat(prompt);
           }
         },
         child: Container(

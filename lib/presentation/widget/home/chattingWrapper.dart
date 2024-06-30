@@ -16,20 +16,20 @@ import 'package:acebot_front/presentation/widget/home/record/recordUploadBottomS
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
 class ChattingWrapper extends StatefulWidget {
-  final Function setIsChatFocusing;
   final Function setChatContent;
   final Function updateQuestArray;
   final Function updateIdsArray;
   final TextEditingController chatController;
+  final FocusNode chatFocusNode;
   final int questArrayLength;
 
   const ChattingWrapper(
       {super.key,
-      required this.setIsChatFocusing,
       required this.setChatContent,
-      required this.chatController,
       required this.updateQuestArray,
       required this.updateIdsArray,
+      required this.chatController,
+      required this.chatFocusNode,
       required this.questArrayLength});
 
   @override
@@ -37,21 +37,11 @@ class ChattingWrapper extends StatefulWidget {
 }
 
 class _ChattingWrapperState extends State<ChattingWrapper> {
-  FocusNode chatFocusNode = FocusNode();
-  String chatPlaceholder = "ACEBOT에게 요청해 보세요";
   bool isUploadButtonClicked = false;
 
   @override
   void initState() {
     super.initState();
-
-    chatFocusNode.addListener(() {
-      setState(() {
-        chatPlaceholder = chatFocusNode.hasFocus ? "" : "ACEBOT에게 요청해 보세요";
-      });
-
-      widget.setIsChatFocusing(chatFocusNode.hasFocus);
-    });
   }
 
   @override
@@ -235,7 +225,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                     child: NoScrollbarWrapper(
                         child: TextFormField(
                   keyboardType: TextInputType.multiline,
-                  focusNode: chatFocusNode,
+                  focusNode: widget.chatFocusNode,
                   controller: widget.chatController,
                   onChanged: (value) {
                     setState(() {
@@ -243,14 +233,16 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                     });
                   },
                   minLines: 1,
-                  maxLines: chatFocusNode.hasFocus ? 6 : 1,
+                  maxLines: widget.chatFocusNode.hasFocus ? 6 : 1,
                   style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff000000)),
                   decoration: InputDecoration(
                     fillColor: const Color(0xfff4f4f4),
-                    hintText: chatPlaceholder,
+                    hintText: !widget.chatFocusNode.hasFocus
+                        ? 'ACEBOT에게 요청해 보세요'
+                        : '',
                     hintStyle: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -259,12 +251,14 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   ),
                 ))),
                 IconButton(
-                    onPressed: () {
+                    onPressed: () async {
                       if (widget.chatController.text.isNotEmpty) {
                         final answerCubit =
                             BlocProvider.of<AnswerCubit>(context);
 
-                        answerCubit.ready();
+                        // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+                        // 1차 개발에서는 한 화면에 한 질문/답변만
+                        // answerCubit.ready();
 
                         widget.updateQuestArray(widget.chatController.text);
 
@@ -272,13 +266,10 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         // 1차 개발에서는 한 화면에 한 질문/답변만
                         // final idsData = answerCubit.quest(
                         //     chatController.text, widget.questArrayLength);
-                        final idsData =
-                            answerCubit.quest(widget.chatController.text, 0);
+                        final idsData = await answerCubit.quest(
+                            widget.chatController.text, widget.chatController);
 
-                        widget.chatController.clear();
-
-                        // 추후 questionId와 threadId 활용할 수 있도록 준비
-                        idsData.then((value) => widget.updateIdsArray(value));
+                        widget.updateIdsArray(idsData);
                       }
                     },
                     icon: Icon(Icons.arrow_upward,
