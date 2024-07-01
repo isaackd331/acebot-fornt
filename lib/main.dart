@@ -58,8 +58,9 @@ class AppView extends StatelessWidget {
       builder: FToastBuilder(),
       routerConfig: AppRouter.router,
       theme: ThemeData(
-          fontFamily: "Pretendard",
-          scaffoldBackgroundColor: const Color(0xffffffff)),
+        fontFamily: "Pretendard",
+        scaffoldBackgroundColor: const Color(0xffffffff),
+      ),
     );
   }
 }
