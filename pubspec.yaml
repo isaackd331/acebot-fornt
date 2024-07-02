@@ -103,6 +103,9 @@ flutter:
     - assets/icons/icon_thread-popup-delete.png
     - assets/icons/icon_thread-popup-edit-name.png
     - assets/icons/icon_thread-popup-move.png
+    - assets/icons/icon_project.png
+    - assets/icons/icon_project-add.png
+    - assets/icons/icon_projects-empty.png
 
   # images
     # 원래는 아이콘 폴더에 들어가야하나 만들어진 위젯을 재활용하기 위해 images 폴더에 삽입

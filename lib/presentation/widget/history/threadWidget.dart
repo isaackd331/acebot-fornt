@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
+import 'package:acebot_front/presentation/widget/history/projectsBottomsheet.dart';
 
 import 'package:acebot_front/api/threadService.dart';
 
@@ -161,7 +162,15 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                       itemBuilder: (BuildContext context) {
                         return [
                           PopupMenuItem(
-                              onTap: () {},
+                              onTap: () {
+                                showModalBottomSheet(
+                                    context: context,
+                                    isScrollControlled: true,
+                                    builder: (BuildContext context) {
+                                      return ProjectsBottomsheet(
+                                          threadId: data["threadId"]);
+                                    });
+                              },
                               height: 0,
                               padding: EdgeInsets.zero,
                               child: Container(

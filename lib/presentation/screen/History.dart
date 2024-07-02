@@ -11,6 +11,8 @@ import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
 import 'package:acebot_front/bloc/thread/threadState.dart';
 import 'package:acebot_front/bloc/thread/threadCubit.dart';
+import 'package:acebot_front/bloc/project/projectState.dart';
+import 'package:acebot_front/bloc/project/projectCubit.dart';
 
 class History extends StatefulWidget {
   const History({super.key});
@@ -33,6 +35,9 @@ class _HistoryState extends State<History> {
      */
     final threadCubit = context.read<ThreadCubit>();
     threadCubit.init();
+
+    final projectCubit = context.read<ProjectCubit>();
+    projectCubit.init();
   }
 
   @override

@@ -2,7 +2,6 @@
 library;
 
 import 'package:acebot_front/api/http.dart';
-import 'package:dio/dio.dart';
 
 class ThreadService {
   getThreadsList(int page, int size, String? search) {

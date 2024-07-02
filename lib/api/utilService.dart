@@ -1,5 +1,4 @@
 import 'package:acebot_front/api/http.dart';
-import 'package:dio/dio.dart';
 
 class UtilService {
   getHomePrompts() {
