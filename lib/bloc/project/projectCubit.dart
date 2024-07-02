@@ -15,7 +15,21 @@ class ProjectCubit extends Cubit<ProjectState> {
     try {
       emit(LoadingState());
 
-      final projectJson = await repo.initProjects();
+      final projectJson = await repo.getProjectsList();
+
+      emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
+  // createAndReread
+  Future<void> create(String title) async {
+    try {
+      await repo.postProject(title);
+
+      final projectJson = await repo.getProjectsList();
 
       emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
     } on DioException catch (err) {

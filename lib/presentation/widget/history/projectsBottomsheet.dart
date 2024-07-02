@@ -39,9 +39,19 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               IconButton(
-                onPressed: () {},
-                icon:
-                    Image.asset('assets/icons/icon_project-add.png', scale: 4),
+                onPressed: () {
+                  if (!isEditing) {
+                    setState(() {
+                      isEditing = true;
+                      selectedProject = null;
+                    });
+                  }
+                },
+                icon: Image.asset('assets/icons/icon_project-add.png',
+                    scale: 4,
+                    color: !isEditing
+                        ? const Color(0xff000000)
+                        : const Color(0xffb3b3b3)),
               ),
               const Expanded(
                   child: Text('프로젝트 선택',
@@ -87,14 +97,16 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
   Widget _projectRow(dynamic data) {
     return GestureDetector(
         onTap: () {
-          if (selectedProject != data['projectId']) {
-            setState(() {
-              selectedProject = data['projectId'];
-            });
-          } else {
-            setState(() {
-              selectedProject = null;
-            });
+          if (!isEditing) {
+            if (selectedProject != data['projectId']) {
+              setState(() {
+                selectedProject = data['projectId'];
+              });
+            } else {
+              setState(() {
+                selectedProject = null;
+              });
+            }
           }
         },
         child: Container(
@@ -103,15 +115,22 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                 color: selectedProject != data['projectId']
                     ? const Color(0xffffffff)
                     : const Color(0xfff4f4f4)),
-            child: Row(children: [
-              Image.asset('assets/icons/icon_project.png', scale: 4),
+            child:
+                Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+              Image.asset('assets/icons/icon_project.png',
+                  scale: 4,
+                  color: !isEditing
+                      ? const Color(0xff000000)
+                      : const Color(0xffb3b3b3)),
               const SizedBox(width: 6),
               Expanded(
                   child: Text(data['title'],
-                      style: const TextStyle(
+                      style: TextStyle(
                           fontSize: 14,
                           fontWeight: FontWeight.w500,
-                          color: Color(0xff1c1c1c))))
+                          color: !isEditing
+                              ? const Color(0xff1c1c1c)
+                              : const Color(0xffb3b3b3))))
             ])));
   }
 
@@ -134,12 +153,116 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                       state.projectJson.items.isEmpty
                           ? _loadedButEmpty()
                           : Expanded(
-                              child: Column(
-                                  mainAxisSize: MainAxisSize.max,
-                                  children: state.projectJson.items
+                              child: SingleChildScrollView(
+                                  child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      children: [
+                                  isEditing
+                                      ? Container(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 15, horizontal: 20),
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xffffffff),
+                                          ),
+                                          child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              children: [
+                                                Image.asset(
+                                                    'assets/icons/icon_project.png',
+                                                    scale: 4,
+                                                    color: !isEditing
+                                                        ? const Color(
+                                                            0xff000000)
+                                                        : const Color(
+                                                            0xffb3b3b3)),
+                                                const SizedBox(width: 6),
+                                                Expanded(
+                                                    child: Container(
+                                                        decoration:
+                                                            const BoxDecoration(
+                                                                border: Border(
+                                                                    bottom:
+                                                                        BorderSide(
+                                                          color:
+                                                              Color(0xff000000),
+                                                          width: 1,
+                                                        ))),
+                                                        child: TextField(
+                                                            controller:
+                                                                titleEditController,
+                                                            style: const TextStyle(
+                                                                fontSize: 14,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w500,
+                                                                color: Color(
+                                                                    0xff1c1c1c)),
+                                                            decoration: const InputDecoration(
+                                                                isDense: true,
+                                                                contentPadding:
+                                                                    EdgeInsets.only(
+                                                                        bottom:
+                                                                            5),
+                                                                border:
+                                                                    InputBorder
+                                                                        .none)))),
+                                                isEditing
+                                                    ? Container(
+                                                        margin: const EdgeInsets.only(
+                                                            left: 6),
+                                                        child: OutlinedButton(
+                                                            onPressed:
+                                                                () async {
+                                                              String theTitle =
+                                                                  titleEditController
+                                                                      .text;
+
+                                                              ProjectCubit
+                                                                  projectCubit =
+                                                                  BlocProvider.of<
+                                                                          ProjectCubit>(
+                                                                      context);
+
+                                                              await projectCubit
+                                                                  .create(
+                                                                      theTitle);
+
+                                                              setState(() {
+                                                                isEditing =
+                                                                    false;
+                                                              });
+                                                            },
+                                                            style: OutlinedButton.styleFrom(
+                                                                backgroundColor:
+                                                                    const Color(
+                                                                        0xff000000),
+                                                                side: const BorderSide(
+                                                                    color: Color(
+                                                                        0xff000000),
+                                                                    width: 1.0),
+                                                                shape: RoundedRectangleBorder(
+                                                                    borderRadius:
+                                                                        BorderRadius.circular(
+                                                                            4.0)),
+                                                                padding: const EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical:
+                                                                        6)),
+                                                            child: const Text("완료",
+                                                                style: TextStyle(
+                                                                    fontSize: 14,
+                                                                    fontWeight: FontWeight.w600,
+                                                                    color: Color(0xffffffff)))))
+                                                    : Container()
+                                              ]))
+                                      : Container(),
+                                  ...state.projectJson.items
                                       .map<Widget>((project) {
                                     return _projectRow(project);
-                                  }).toList())),
+                                  })
+                                ]))),
                       Container(
                           padding: const EdgeInsets.fromLTRB(20, 26, 20, 0),
                           child: Column(

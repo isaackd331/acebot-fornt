@@ -259,7 +259,7 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                     ))
                 : OutlinedButton(
                     onPressed: () async {
-                      String thetitle = titleEditController.text;
+                      String theTitle = titleEditController.text;
 
                       dynamic theThread = threadList.values
                           .expand((value) => value)
@@ -268,7 +268,7 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                               orElse: () => null);
 
                       if (theThread != null) {
-                        theThread['title'] = thetitle;
+                        theThread['title'] = theTitle;
                       }
 
                       setState(() {
@@ -276,7 +276,7 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                       });
 
                       await ThreadService()
-                          .patchThread(data["threadId"], thetitle, null);
+                          .patchThread(data["threadId"], theTitle, null);
                     },
                     style: OutlinedButton.styleFrom(
                         backgroundColor: const Color(0xff000000),

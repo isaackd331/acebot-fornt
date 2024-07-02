@@ -10,6 +10,6 @@ class ProjectService {
   }
 
   postProject(String title) {
-    return dio.patch("/v1/projects", data: {"title": title});
+    return dio.post("/v1/projects", data: {"title": title});
   }
 }
