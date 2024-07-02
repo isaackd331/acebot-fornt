@@ -3,6 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 
+import 'package:acebot_front/api/threadService.dart';
+
 import 'package:acebot_front/bloc/project/projectCubit.dart';
 import 'package:acebot_front/bloc/project/projectState.dart';
 
@@ -228,6 +230,8 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                                                                   .create(
                                                                       theTitle);
 
+                                                              titleEditController
+                                                                  .clear();
                                                               setState(() {
                                                                 isEditing =
                                                                     false;
@@ -272,8 +276,16 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
                                       BaseOutlineButton(
-                                          onPressedFunc: () {
-                                            if (selectedProject != null) {}
+                                          onPressedFunc: () async {
+                                            if (selectedProject != null &&
+                                                mounted) {
+                                              await ThreadService().patchThread(
+                                                  widget.threadId,
+                                                  null,
+                                                  selectedProject);
+
+                                              Navigator.pop(context);
+                                            }
                                           },
                                           text: '확인',
                                           fontSize: 16,
