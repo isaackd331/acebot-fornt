@@ -47,7 +47,7 @@ class _ThirdProgressState extends State<ThirdProgress> {
           idInvalidType = "";
         } else {
           String emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-          RegExp regExp = new RegExp(emailPattern);
+          RegExp regExp = RegExp(emailPattern);
 
           if (regExp.hasMatch(idController.text)) {
             idInvalidType = "notEmail";
@@ -67,17 +67,17 @@ class _ThirdProgressState extends State<ThirdProgress> {
     return Container(
         padding: const EdgeInsets.only(top: 30.0),
         child: Column(children: [
-          Row(children: [
+          const Row(children: [
             Expanded(
                 child: Text("이메일을\n입력해 주세요.",
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xff000000))))
+                        color: Color(0xff000000))))
           ]),
-          SizedBox(height: 56.0),
+          const SizedBox(height: 56.0),
           Column(children: [
-            Row(children: [
+            const Row(children: [
               Expanded(
                   child: Text('아이디',
                       style: TextStyle(
@@ -85,12 +85,12 @@ class _ThirdProgressState extends State<ThirdProgress> {
                           fontWeight: FontWeight.w500,
                           color: Color(0xff444444))))
             ]),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextField(
               focusNode: nameFocusNode,
               controller: idController,
               onChanged: (value) => {widget.setUserName(value)},
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
                   color: Color(0xff000000)),
@@ -104,19 +104,19 @@ class _ThirdProgressState extends State<ThirdProgress> {
                             });
                           },
                           icon:
-                              Icon(Icons.clear, color: const Color(0xff000000)),
+                              const Icon(Icons.clear, color: Color(0xff000000)),
                           iconSize: 24.0,
                           padding: const EdgeInsets.all(0))
                       : null,
                   hintText: namePlaceholder,
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff939393)),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8.0, vertical: 11.5),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 11.5),
                   filled: true,
-                  fillColor: Color(0xfff4f4f4),
+                  fillColor: const Color(0xfff4f4f4),
                   border: InputBorder.none),
             ),
           ])

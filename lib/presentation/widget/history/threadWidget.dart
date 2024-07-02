@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 
+import 'package:acebot_front/api/threadService.dart';
+
 import 'package:acebot_front/bloc/thread/threadState.dart';
 import 'package:acebot_front/bloc/thread/threadCubit.dart';
 
@@ -20,6 +22,8 @@ class ThreadWidget extends StatefulWidget {
 
 class _ThreadWidgetState extends State<ThreadWidget> {
   Map<String, dynamic> threadList = {};
+  int? isEditing;
+  TextEditingController titleEditController = TextEditingController();
 
   @override
   void initState() {
@@ -96,111 +100,188 @@ class _ThreadWidgetState extends State<ThreadWidget> {
   }
 
   Widget _threadRow(dynamic data) {
+    bool otherIsEditing = isEditing != null && isEditing != data['threadId'];
+    bool selfIsEditing = isEditing != null && isEditing == data['threadId'];
+
     return Container(
         padding: const EdgeInsets.symmetric(vertical: 14.5),
         child: Row(
+          mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Row(children: [
-              Image.asset('assets/icons/icon_thread.png', scale: 4),
-              const SizedBox(width: 6),
-              Text(data['title'],
-                  style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff1c1c1c)))
-            ]),
-            Theme(
-                data: Theme.of(context).copyWith(
-                    splashColor: Colors.transparent,
-                    tooltipTheme: const TooltipThemeData(
-                        decoration: BoxDecoration(color: Colors.transparent))),
-                child: PopupMenuButton(
-                  padding: EdgeInsets.zero,
-                  color: const Color(0xff323232),
-                  tooltip: "",
-                  offset: const Offset(-10, 40),
-                  itemBuilder: (BuildContext context) {
-                    return [
-                      PopupMenuItem(
-                          onTap: () {},
-                          height: 0,
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                              height: 40,
-                              padding: const EdgeInsets.fromLTRB(14, 8, 0, 8),
-                              decoration:
-                                  const BoxDecoration(color: Color(0xff323232)),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: Image.asset(
-                                          'assets/icons/icon_thread-popup-move.png'),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Text('프로젝트 이동',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffffffff)))
-                                  ]))),
-                      PopupMenuItem(
-                          onTap: () {},
-                          height: 0,
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                              height: 50,
-                              padding: const EdgeInsets.fromLTRB(14, 8, 0, 8),
-                              decoration:
-                                  const BoxDecoration(color: Color(0xff171717)),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: Image.asset(
-                                          'assets/icons/icon_thread-popup-edit-name.png'),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Text('이름 변경',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffffffff)))
-                                  ]))),
-                      PopupMenuItem(
-                          onTap: () {},
-                          height: 0,
-                          padding: EdgeInsets.zero,
-                          child: Container(
-                              height: 40,
-                              padding: const EdgeInsets.fromLTRB(14, 8, 0, 8),
-                              decoration:
-                                  const BoxDecoration(color: Color(0xff323232)),
-                              child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    SizedBox(
-                                      width: 24,
-                                      height: 24,
-                                      child: Image.asset(
-                                          'assets/icons/icon_thread-popup-delete.png'),
-                                    ),
-                                    const SizedBox(width: 8),
-                                    const Text('삭제',
-                                        style: TextStyle(
-                                            fontSize: 14,
-                                            fontWeight: FontWeight.w400,
-                                            color: Color(0xffffffff)))
-                                  ]))),
-                    ];
-                  },
-                ))
+            Image.asset('assets/icons/icon_thread.png',
+                scale: 4,
+                color: !otherIsEditing
+                    ? const Color(0xff1c1c1c)
+                    : const Color(0xff939393)),
+            const SizedBox(width: 6),
+            Expanded(
+                child: !selfIsEditing
+                    ? Text(data['title'],
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: !otherIsEditing
+                                ? const Color(0xff1c1c1c)
+                                : const Color(0xff939393)))
+                    : Container(
+                        padding: const EdgeInsets.symmetric(vertical: 5),
+                        decoration: const BoxDecoration(
+                            border: Border(
+                                bottom: BorderSide(
+                          color: Color(0xff000000),
+                          width: 1,
+                        ))),
+                        child: TextField(
+                            controller: titleEditController
+                              ..text = data["title"],
+                            style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: Color(0xff1c1c1c)),
+                            decoration: const InputDecoration(
+                                isDense: true,
+                                contentPadding: EdgeInsets.only(bottom: 5),
+                                border: InputBorder.none)))),
+            const SizedBox(width: 6),
+            !selfIsEditing
+                ? Theme(
+                    data: Theme.of(context).copyWith(
+                        splashColor: Colors.transparent,
+                        tooltipTheme: const TooltipThemeData(
+                            decoration:
+                                BoxDecoration(color: Colors.transparent))),
+                    child: PopupMenuButton(
+                      enabled: !otherIsEditing,
+                      padding: EdgeInsets.zero,
+                      color: const Color(0xff323232),
+                      tooltip: "",
+                      offset: const Offset(-10, 40),
+                      itemBuilder: (BuildContext context) {
+                        return [
+                          PopupMenuItem(
+                              onTap: () {},
+                              height: 0,
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                  height: 40,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(14, 8, 0, 8),
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xff323232)),
+                                  child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: Image.asset(
+                                              'assets/icons/icon_thread-popup-move.png'),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        const Text('프로젝트 이동',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xffffffff)))
+                                      ]))),
+                          PopupMenuItem(
+                              onTap: () {
+                                setState(() {
+                                  isEditing = data['threadId'];
+                                });
+                              },
+                              height: 0,
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                  height: 50,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(14, 8, 0, 8),
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xff171717)),
+                                  child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: Image.asset(
+                                              'assets/icons/icon_thread-popup-edit-name.png'),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        const Text('이름 변경',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xffffffff)))
+                                      ]))),
+                          PopupMenuItem(
+                              onTap: () {},
+                              height: 0,
+                              padding: EdgeInsets.zero,
+                              child: Container(
+                                  height: 40,
+                                  padding:
+                                      const EdgeInsets.fromLTRB(14, 8, 0, 8),
+                                  decoration: const BoxDecoration(
+                                      color: Color(0xff323232)),
+                                  child: Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        SizedBox(
+                                          width: 24,
+                                          height: 24,
+                                          child: Image.asset(
+                                              'assets/icons/icon_thread-popup-delete.png'),
+                                        ),
+                                        const SizedBox(width: 8),
+                                        const Text('삭제',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w400,
+                                                color: Color(0xffffffff)))
+                                      ]))),
+                        ];
+                      },
+                    ))
+                : OutlinedButton(
+                    onPressed: () async {
+                      String thetitle = titleEditController.text;
+
+                      dynamic theThread = threadList.values
+                          .expand((value) => value)
+                          .firstWhere(
+                              (value) => value["threadId"] == data['threadId'],
+                              orElse: () => null);
+
+                      if (theThread != null) {
+                        theThread['title'] = thetitle;
+                      }
+
+                      setState(() {
+                        isEditing = null;
+                      });
+
+                      await ThreadService()
+                          .patchThread(data["threadId"], thetitle, null);
+                    },
+                    style: OutlinedButton.styleFrom(
+                        backgroundColor: const Color(0xff000000),
+                        side: const BorderSide(
+                            color: Color(0xff000000), width: 1.0),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4.0)),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 6)),
+                    child: const Text("완료",
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xffffffff))))
           ],
         ));
   }
@@ -242,33 +323,34 @@ class _ThreadWidgetState extends State<ThreadWidget> {
             const SizedBox(height: 23),
             threadList.isNotEmpty
                 ? Column(
+                    mainAxisSize: MainAxisSize.max,
                     children: threadList.entries.map((entry) {
-                    return Column(children: [
-                      Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(children: [
-                            Text(
-                              entry.key,
-                              style: const TextStyle(
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff1c1c1c)),
-                            )
-                          ])),
-                      const SizedBox(height: 12),
-                      Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Column(
-                              children: entry.value.map<Widget>((thread) {
-                            return _threadRow(thread);
-                          }).toList())),
-                      Container(
-                          height: 1,
-                          margin: const EdgeInsets.symmetric(vertical: 24),
-                          decoration:
-                              const BoxDecoration(color: Color(0xfff4f4f5)))
-                    ]);
-                  }).toList())
+                      return Column(children: [
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Row(children: [
+                              Text(
+                                entry.key,
+                                style: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff1c1c1c)),
+                              )
+                            ])),
+                        const SizedBox(height: 12),
+                        Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            child: Column(
+                                children: entry.value.map<Widget>((thread) {
+                              return _threadRow(thread);
+                            }).toList())),
+                        Container(
+                            height: 1,
+                            margin: const EdgeInsets.symmetric(vertical: 24),
+                            decoration:
+                                const BoxDecoration(color: Color(0xfff4f4f5)))
+                      ]);
+                    }).toList())
                 : Container()
           ]);
         }
