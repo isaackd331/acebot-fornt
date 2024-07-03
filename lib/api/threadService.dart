@@ -14,15 +14,15 @@ class ThreadService {
         .get("/v1/threads/$threadId", queryParameters: {"page": 1, "size": 20});
   }
 
-  patchThread(int threadId, String? title, int? projectId) {
+  patchThread(List<dynamic> threadIds, String? title, int? projectId) {
     dynamic data = {};
 
     if (title == null) {
-      data = {"projectId": projectId};
+      data = {"projectId": projectId, "threadIds": threadIds};
     } else {
-      data = {"title": title, "projectId": projectId};
+      data = {"title": title, "projectId": projectId, "threadIds": threadIds};
     }
-    return dio.patch("/v1/threads/$threadId", data: data);
+    return dio.patch("/v1/threads", data: data);
   }
 
   deleteThreads(List<dynamic> threadIds) {

@@ -10,9 +10,11 @@ import 'package:acebot_front/bloc/project/projectCubit.dart';
 import 'package:acebot_front/bloc/project/projectState.dart';
 
 class ProjectsBottomsheet extends StatefulWidget {
-  final int threadId;
+  final List<dynamic> threadIds;
+  final Function? funcForMultiple;
 
-  const ProjectsBottomsheet({super.key, required this.threadId});
+  const ProjectsBottomsheet(
+      {super.key, required this.threadIds, this.funcForMultiple});
 
   @override
   _ProjectsBottomsheetState createState() => _ProjectsBottomsheetState();
@@ -290,7 +292,7 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                                             if (selectedProject != null &&
                                                 mounted) {
                                               await ThreadService().patchThread(
-                                                  widget.threadId,
+                                                  widget.threadIds,
                                                   null,
                                                   selectedProject);
 
@@ -299,6 +301,13 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                                                           '스레드를 프로젝트로 이동했어요.',
                                                       context: context)
                                                   .showToast();
+
+                                              if (widget.funcForMultiple !=
+                                                  null) {
+                                                widget.funcForMultiple!();
+                                              }
+
+                                              Navigator.pop(context);
                                             }
                                           },
                                           text: '확인',

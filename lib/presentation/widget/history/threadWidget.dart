@@ -201,7 +201,7 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                                     isScrollControlled: true,
                                     builder: (BuildContext context) {
                                       return ProjectsBottomsheet(
-                                          threadId: data["threadId"]);
+                                          threadIds: [data["threadId"]]);
                                     });
                               },
                               height: 0,
@@ -490,7 +490,22 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                         Row(
                           children: [
                             IconButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return ProjectsBottomsheet(
+                                          threadIds: multipleIds,
+                                          funcForMultiple: () {
+                                            setState(() {
+                                              isMultipleMode = false;
+                                              multipleIds = [];
+                                            });
+                                          },
+                                        );
+                                      });
+                                },
                                 icon: Image.asset(
                                     'assets/icons/icon_thread-multiple-move.png',
                                     scale: 4,
