@@ -9,6 +9,11 @@ class ThreadService {
         queryParameters: {"page": page, "size": size, "search": search});
   }
 
+  getThread(int threadId) {
+    return dio
+        .get("/v1/threads/$threadId", queryParameters: {"page": 1, "size": 20});
+  }
+
   patchThread(int threadId, String? title, int? projectId) {
     dynamic data = {};
 
@@ -18,5 +23,9 @@ class ThreadService {
       data = {"title": title, "projectId": projectId};
     }
     return dio.patch("/v1/threads/$threadId", data: data);
+  }
+
+  deleteThreads(List<int> threadIds) {
+    return dio.delete("/v1/threads", queryParameters: {"ids": threadIds});
   }
 }

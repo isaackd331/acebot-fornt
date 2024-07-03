@@ -10,4 +10,9 @@ class ThreadRepository {
 
     return res.data;
   }
+
+  // 데이터 삭제
+  Future<void> delete(List<int> threadIds) async {
+    await ThreadService().deleteThreads(threadIds);
+  }
 }

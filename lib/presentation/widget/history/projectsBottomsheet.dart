@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
+import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 
 import 'package:acebot_front/api/threadService.dart';
 
@@ -236,6 +237,15 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                                                                 isEditing =
                                                                     false;
                                                               });
+
+                                                              if (mounted) {
+                                                                BaseToast(
+                                                                        content:
+                                                                            '새로운 프로젝트가 생성되었어요.',
+                                                                        context:
+                                                                            context)
+                                                                    .showToast();
+                                                              }
                                                             },
                                                             style: OutlinedButton.styleFrom(
                                                                 backgroundColor:
@@ -284,7 +294,11 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
                                                   null,
                                                   selectedProject);
 
-                                              Navigator.pop(context);
+                                              BaseToast(
+                                                      content:
+                                                          '스레드를 프로젝트로 이동했어요.',
+                                                      context: context)
+                                                  .showToast();
                                             }
                                           },
                                           text: '확인',

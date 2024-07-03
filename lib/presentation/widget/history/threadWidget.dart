@@ -8,6 +8,8 @@ import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/history/projectsBottomsheet.dart';
+import 'package:acebot_front/presentation/widget/common/baseDialog.dart';
+import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 
 import 'package:acebot_front/api/threadService.dart';
 
@@ -228,7 +230,86 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                                                 color: Color(0xffffffff)))
                                       ]))),
                           PopupMenuItem(
-                              onTap: () {},
+                              onTap: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return BaseDialog(
+                                          title: "스레드를 삭제하시겠어요?",
+                                          content: "삭제한 스레드는 복구할 수 없습니다.",
+                                          buttonsList: [
+                                            OutlinedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                style: OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xffffffff),
+                                                    side: const BorderSide(
+                                                        color:
+                                                            Color(0xffe7e7e7),
+                                                        width: 1.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 57.5,
+                                                        vertical: 13)),
+                                                child: const Text("취소",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xff000000)))),
+                                            const SizedBox(width: 9),
+                                            OutlinedButton(
+                                                onPressed: () async {
+                                                  if (mounted) {
+                                                    ThreadCubit threadCubit =
+                                                        BlocProvider.of<
+                                                                ThreadCubit>(
+                                                            context);
+
+                                                    await threadCubit.delete(
+                                                        [data['threadId']]);
+
+                                                    BaseToast(
+                                                            content:
+                                                                '스레드가 삭제되었습니다.',
+                                                            context: context)
+                                                        .showToast();
+
+                                                    Navigator.pop(context);
+                                                  }
+                                                },
+                                                style: OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xff000000),
+                                                    side: const BorderSide(
+                                                        color:
+                                                            Color(0xff000000),
+                                                        width: 1.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        horizontal: 57.5,
+                                                        vertical: 13)),
+                                                child: const Text("확인",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xffffffff)))),
+                                          ]);
+                                    });
+                              },
                               height: 0,
                               padding: EdgeInsets.zero,
                               child: Container(
@@ -299,6 +380,10 @@ class _ThreadWidgetState extends State<ThreadWidget> {
   Widget build(BuildContext context) {
     return BlocListener<ThreadCubit, ThreadState>(listener: (context, state) {
       if (state is LoadedState) {
+        setState(() {
+          threadList = {};
+        });
+
         state.threadJson.items.asMap().forEach((_, item) {
           final when = groupByString(item['createdAt']);
 

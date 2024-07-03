@@ -15,7 +15,7 @@ class ProjectCubit extends Cubit<ProjectState> {
     try {
       emit(LoadingState());
 
-      final projectJson = await repo.getProjectsList();
+      final projectJson = await repo.initProjects();
 
       emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
     } on DioException catch (err) {
@@ -29,7 +29,7 @@ class ProjectCubit extends Cubit<ProjectState> {
     try {
       await repo.postProject(title);
 
-      final projectJson = await repo.getProjectsList();
+      final projectJson = await repo.initProjects();
 
       emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
     } on DioException catch (err) {
