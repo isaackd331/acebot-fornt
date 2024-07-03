@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:acebot_front/presentation/widget/common/baseDialog.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
-import 'package:acebot_front/presentation/widget/history/threadQnaBottomsheet.dart';
+import 'package:acebot_front/presentation/widget/history/subThreadWidget.dart';
 
 import 'package:acebot_front/api/projectService.dart';
 
@@ -105,292 +105,348 @@ class _ProjectWidgetState extends State<ProjectWidget> {
     bool otherIsEditing = isEditing != null && isEditing != data['projectId'];
     bool selfIsEditing = isEditing != null && isEditing == data['projectId'];
 
-    return Container(
-        padding: const EdgeInsets.symmetric(vertical: 14.5),
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            !isMultipleMode
-                ? IconButton(
-                    onPressed: () {
-                      if (!isAdding) {
-                        if (openedList.contains(data['projectId'])) {
-                          List<dynamic> tempArr = List.from(openedList);
+    return Column(children: [
+      Container(
+          padding: const EdgeInsets.symmetric(vertical: 14.5),
+          child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              !isMultipleMode
+                  ? IconButton(
+                      onPressed: () async {
+                        if (!isAdding) {
+                          if (openedList.contains(data['projectId'])) {
+                            List<dynamic> tempArr = List.from(openedList);
+                            tempArr.remove(data['projectId']);
+
+                            setState(() {
+                              openedList = [...tempArr];
+                            });
+                          } else {
+                            setState(() {
+                              openedList = [...openedList, data['projectId']];
+                            });
+                          }
+                        }
+                      },
+                      icon: !openedList.contains(data['projectId'])
+                          ? Image.asset('assets/icons/icon_arrow-downward.png',
+                              scale: 4)
+                          : Image.asset('assets/icons/icon_arrow-upward.png',
+                              scale: 4))
+                  : GestureDetector(
+                      onTap: () {
+                        if (multipleIds.contains(data['projectId'])) {
+                          List<dynamic> tempArr = List.from(multipleIds);
                           tempArr.remove(data['projectId']);
 
                           setState(() {
-                            openedList = [...tempArr];
+                            multipleIds = [...tempArr];
                           });
                         } else {
                           setState(() {
-                            openedList = [...openedList, data['projectId']];
+                            multipleIds = [...multipleIds, data['projectId']];
                           });
                         }
-                      }
-                    },
-                    icon: !openedList.contains(data['projectId'])
-                        ? Image.asset('assets/icons/icon_arrow-downward.png',
-                            scale: 4)
-                        : Image.asset('assets/icons/icon_arrow-upward.png',
-                            scale: 4))
-                : GestureDetector(
-                    onTap: () {
-                      if (multipleIds.contains(data['projectId'])) {
-                        List<dynamic> tempArr = List.from(multipleIds);
-                        tempArr.remove(data['projectId']);
-
-                        setState(() {
-                          multipleIds = [...tempArr];
-                        });
-                      } else {
-                        setState(() {
-                          multipleIds = [...multipleIds, data['projectId']];
-                        });
-                      }
-                    },
-                    child: Container(
-                        width: 20,
-                        height: 20,
-                        decoration: BoxDecoration(
-                            color: !multipleIds.contains(data['projectId'])
-                                ? const Color(0xffececec)
-                                : const Color(0xff000000),
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(2))),
-                        child: const Center(
-                            child: Icon(Icons.check,
-                                size: 15, color: Color(0xffffffff))))),
-            const SizedBox(width: 6),
-            Expanded(
-                child: !selfIsEditing
-                    ? GestureDetector(
-                        onTap: () {},
-                        child: Text(data['title'],
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: (!otherIsEditing && !isAdding)
-                                    ? const Color(0xff1c1c1c)
-                                    : const Color(0xff939393)),
-                            overflow: TextOverflow.ellipsis))
-                    : Container(
-                        padding: const EdgeInsets.symmetric(vertical: 5),
-                        decoration: const BoxDecoration(
-                            border: Border(
-                                bottom: BorderSide(
-                          color: Color(0xff000000),
-                          width: 1,
-                        ))),
-                        child: TextField(
-                            controller: titleEditController
-                              ..text = data["title"],
-                            style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xff1c1c1c)),
-                            decoration: const InputDecoration(
-                                isDense: true,
-                                contentPadding: EdgeInsets.only(bottom: 5),
-                                border: InputBorder.none)))),
-            const SizedBox(width: 6),
-            !selfIsEditing
-                ? Theme(
-                    data: Theme.of(context).copyWith(
-                        splashColor: Colors.transparent,
-                        tooltipTheme: const TooltipThemeData(
-                            decoration:
-                                BoxDecoration(color: Colors.transparent))),
-                    child: PopupMenuButton(
-                      enabled: (!otherIsEditing && !isAdding),
-                      padding: EdgeInsets.zero,
-                      color: const Color(0xff323232),
-                      tooltip: "",
-                      offset: const Offset(-10, 40),
-                      itemBuilder: (BuildContext context) {
-                        return [
-                          PopupMenuItem(
-                              onTap: () {
-                                setState(() {
-                                  isEditing = data['projectId'];
-                                });
-                              },
-                              height: 0,
-                              padding: EdgeInsets.zero,
-                              child: Container(
-                                  height: 50,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(14, 8, 0, 8),
-                                  decoration: const BoxDecoration(
-                                      color: Color(0xff171717)),
-                                  child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: Image.asset(
-                                              'assets/icons/icon_thread-popup-edit-name.png'),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        const Text('이름 변경',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Color(0xffffffff)))
-                                      ]))),
-                          PopupMenuItem(
-                              onTap: () {
-                                showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return BaseDialog(
-                                          title: "프로젝트를 삭제하시겠어요?",
-                                          content: "삭제한 프로젝트는 복구할 수 없습니다.",
-                                          buttonsList: [
-                                            Expanded(
-                                                child: OutlinedButton(
-                                                    onPressed: () {
-                                                      Navigator.pop(context);
-                                                    },
-                                                    style: OutlinedButton.styleFrom(
-                                                        backgroundColor: const Color(
-                                                            0xffffffff),
-                                                        side: const BorderSide(
-                                                            color: Color(
-                                                                0xffe7e7e7),
-                                                            width: 1.0),
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                    4.0)),
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                                vertical: 13)),
-                                                    child: const Text("취소",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: Color(
-                                                                0xff000000))))),
-                                            const SizedBox(width: 9),
-                                            Expanded(
-                                                child: OutlinedButton(
-                                                    onPressed: () async {
-                                                      if (mounted) {
-                                                        ProjectCubit
-                                                            projectCubit =
-                                                            context.read<
-                                                                ProjectCubit>();
-
-                                                        await projectCubit
-                                                            .delete([
-                                                          data['projectId']
-                                                        ], () {
-                                                          setState(() {
-                                                            projectList = [];
-                                                          });
-                                                        });
-
-                                                        BaseToast(
-                                                                content:
-                                                                    '프로젝트가 삭제되었습니다.',
-                                                                context:
-                                                                    context)
-                                                            .showToast();
-
-                                                        Navigator.pop(context);
-                                                      }
-                                                    },
-                                                    style: OutlinedButton.styleFrom(
-                                                        backgroundColor: const Color(
-                                                            0xff000000),
-                                                        side: const BorderSide(
-                                                            color: Color(
-                                                                0xff000000),
-                                                            width: 1.0),
-                                                        shape: RoundedRectangleBorder(
-                                                            borderRadius:
-                                                                BorderRadius.circular(
-                                                                    4.0)),
-                                                        padding:
-                                                            const EdgeInsets.symmetric(
-                                                                vertical: 13)),
-                                                    child: const Text("확인",
-                                                        style: TextStyle(
-                                                            fontSize: 14,
-                                                            fontWeight:
-                                                                FontWeight.w600,
-                                                            color: Color(
-                                                                0xffffffff))))),
-                                          ]);
-                                    });
-                              },
-                              height: 0,
-                              padding: EdgeInsets.zero,
-                              child: Container(
-                                  height: 40,
-                                  padding:
-                                      const EdgeInsets.fromLTRB(14, 8, 0, 8),
-                                  decoration: const BoxDecoration(
-                                      color: Color(0xff323232)),
-                                  child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      children: [
-                                        SizedBox(
-                                          width: 24,
-                                          height: 24,
-                                          child: Image.asset(
-                                              'assets/icons/icon_thread-popup-delete.png'),
-                                        ),
-                                        const SizedBox(width: 8),
-                                        const Text('삭제',
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                fontWeight: FontWeight.w400,
-                                                color: Color(0xffffffff)))
-                                      ]))),
-                        ];
                       },
-                    ))
-                : OutlinedButton(
-                    onPressed: () async {
-                      String theTitle = titleEditController.text;
+                      child: Container(
+                          width: 20,
+                          height: 20,
+                          decoration: BoxDecoration(
+                              color: !multipleIds.contains(data['projectId'])
+                                  ? const Color(0xffececec)
+                                  : const Color(0xff000000),
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(2))),
+                          child: const Center(
+                              child: Icon(Icons.check,
+                                  size: 15, color: Color(0xffffffff))))),
+              const SizedBox(width: 6),
+              Expanded(
+                  child: !selfIsEditing
+                      ? Text(data['title'],
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                              color: (!otherIsEditing && !isAdding)
+                                  ? const Color(0xff1c1c1c)
+                                  : const Color(0xff939393)),
+                          overflow: TextOverflow.ellipsis)
+                      : Container(
+                          padding: const EdgeInsets.symmetric(vertical: 5),
+                          decoration: const BoxDecoration(
+                              border: Border(
+                                  bottom: BorderSide(
+                            color: Color(0xff000000),
+                            width: 1,
+                          ))),
+                          child: TextField(
+                              controller: titleEditController
+                                ..text = data["title"],
+                              style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                  color: Color(0xff1c1c1c)),
+                              decoration: const InputDecoration(
+                                  isDense: true,
+                                  contentPadding: EdgeInsets.only(bottom: 5),
+                                  border: InputBorder.none)))),
+              const SizedBox(width: 6),
+              !selfIsEditing
+                  ? Row(children: [
+                      Container(
+                          height: 20,
+                          padding: const EdgeInsets.symmetric(horizontal: 4),
+                          decoration: const BoxDecoration(
+                              color: Color(0xfff8f8f8),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(2))),
+                          child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: Image.asset(
+                                      'assets/icons/icon_thread.png'),
+                                ),
+                                const SizedBox(width: 3),
+                                const Text('0',
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Color(0xff000000)))
+                              ])),
+                      const SizedBox(width: 6),
+                      Theme(
+                          data: Theme.of(context).copyWith(
+                              splashColor: Colors.transparent,
+                              tooltipTheme: const TooltipThemeData(
+                                  decoration: BoxDecoration(
+                                      color: Colors.transparent))),
+                          child: PopupMenuButton(
+                            enabled: (!otherIsEditing && !isAdding),
+                            padding: EdgeInsets.zero,
+                            color: const Color(0xff323232),
+                            tooltip: "",
+                            offset: const Offset(-10, 40),
+                            itemBuilder: (BuildContext context) {
+                              return [
+                                PopupMenuItem(
+                                    onTap: () {
+                                      setState(() {
+                                        isEditing = data['projectId'];
+                                      });
+                                    },
+                                    height: 0,
+                                    padding: EdgeInsets.zero,
+                                    child: Container(
+                                        height: 50,
+                                        padding: const EdgeInsets.fromLTRB(
+                                            14, 8, 0, 8),
+                                        decoration: const BoxDecoration(
+                                            color: Color(0xff171717)),
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child: Image.asset(
+                                                    'assets/icons/icon_thread-popup-edit-name.png'),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              const Text('이름 변경',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Color(0xffffffff)))
+                                            ]))),
+                                PopupMenuItem(
+                                    onTap: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return BaseDialog(
+                                                title: "프로젝트를 삭제하시겠어요?",
+                                                content:
+                                                    "삭제한 프로젝트는 복구할 수 없습니다.",
+                                                buttonsList: [
+                                                  Expanded(
+                                                      child: OutlinedButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          style: OutlinedButton.styleFrom(
+                                                              backgroundColor:
+                                                                  const Color(
+                                                                      0xffffffff),
+                                                              side: const BorderSide(
+                                                                  color: Color(
+                                                                      0xffe7e7e7),
+                                                                  width: 1.0),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                          4.0)),
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                      vertical:
+                                                                          13)),
+                                                          child: const Text("취소",
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color:
+                                                                      Color(0xff000000))))),
+                                                  const SizedBox(width: 9),
+                                                  Expanded(
+                                                      child: OutlinedButton(
+                                                          onPressed: () async {
+                                                            if (mounted) {
+                                                              ProjectCubit
+                                                                  projectCubit =
+                                                                  context.read<
+                                                                      ProjectCubit>();
 
-                      dynamic theProject = projectList.firstWhere(
-                          (value) => value["projectId"] == data['projectId'],
-                          orElse: () => null);
+                                                              await projectCubit
+                                                                  .delete([
+                                                                data[
+                                                                    'projectId']
+                                                              ], () {
+                                                                setState(() {
+                                                                  projectList =
+                                                                      [];
+                                                                });
+                                                              });
 
-                      if (theProject != null) {
-                        theProject['title'] = theTitle;
-                      }
+                                                              BaseToast(
+                                                                      content:
+                                                                          '프로젝트가 삭제되었습니다.',
+                                                                      context:
+                                                                          context)
+                                                                  .showToast();
 
-                      setState(() {
-                        isEditing = null;
-                      });
+                                                              Navigator.pop(
+                                                                  context);
+                                                            }
+                                                          },
+                                                          style: OutlinedButton.styleFrom(
+                                                              backgroundColor:
+                                                                  const Color(
+                                                                      0xff000000),
+                                                              side: const BorderSide(
+                                                                  color: Color(
+                                                                      0xff000000),
+                                                                  width: 1.0),
+                                                              shape: RoundedRectangleBorder(
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                          4.0)),
+                                                              padding:
+                                                                  const EdgeInsets.symmetric(
+                                                                      vertical:
+                                                                          13)),
+                                                          child: const Text("확인",
+                                                              style: TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w600,
+                                                                  color:
+                                                                      Color(0xffffffff))))),
+                                                ]);
+                                          });
+                                    },
+                                    height: 0,
+                                    padding: EdgeInsets.zero,
+                                    child: Container(
+                                        height: 40,
+                                        padding: const EdgeInsets.fromLTRB(
+                                            14, 8, 0, 8),
+                                        decoration: const BoxDecoration(
+                                            color: Color(0xff323232)),
+                                        child: Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              SizedBox(
+                                                width: 24,
+                                                height: 24,
+                                                child: Image.asset(
+                                                    'assets/icons/icon_thread-popup-delete.png'),
+                                              ),
+                                              const SizedBox(width: 8),
+                                              const Text('삭제',
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      fontWeight:
+                                                          FontWeight.w400,
+                                                      color: Color(0xffffffff)))
+                                            ]))),
+                              ];
+                            },
+                          ))
+                    ])
+                  : OutlinedButton(
+                      onPressed: () async {
+                        String theTitle = titleEditController.text;
 
-                      await ProjectService()
-                          .patchProject(data["projectId"], theTitle);
-                    },
-                    style: OutlinedButton.styleFrom(
-                        backgroundColor: const Color(0xff000000),
-                        side: const BorderSide(
-                            color: Color(0xff000000), width: 1.0),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4.0)),
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 12, vertical: 6)),
-                    child: const Text("완료",
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xffffffff))))
-          ],
-        ));
+                        dynamic theProject = projectList.firstWhere(
+                            (value) => value["projectId"] == data['projectId'],
+                            orElse: () => null);
+
+                        if (theProject != null) {
+                          theProject['title'] = theTitle;
+                        }
+
+                        setState(() {
+                          isEditing = null;
+                        });
+
+                        await ProjectService()
+                            .patchProject(data["projectId"], theTitle);
+                      },
+                      style: OutlinedButton.styleFrom(
+                          backgroundColor: const Color(0xff000000),
+                          side: const BorderSide(
+                              color: Color(0xff000000), width: 1.0),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4.0)),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 6)),
+                      child: const Text("완료",
+                          style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xffffffff))))
+            ],
+          )),
+      openedList.contains(data['projectId'])
+          ? SubThreadWidget(
+              projectId: data['projectId'],
+              resetProjectList: () async {
+                final projectCubit = context.read<ProjectCubit>();
+
+                projectCubit.reload(() {
+                  setState(() {
+                    projectList = [];
+                    openedList = [];
+                    isAdding = false;
+                    isEditing = null;
+                  });
+                });
+              },
+            )
+          : Container()
+    ]);
   }
 
   Widget _addRow() {

@@ -9,6 +9,11 @@ class ProjectService {
         queryParameters: {"page": page, "size": size, "search": search});
   }
 
+  getThreadsInProject(int page, int projectId) {
+    return dio.get("/v1/projects/$projectId",
+        queryParameters: {"page": page, "size": 20});
+  }
+
   postProject(String title) {
     return dio.post("/v1/projects", data: {"title": title});
   }

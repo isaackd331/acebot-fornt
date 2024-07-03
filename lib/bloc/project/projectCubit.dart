@@ -68,6 +68,20 @@ class ProjectCubit extends Cubit<ProjectState> {
     }
   }
 
+  // reload
+  Future<void> reload(Function clearFunc) async {
+    try {
+      final projectJson = await repo.initProjects();
+
+      clearFunc();
+
+      emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
   void clearCubit() {
     emit(EmptyState());
   }
