@@ -12,7 +12,7 @@ class ThreadRepository {
   }
 
   // 데이터 삭제
-  Future<void> delete(List<int> threadIds) async {
+  Future<void> delete(List<dynamic> threadIds) async {
     await ThreadService().deleteThreads(threadIds);
   }
 }

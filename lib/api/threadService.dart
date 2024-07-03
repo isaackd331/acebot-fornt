@@ -25,7 +25,8 @@ class ThreadService {
     return dio.patch("/v1/threads/$threadId", data: data);
   }
 
-  deleteThreads(List<int> threadIds) {
-    return dio.delete("/v1/threads", queryParameters: {"ids": threadIds});
+  deleteThreads(List<dynamic> threadIds) {
+    String ids = threadIds.join(",");
+    return dio.delete("/v1/threads", queryParameters: {"ids": ids});
   }
 }

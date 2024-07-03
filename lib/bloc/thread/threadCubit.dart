@@ -25,7 +25,7 @@ class ThreadCubit extends Cubit<ThreadState> {
   }
 
   // delete
-  Future<void> delete(List<int> threadIds) async {
+  Future<void> delete(List<dynamic> threadIds) async {
     try {
       await repo.delete(threadIds);
 
