@@ -250,79 +250,82 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                                           title: "프로젝트를 삭제하시겠어요?",
                                           content: "삭제한 프로젝트는 복구할 수 없습니다.",
                                           buttonsList: [
-                                            OutlinedButton(
-                                                onPressed: () {
-                                                  Navigator.pop(context);
-                                                },
-                                                style: OutlinedButton.styleFrom(
-                                                    backgroundColor:
-                                                        const Color(0xffffffff),
-                                                    side: const BorderSide(
-                                                        color:
-                                                            Color(0xffe7e7e7),
-                                                        width: 1.0),
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(4.0)),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 57.5,
-                                                        vertical: 13)),
-                                                child: const Text("취소",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color:
-                                                            Color(0xff000000)))),
+                                            Expanded(
+                                                child: OutlinedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    style: OutlinedButton.styleFrom(
+                                                        backgroundColor: const Color(
+                                                            0xffffffff),
+                                                        side: const BorderSide(
+                                                            color: Color(
+                                                                0xffe7e7e7),
+                                                            width: 1.0),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    4.0)),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                                vertical: 13)),
+                                                    child: const Text("취소",
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: Color(
+                                                                0xff000000))))),
                                             const SizedBox(width: 9),
-                                            OutlinedButton(
-                                                onPressed: () async {
-                                                  if (mounted) {
-                                                    ProjectCubit projectCubit =
-                                                        context.read<
-                                                            ProjectCubit>();
+                                            Expanded(
+                                                child: OutlinedButton(
+                                                    onPressed: () async {
+                                                      if (mounted) {
+                                                        ProjectCubit
+                                                            projectCubit =
+                                                            context.read<
+                                                                ProjectCubit>();
 
-                                                    await projectCubit.delete(
-                                                        [data['projectId']],
-                                                        () {
-                                                      setState(() {
-                                                        projectList = [];
-                                                      });
-                                                    });
+                                                        await projectCubit
+                                                            .delete([
+                                                          data['projectId']
+                                                        ], () {
+                                                          setState(() {
+                                                            projectList = [];
+                                                          });
+                                                        });
 
-                                                    BaseToast(
-                                                            content:
-                                                                '프로젝트가 삭제되었습니다.',
-                                                            context: context)
-                                                        .showToast();
+                                                        BaseToast(
+                                                                content:
+                                                                    '프로젝트가 삭제되었습니다.',
+                                                                context:
+                                                                    context)
+                                                            .showToast();
 
-                                                    Navigator.pop(context);
-                                                  }
-                                                },
-                                                style: OutlinedButton.styleFrom(
-                                                    backgroundColor:
-                                                        const Color(0xff000000),
-                                                    side: const BorderSide(
-                                                        color:
-                                                            Color(0xff000000),
-                                                        width: 1.0),
-                                                    shape: RoundedRectangleBorder(
-                                                        borderRadius:
-                                                            BorderRadius
-                                                                .circular(4.0)),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 57.5,
-                                                        vertical: 13)),
-                                                child: const Text("확인",
-                                                    style: TextStyle(
-                                                        fontSize: 14,
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                        color:
-                                                            Color(0xffffffff)))),
+                                                        Navigator.pop(context);
+                                                      }
+                                                    },
+                                                    style: OutlinedButton.styleFrom(
+                                                        backgroundColor: const Color(
+                                                            0xff000000),
+                                                        side: const BorderSide(
+                                                            color: Color(
+                                                                0xff000000),
+                                                            width: 1.0),
+                                                        shape: RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    4.0)),
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                                vertical: 13)),
+                                                    child: const Text("확인",
+                                                        style: TextStyle(
+                                                            fontSize: 14,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                            color: Color(
+                                                                0xffffffff))))),
                                           ]);
                                     });
                               },
@@ -435,6 +438,11 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                     });
                     titleEditController.clear();
                   });
+
+                  if (mounted) {
+                    BaseToast(content: '새로운 프로젝트가 생성되었어요.', context: context)
+                        .showToast();
+                  }
                 },
                 style: OutlinedButton.styleFrom(
                     backgroundColor: const Color(0xff000000),
@@ -593,104 +601,90 @@ class _ProjectWidgetState extends State<ProjectWidget> {
                                                         content:
                                                             "삭제한 프로젝트는 복구할 수 없습니다.",
                                                         buttonsList: [
-                                                          OutlinedButton(
-                                                              onPressed: () {
-                                                                Navigator.pop(
-                                                                    context);
-                                                              },
-                                                              style: OutlinedButton.styleFrom(
-                                                                  backgroundColor:
-                                                                      const Color(
-                                                                          0xffffffff),
-                                                                  side: const BorderSide(
-                                                                      color: Color(
-                                                                          0xffe7e7e7),
-                                                                      width:
-                                                                          1.0),
-                                                                  shape: RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              4.0)),
-                                                                  padding: const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          57.5,
-                                                                      vertical:
-                                                                          13)),
-                                                              child: const Text(
-                                                                  "취소",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Color(0xff000000)))),
+                                                          Expanded(
+                                                              child:
+                                                                  OutlinedButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.pop(
+                                                                            context);
+                                                                      },
+                                                                      style: OutlinedButton.styleFrom(
+                                                                          backgroundColor: const Color(
+                                                                              0xffffffff),
+                                                                          side: const BorderSide(
+                                                                              color: Color(
+                                                                                  0xffe7e7e7),
+                                                                              width:
+                                                                                  1.0),
+                                                                          shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                  4.0)),
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical:
+                                                                                  13)),
+                                                                      child: const Text(
+                                                                          "취소",
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: Color(0xff000000))))),
                                                           const SizedBox(
                                                               width: 9),
-                                                          OutlinedButton(
-                                                              onPressed:
-                                                                  () async {
-                                                                if (mounted) {
-                                                                  final projectCubit =
-                                                                      context.read<
-                                                                          ProjectCubit>();
+                                                          Expanded(
+                                                              child:
+                                                                  OutlinedButton(
+                                                                      onPressed:
+                                                                          () async {
+                                                                        if (mounted) {
+                                                                          final projectCubit =
+                                                                              context.read<ProjectCubit>();
 
-                                                                  await projectCubit
-                                                                      .delete(
-                                                                          multipleIds,
-                                                                          () {
-                                                                    setState(
-                                                                        () {
-                                                                      projectList =
-                                                                          [];
-                                                                    });
-                                                                  });
+                                                                          await projectCubit.delete(
+                                                                              multipleIds,
+                                                                              () {
+                                                                            setState(() {
+                                                                              projectList = [];
+                                                                            });
+                                                                          });
 
-                                                                  setState(() {
-                                                                    isMultipleMode =
-                                                                        false;
-                                                                    multipleIds =
-                                                                        [];
-                                                                  });
+                                                                          setState(
+                                                                              () {
+                                                                            isMultipleMode =
+                                                                                false;
+                                                                            multipleIds =
+                                                                                [];
+                                                                          });
 
-                                                                  BaseToast(
-                                                                          content:
-                                                                              '프로젝트가 삭제되었습니다.',
-                                                                          context:
-                                                                              context)
-                                                                      .showToast();
+                                                                          BaseToast(content: '프로젝트가 삭제되었습니다.', context: context)
+                                                                              .showToast();
 
-                                                                  Navigator.pop(
-                                                                      context);
-                                                                }
-                                                              },
-                                                              style: OutlinedButton.styleFrom(
-                                                                  backgroundColor:
-                                                                      const Color(
-                                                                          0xff000000),
-                                                                  side: const BorderSide(
-                                                                      color: Color(
-                                                                          0xff000000),
-                                                                      width:
-                                                                          1.0),
-                                                                  shape: RoundedRectangleBorder(
-                                                                      borderRadius:
-                                                                          BorderRadius.circular(
-                                                                              4.0)),
-                                                                  padding: const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          57.5,
-                                                                      vertical:
-                                                                          13)),
-                                                              child: const Text(
-                                                                  "확인",
-                                                                  style: TextStyle(
-                                                                      fontSize:
-                                                                          14,
-                                                                      fontWeight:
-                                                                          FontWeight
-                                                                              .w600,
-                                                                      color: Color(0xffffffff)))),
+                                                                          Navigator.pop(
+                                                                              context);
+                                                                        }
+                                                                      },
+                                                                      style: OutlinedButton.styleFrom(
+                                                                          backgroundColor: const Color(
+                                                                              0xff000000),
+                                                                          side: const BorderSide(
+                                                                              color: Color(
+                                                                                  0xff000000),
+                                                                              width:
+                                                                                  1.0),
+                                                                          shape: RoundedRectangleBorder(
+                                                                              borderRadius: BorderRadius.circular(
+                                                                                  4.0)),
+                                                                          padding: const EdgeInsets
+                                                                              .symmetric(
+                                                                              vertical:
+                                                                                  13)),
+                                                                      child: const Text(
+                                                                          "확인",
+                                                                          style: TextStyle(
+                                                                              fontSize: 14,
+                                                                              fontWeight: FontWeight.w600,
+                                                                              color: Color(0xffffffff))))),
                                                         ]);
                                                   });
                                             },
