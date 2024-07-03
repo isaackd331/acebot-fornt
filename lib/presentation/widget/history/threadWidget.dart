@@ -11,6 +11,7 @@ import 'package:acebot_front/presentation/widget/history/projectsBottomsheet.dar
 import 'package:acebot_front/presentation/widget/common/baseDialog.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
+import 'package:acebot_front/presentation/widget/history/threadQnaBottomsheet.dart';
 
 import 'package:acebot_front/api/threadService.dart';
 
@@ -182,14 +183,24 @@ class _ThreadWidgetState extends State<ThreadWidget> {
             const SizedBox(width: 6),
             Expanded(
                 child: !selfIsEditing
-                    ? Text(data['title'],
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w500,
-                            color: !otherIsEditing
-                                ? const Color(0xff1c1c1c)
-                                : const Color(0xff939393)),
-                        overflow: TextOverflow.ellipsis)
+                    ? GestureDetector(
+                        onTap: () {
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return ThreadQnaBottomsheet(
+                                    threadId: data["threadId"]);
+                              });
+                        },
+                        child: Text(data['title'],
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: !otherIsEditing
+                                    ? const Color(0xff1c1c1c)
+                                    : const Color(0xff939393)),
+                            overflow: TextOverflow.ellipsis))
                     : Container(
                         padding: const EdgeInsets.symmetric(vertical: 5),
                         decoration: const BoxDecoration(
