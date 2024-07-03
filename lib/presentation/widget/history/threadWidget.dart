@@ -10,6 +10,7 @@ import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/history/projectsBottomsheet.dart';
 import 'package:acebot_front/presentation/widget/common/baseDialog.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
+import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 
 import 'package:acebot_front/api/threadService.dart';
 
@@ -29,15 +30,45 @@ class _ThreadWidgetState extends State<ThreadWidget> {
   TextEditingController titleEditController = TextEditingController();
   bool isMultipleMode = false;
   List<dynamic> multipleIds = [];
+  ScrollController scrollController = ScrollController();
+  int page = 2;
+  late int maxPage;
+  bool isPaging = false;
+  TextEditingController searchController = TextEditingController();
+  String keyword = '';
 
   @override
   void initState() {
     super.initState();
+
+    scrollController.addListener(scrollListener);
   }
 
   @override
   void dispose() {
+    scrollController.removeListener(scrollListener);
+
     super.dispose();
+  }
+
+  Future<void> scrollListener() async {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+        !scrollController.position.outOfRange &&
+        !isPaging &&
+        page <= maxPage) {
+      final threadCubit = context.read<ThreadCubit>();
+
+      setState(() {
+        isPaging = true;
+      });
+
+      await threadCubit.paging(page, keyword);
+
+      setState(() {
+        page += 1;
+        isPaging = false;
+      });
+    }
   }
 
   static String groupByString(String source) {
@@ -305,7 +336,11 @@ class _ThreadWidgetState extends State<ThreadWidget> {
                                                             context);
 
                                                     await threadCubit.delete(
-                                                        [data['threadId']]);
+                                                        [data['threadId']], () {
+                                                      setState(() {
+                                                        threadList = {};
+                                                      });
+                                                    });
 
                                                     BaseToast(
                                                             content:
@@ -412,7 +447,7 @@ class _ThreadWidgetState extends State<ThreadWidget> {
     return BlocListener<ThreadCubit, ThreadState>(listener: (context, state) {
       if (state is LoadedState) {
         setState(() {
-          threadList = {};
+          maxPage = state.threadJson.pages!;
         });
 
         state.threadJson.items.asMap().forEach((_, item) {
@@ -434,220 +469,300 @@ class _ThreadWidgetState extends State<ThreadWidget> {
         if (state.threadJson.items.isEmpty) {
           return _loadedButEmpty();
         } else {
-          return Column(children: [
-            const SizedBox(height: 24),
-            !isMultipleMode
-                ? Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                    GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            isMultipleMode = true;
-                          });
-                        },
-                        child: const Text('편집',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
-                                color: Color(0xff666666))))
-                  ])
-                : Row(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                        GestureDetector(
-                            onTap: () {
-                              if (threadList.values
-                                      .expand((value) => value)
-                                      .length !=
-                                  multipleIds.length) {
-                                setState(() {
-                                  multipleIds = threadList.values
-                                      .expand((thread) =>
-                                          thread.map((t) => t['threadId']))
-                                      .toList();
-                                });
-                              } else {
-                                setState(() {
-                                  multipleIds = [];
-                                });
-                              }
-                            },
-                            child: Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                    color: threadList.values
-                                                .expand((value) => value)
-                                                .length !=
-                                            multipleIds.length
-                                        ? const Color(0xffececec)
-                                        : const Color(0xff000000),
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(2))),
-                                child: const Center(
-                                    child: Icon(Icons.check,
-                                        size: 15, color: Color(0xffffffff))))),
-                        Row(
-                          children: [
-                            IconButton(
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                      context: context,
-                                      isScrollControlled: true,
-                                      builder: (BuildContext context) {
-                                        return ProjectsBottomsheet(
-                                          threadIds: multipleIds,
-                                          funcForMultiple: () {
-                                            setState(() {
-                                              isMultipleMode = false;
-                                              multipleIds = [];
-                                            });
-                                          },
-                                        );
-                                      });
-                                },
-                                icon: Image.asset(
-                                    'assets/icons/icon_thread-multiple-move.png',
-                                    scale: 4,
-                                    color: const Color(0xff000000))),
-                            const SizedBox(width: 10),
-                            IconButton(
-                                onPressed: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return BaseDialog(
-                                            title: "스레드를 삭제하시겠어요?",
-                                            content: "삭제한 스레드는 복구할 수 없습니다.",
-                                            buttonsList: [
-                                              OutlinedButton(
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                  style: OutlinedButton.styleFrom(
-                                                      backgroundColor:
-                                                          const Color(
-                                                              0xffffffff),
-                                                      side: const BorderSide(
-                                                          color:
-                                                              Color(0xffe7e7e7),
-                                                          width: 1.0),
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                  4.0)),
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 57.5,
-                                                          vertical: 13)),
-                                                  child: const Text("취소",
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color:
-                                                              Color(0xff000000)))),
-                                              const SizedBox(width: 9),
-                                              OutlinedButton(
-                                                  onPressed: () async {
-                                                    if (mounted) {
-                                                      ThreadCubit threadCubit =
-                                                          BlocProvider.of<
-                                                                  ThreadCubit>(
-                                                              context);
-
-                                                      await threadCubit
-                                                          .delete(multipleIds);
-
-                                                      setState(() {
-                                                        isMultipleMode = false;
-                                                        multipleIds = [];
-                                                      });
-
-                                                      BaseToast(
-                                                              content:
-                                                                  '스레드가 삭제되었습니다.',
-                                                              context: context)
-                                                          .showToast();
-
-                                                      Navigator.pop(context);
-                                                    }
-                                                  },
-                                                  style: OutlinedButton.styleFrom(
-                                                      backgroundColor:
-                                                          const Color(
-                                                              0xff000000),
-                                                      side: const BorderSide(
-                                                          color:
-                                                              Color(0xff000000),
-                                                          width: 1.0),
-                                                      shape: RoundedRectangleBorder(
-                                                          borderRadius:
-                                                              BorderRadius.circular(
-                                                                  4.0)),
-                                                      padding: const EdgeInsets
-                                                          .symmetric(
-                                                          horizontal: 57.5,
-                                                          vertical: 13)),
-                                                  child: const Text("확인",
-                                                      style: TextStyle(
-                                                          fontSize: 14,
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          color:
-                                                              Color(0xffffffff)))),
-                                            ]);
-                                      });
-                                },
-                                icon: Image.asset(
-                                    'assets/icons/icon_thread-popup-delete.png',
-                                    scale: 4,
-                                    color: const Color(0xff000000))),
-                            const SizedBox(width: 20),
-                            GestureDetector(
-                                onTap: () {
-                                  setState(() {
-                                    isMultipleMode = false;
-                                    multipleIds = [];
-                                  });
-                                },
-                                child: const Text('취소',
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w500,
-                                        color: Color(0xff666666))))
-                          ],
-                        )
-                      ]),
-            const SizedBox(height: 23),
-            threadList.isNotEmpty
-                ? Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: threadList.entries.map((entry) {
-                      return Column(children: [
-                        Row(children: [
-                          Text(
-                            entry.key,
+          return Expanded(
+              child: NoScrollbarWrapper(
+                  child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(children: [
+                        TextField(
+                            controller: searchController,
                             style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
-                                color: Color(0xff1c1c1c)),
-                          )
-                        ]),
-                        const SizedBox(height: 12),
-                        Column(
-                            children: entry.value.map<Widget>((thread) {
-                          return _threadRow(thread);
-                        }).toList()),
-                        Container(
-                            height: 1,
-                            margin: const EdgeInsets.symmetric(vertical: 24),
-                            decoration:
-                                const BoxDecoration(color: Color(0xfff4f4f5)))
-                      ]);
-                    }).toList())
-                : Container()
-          ]);
+                                color: Color(0xff000000)),
+                            decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                    onPressed: () async {
+                                      final threadCubit =
+                                          context.read<ThreadCubit>();
+
+                                      threadCubit.clearCubit();
+
+                                      setState(() {
+                                        keyword = searchController.text;
+                                        page = 2;
+                                      });
+
+                                      threadCubit.paging(1, keyword);
+                                    },
+                                    icon: SizedBox(
+                                        width: 24,
+                                        height: 24,
+                                        child: Image.asset(
+                                            'assets/icons/icon_search.png')),
+                                    padding: const EdgeInsets.all(0)),
+                                hintText: "검색어를 입력해 주세요",
+                                hintStyle: const TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff939393)),
+                                contentPadding: const EdgeInsets.symmetric(
+                                    vertical: 11.5, horizontal: 8),
+                                filled: true,
+                                fillColor: const Color(0xfff4f4f4),
+                                border: InputBorder.none)),
+                        const SizedBox(height: 24),
+                        !isMultipleMode
+                            ? Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          setState(() {
+                                            isMultipleMode = true;
+                                          });
+                                        },
+                                        child: const Text('편집',
+                                            style: TextStyle(
+                                                fontSize: 14,
+                                                fontWeight: FontWeight.w500,
+                                                color: Color(0xff666666))))
+                                  ])
+                            : Row(
+                                mainAxisSize: MainAxisSize.max,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                    GestureDetector(
+                                        onTap: () {
+                                          if (threadList.values
+                                                  .expand((value) => value)
+                                                  .length !=
+                                              multipleIds.length) {
+                                            setState(() {
+                                              multipleIds = threadList.values
+                                                  .expand((thread) =>
+                                                      thread.map(
+                                                          (t) => t['threadId']))
+                                                  .toList();
+                                            });
+                                          } else {
+                                            setState(() {
+                                              multipleIds = [];
+                                            });
+                                          }
+                                        },
+                                        child: Container(
+                                            width: 20,
+                                            height: 20,
+                                            decoration: BoxDecoration(
+                                                color: threadList.values
+                                                            .expand((value) =>
+                                                                value)
+                                                            .length !=
+                                                        multipleIds.length
+                                                    ? const Color(0xffececec)
+                                                    : const Color(0xff000000),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.circular(2))),
+                                            child: const Center(
+                                                child: Icon(Icons.check,
+                                                    size: 15,
+                                                    color:
+                                                        Color(0xffffffff))))),
+                                    Row(
+                                      children: [
+                                        IconButton(
+                                            onPressed: () {
+                                              showModalBottomSheet(
+                                                  context: context,
+                                                  isScrollControlled: true,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return ProjectsBottomsheet(
+                                                      threadIds: multipleIds,
+                                                      funcForMultiple: () {
+                                                        setState(() {
+                                                          isMultipleMode =
+                                                              false;
+                                                          multipleIds = [];
+                                                        });
+                                                      },
+                                                    );
+                                                  });
+                                            },
+                                            icon: Image.asset(
+                                                'assets/icons/icon_thread-multiple-move.png',
+                                                scale: 4,
+                                                color:
+                                                    const Color(0xff000000))),
+                                        const SizedBox(width: 10),
+                                        IconButton(
+                                            onPressed: () {
+                                              showDialog(
+                                                  context: context,
+                                                  builder:
+                                                      (BuildContext context) {
+                                                    return BaseDialog(
+                                                        title: "스레드를 삭제하시겠어요?",
+                                                        content:
+                                                            "삭제한 스레드는 복구할 수 없습니다.",
+                                                        buttonsList: [
+                                                          OutlinedButton(
+                                                              onPressed: () {
+                                                                Navigator.pop(
+                                                                    context);
+                                                              },
+                                                              style: OutlinedButton.styleFrom(
+                                                                  backgroundColor:
+                                                                      const Color(
+                                                                          0xffffffff),
+                                                                  side: const BorderSide(
+                                                                      color: Color(
+                                                                          0xffe7e7e7),
+                                                                      width:
+                                                                          1.0),
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              4.0)),
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          57.5,
+                                                                      vertical:
+                                                                          13)),
+                                                              child: const Text(
+                                                                  "취소",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      color: Color(0xff000000)))),
+                                                          const SizedBox(
+                                                              width: 9),
+                                                          OutlinedButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                if (mounted) {
+                                                                  ThreadCubit
+                                                                      threadCubit =
+                                                                      BlocProvider.of<
+                                                                              ThreadCubit>(
+                                                                          context);
+
+                                                                  await threadCubit
+                                                                      .delete(
+                                                                          multipleIds,
+                                                                          () {
+                                                                    setState(
+                                                                        () {
+                                                                      threadList =
+                                                                          {};
+                                                                    });
+                                                                  });
+
+                                                                  setState(() {
+                                                                    isMultipleMode =
+                                                                        false;
+                                                                    multipleIds =
+                                                                        [];
+                                                                  });
+
+                                                                  BaseToast(
+                                                                          content:
+                                                                              '스레드가 삭제되었습니다.',
+                                                                          context:
+                                                                              context)
+                                                                      .showToast();
+
+                                                                  Navigator.pop(
+                                                                      context);
+                                                                }
+                                                              },
+                                                              style: OutlinedButton.styleFrom(
+                                                                  backgroundColor:
+                                                                      const Color(
+                                                                          0xff000000),
+                                                                  side: const BorderSide(
+                                                                      color: Color(
+                                                                          0xff000000),
+                                                                      width:
+                                                                          1.0),
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              4.0)),
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          57.5,
+                                                                      vertical:
+                                                                          13)),
+                                                              child: const Text(
+                                                                  "확인",
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          14,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
+                                                                      color: Color(0xffffffff)))),
+                                                        ]);
+                                                  });
+                                            },
+                                            icon: Image.asset(
+                                                'assets/icons/icon_thread-popup-delete.png',
+                                                scale: 4,
+                                                color:
+                                                    const Color(0xff000000))),
+                                        const SizedBox(width: 20),
+                                        GestureDetector(
+                                            onTap: () {
+                                              setState(() {
+                                                isMultipleMode = false;
+                                                multipleIds = [];
+                                              });
+                                            },
+                                            child: const Text('취소',
+                                                style: TextStyle(
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w500,
+                                                    color: Color(0xff666666))))
+                                      ],
+                                    )
+                                  ]),
+                        const SizedBox(height: 23),
+                        threadList.isNotEmpty
+                            ? Column(
+                                children: threadList.entries.map((entry) {
+                                return Column(children: [
+                                  Row(children: [
+                                    Text(
+                                      entry.key,
+                                      style: const TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xff1c1c1c)),
+                                    )
+                                  ]),
+                                  const SizedBox(height: 12),
+                                  Column(
+                                      children:
+                                          entry.value.map<Widget>((thread) {
+                                    return _threadRow(thread);
+                                  }).toList()),
+                                  Container(
+                                      height: 1,
+                                      margin: const EdgeInsets.symmetric(
+                                          vertical: 24),
+                                      decoration: const BoxDecoration(
+                                          color: Color(0xfff4f4f5)))
+                                ]);
+                              }).toList())
+                            : Container()
+                      ]))));
         }
       }
     }));

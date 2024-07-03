@@ -11,6 +11,13 @@ class ProjectRepository {
     return res.data;
   }
 
+  // 이후 데이터 획득
+  Future<Map<String, dynamic>> getThreads(int page, String keyword) async {
+    Response res = await ProjectService().getProjectsList(page, 20, keyword);
+
+    return res.data;
+  }
+
   // 새 데이터 생성
   Future<dynamic> postProject(String title) async {
     Response res;

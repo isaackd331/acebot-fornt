@@ -1,8 +1,7 @@
-/**
- * Screen Body
- * 네이티브 키보드가 올라오더라도 기존 위젯들을
- * scrollable 하게 변경함
- */
+/// Screen Body
+/// 네이티브 키보드가 올라오더라도 기존 위젯들을
+/// scrollable 하게 변경함
+library;
 
 import 'package:flutter/material.dart';
 
