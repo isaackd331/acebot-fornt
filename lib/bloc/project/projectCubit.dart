@@ -24,12 +24,26 @@ class ProjectCubit extends Cubit<ProjectState> {
     }
   }
 
+  // paging
+  Future<void> paging(int pageKey, String keyword) async {
+    try {
+      final projectJson = await repo.getProjects(pageKey, keyword);
+
+      emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
   // createAndReread
-  Future<void> create(String title) async {
+  Future<void> create(String title, Function clearFunc) async {
     try {
       await repo.postProject(title);
 
       final projectJson = await repo.initProjects();
+
+      clearFunc();
 
       emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
     } on DioException catch (err) {

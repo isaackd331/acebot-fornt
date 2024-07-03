@@ -12,7 +12,7 @@ class ProjectRepository {
   }
 
   // 이후 데이터 획득
-  Future<Map<String, dynamic>> getThreads(int page, String keyword) async {
+  Future<Map<String, dynamic>> getProjects(int page, String keyword) async {
     Response res = await ProjectService().getProjectsList(page, 20, keyword);
 
     return res.data;

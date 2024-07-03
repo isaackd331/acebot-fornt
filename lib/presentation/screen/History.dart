@@ -30,6 +30,9 @@ class _HistoryState extends State<History> {
      */
     final threadCubit = context.read<ThreadCubit>();
     threadCubit.init();
+
+    final projectCubit = context.read<ProjectCubit>();
+    projectCubit.init();
   }
 
   @override
@@ -50,7 +53,7 @@ class _HistoryState extends State<History> {
                     tabButton('PROJECTS', 'project')
                   ]),
               const SizedBox(height: 20),
-              tabMode == 'thread' ? ThreadWidget() : Container()
+              tabMode == 'thread' ? const ThreadWidget() : Container()
             ])));
   }
 
