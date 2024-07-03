@@ -26,4 +26,9 @@ class ProjectRepository {
 
     return res.data;
   }
+
+  // 데이터 삭제
+  Future<void> delete(List<dynamic> projectIds) async {
+    await ProjectService().deleteProjects(projectIds);
+  }
 }

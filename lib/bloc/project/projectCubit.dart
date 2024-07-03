@@ -51,4 +51,24 @@ class ProjectCubit extends Cubit<ProjectState> {
           message: err.toString(), statusCode: err.response?.statusCode));
     }
   }
+
+  // delete
+  Future<void> delete(List<dynamic> projectIds, Function clearFunc) async {
+    try {
+      await repo.delete(projectIds);
+
+      final projectJson = await repo.initProjects();
+
+      clearFunc();
+
+      emit(LoadedState(projectJson: ProjectModel.fromJson(projectJson)));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
+  void clearCubit() {
+    emit(EmptyState());
+  }
 }
