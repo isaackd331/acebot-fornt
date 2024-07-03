@@ -20,8 +20,39 @@ class ThreadCubit extends Cubit<ThreadState> {
       emit(LoadedState(threadJson: ThreadModel.fromJson(threadJson)));
     } on DioException catch (err) {
       emit(ErrorState(
-        message: err.toString(), statusCode: err.response?.statusCode
-      ));
+          message: err.toString(), statusCode: err.response?.statusCode));
     }
+  }
+
+  // paging
+  Future<void> paging(int pageKey, String keyword) async {
+    try {
+      final threadJson = await repo.getThreads(pageKey, keyword);
+
+      emit(LoadedState(threadJson: ThreadModel.fromJson(threadJson)));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
+  // delete
+  Future<void> delete(List<dynamic> threadIds, Function clearFunc) async {
+    try {
+      await repo.delete(threadIds);
+
+      final threadJson = await repo.initThreads();
+
+      clearFunc();
+
+      emit(LoadedState(threadJson: ThreadModel.fromJson(threadJson)));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
+  void clearCubit() {
+    emit(EmptyState());
   }
 }

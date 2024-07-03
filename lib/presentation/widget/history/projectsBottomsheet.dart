@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
+import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 
 import 'package:acebot_front/api/threadService.dart';
 
@@ -9,27 +10,67 @@ import 'package:acebot_front/bloc/project/projectCubit.dart';
 import 'package:acebot_front/bloc/project/projectState.dart';
 
 class ProjectsBottomsheet extends StatefulWidget {
-  final int threadId;
+  final List<dynamic> threadIds;
+  final Function? funcForMultiple;
 
-  const ProjectsBottomsheet({super.key, required this.threadId});
+  const ProjectsBottomsheet(
+      {super.key, required this.threadIds, this.funcForMultiple});
 
   @override
   _ProjectsBottomsheetState createState() => _ProjectsBottomsheetState();
 }
 
 class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
+  List<dynamic> projectsList = [];
   bool isEditing = false;
   TextEditingController titleEditController = TextEditingController();
   int? selectedProject;
+  ScrollController scrollController = ScrollController();
+  int page = 2;
+  late int maxPage;
+  bool isPaging = false;
 
   @override
   void initState() {
     super.initState();
+
+    scrollController.addListener(scrollListener);
+
+    final projectCubit = context.read<ProjectCubit>();
+    final theState = projectCubit.state;
+    if (theState is LoadedState) {
+      setState(() {
+        projectsList = theState.projectJson.items;
+        maxPage = theState.projectJson.pages!;
+      });
+    }
   }
 
   @override
   void dispose() {
+    scrollController.removeListener(scrollListener);
+
     super.dispose();
+  }
+
+  Future<void> scrollListener() async {
+    if (scrollController.offset >= scrollController.position.maxScrollExtent &&
+        !scrollController.position.outOfRange &&
+        !isPaging &&
+        page <= maxPage) {
+      final projectCubit = context.read<ProjectCubit>();
+
+      setState(() {
+        isPaging = true;
+      });
+
+      await projectCubit.paging(page, '');
+
+      setState(() {
+        page += 1;
+        isPaging = false;
+      });
+    }
   }
 
   Widget _header() {
@@ -138,171 +179,202 @@ class _ProjectsBottomsheetState extends State<ProjectsBottomsheet> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<ProjectCubit, ProjectState>(
-        listener: (context, state) {},
-        child: BlocBuilder<ProjectCubit, ProjectState>(builder: (_, state) {
-          if (state is LoadedState) {
-            return Container(
-                height: MediaQuery.of(context).size.height * 0.63,
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                decoration: const BoxDecoration(color: Color(0xffffffff)),
-                child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      _header(),
-                      const SizedBox(height: 20),
-                      state.projectJson.items.isEmpty
-                          ? _loadedButEmpty()
-                          : Expanded(
-                              child: SingleChildScrollView(
-                                  child: Column(
-                                      mainAxisSize: MainAxisSize.max,
-                                      children: [
-                                  isEditing
-                                      ? Container(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 15, horizontal: 20),
-                                          decoration: const BoxDecoration(
-                                            color: Color(0xffffffff),
-                                          ),
-                                          child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.center,
-                                              children: [
-                                                Image.asset(
-                                                    'assets/icons/icon_project.png',
-                                                    scale: 4,
-                                                    color: !isEditing
-                                                        ? const Color(
-                                                            0xff000000)
-                                                        : const Color(
-                                                            0xffb3b3b3)),
-                                                const SizedBox(width: 6),
-                                                Expanded(
-                                                    child: Container(
-                                                        decoration:
-                                                            const BoxDecoration(
-                                                                border: Border(
-                                                                    bottom:
-                                                                        BorderSide(
-                                                          color:
-                                                              Color(0xff000000),
-                                                          width: 1,
-                                                        ))),
-                                                        child: TextField(
-                                                            controller:
-                                                                titleEditController,
-                                                            style: const TextStyle(
-                                                                fontSize: 14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Color(
-                                                                    0xff1c1c1c)),
-                                                            decoration: const InputDecoration(
-                                                                isDense: true,
-                                                                contentPadding:
-                                                                    EdgeInsets.only(
-                                                                        bottom:
-                                                                            5),
-                                                                border:
-                                                                    InputBorder
-                                                                        .none)))),
-                                                isEditing
-                                                    ? Container(
-                                                        margin: const EdgeInsets.only(
-                                                            left: 6),
-                                                        child: OutlinedButton(
-                                                            onPressed:
-                                                                () async {
-                                                              String theTitle =
-                                                                  titleEditController
-                                                                      .text;
+    return BlocListener<ProjectCubit, ProjectState>(listener: (context, state) {
+      if (state is LoadedState) {
+        setState(() {
+          maxPage = state.projectJson.pages!;
+          projectsList = [...projectsList, ...state.projectJson.items];
+        });
+      }
+    }, child: BlocBuilder<ProjectCubit, ProjectState>(builder: (_, state) {
+      if (state is LoadedState) {
+        return Container(
+            height: MediaQuery.of(context).size.height * 0.63,
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            decoration: const BoxDecoration(color: Color(0xffffffff)),
+            child: Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  _header(),
+                  const SizedBox(height: 20),
+                  state.projectJson.items.isEmpty
+                      ? _loadedButEmpty()
+                      : Expanded(
+                          child: SingleChildScrollView(
+                              controller: scrollController,
+                              child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    isEditing
+                                        ? Container(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 15, horizontal: 20),
+                                            decoration: const BoxDecoration(
+                                              color: Color(0xffffffff),
+                                            ),
+                                            child: Row(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.center,
+                                                children: [
+                                                  Image.asset(
+                                                      'assets/icons/icon_project.png',
+                                                      scale: 4,
+                                                      color: !isEditing
+                                                          ? const Color(
+                                                              0xff000000)
+                                                          : const Color(
+                                                              0xffb3b3b3)),
+                                                  const SizedBox(width: 6),
+                                                  Expanded(
+                                                      child: Container(
+                                                          decoration:
+                                                              const BoxDecoration(
+                                                                  border:
+                                                                      Border(
+                                                                          bottom:
+                                                                              BorderSide(
+                                                            color: Color(
+                                                                0xff000000),
+                                                            width: 1,
+                                                          ))),
+                                                          child: TextField(
+                                                              controller:
+                                                                  titleEditController,
+                                                              style: const TextStyle(
+                                                                  fontSize: 14,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .w500,
+                                                                  color: Color(
+                                                                      0xff1c1c1c)),
+                                                              decoration: const InputDecoration(
+                                                                  isDense: true,
+                                                                  contentPadding:
+                                                                      EdgeInsets.only(
+                                                                          bottom:
+                                                                              5),
+                                                                  border: InputBorder
+                                                                      .none)))),
+                                                  isEditing
+                                                      ? Container(
+                                                          margin: const EdgeInsets.only(
+                                                              left: 6),
+                                                          child: OutlinedButton(
+                                                              onPressed:
+                                                                  () async {
+                                                                String
+                                                                    theTitle =
+                                                                    titleEditController
+                                                                        .text;
 
-                                                              ProjectCubit
-                                                                  projectCubit =
-                                                                  BlocProvider.of<
-                                                                          ProjectCubit>(
-                                                                      context);
+                                                                ProjectCubit
+                                                                    projectCubit =
+                                                                    BlocProvider.of<
+                                                                            ProjectCubit>(
+                                                                        context);
 
-                                                              await projectCubit
-                                                                  .create(
-                                                                      theTitle);
+                                                                await projectCubit
+                                                                    .create(
+                                                                        theTitle,
+                                                                        () {
+                                                                  setState(() {
+                                                                    projectsList =
+                                                                        [];
+                                                                  });
+                                                                });
 
-                                                              titleEditController
-                                                                  .clear();
-                                                              setState(() {
-                                                                isEditing =
-                                                                    false;
-                                                              });
-                                                            },
-                                                            style: OutlinedButton.styleFrom(
-                                                                backgroundColor:
-                                                                    const Color(
-                                                                        0xff000000),
-                                                                side: const BorderSide(
-                                                                    color: Color(
-                                                                        0xff000000),
-                                                                    width: 1.0),
-                                                                shape: RoundedRectangleBorder(
-                                                                    borderRadius:
-                                                                        BorderRadius.circular(
-                                                                            4.0)),
-                                                                padding: const EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        12,
-                                                                    vertical:
-                                                                        6)),
-                                                            child: const Text("완료",
-                                                                style: TextStyle(
-                                                                    fontSize: 14,
-                                                                    fontWeight: FontWeight.w600,
-                                                                    color: Color(0xffffffff)))))
-                                                    : Container()
-                                              ]))
-                                      : Container(),
-                                  ...state.projectJson.items
-                                      .map<Widget>((project) {
-                                    return _projectRow(project);
-                                  })
-                                ]))),
-                      Container(
-                          padding: const EdgeInsets.fromLTRB(20, 26, 20, 0),
-                          child: Column(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      BaseOutlineButton(
-                                          onPressedFunc: () async {
-                                            if (selectedProject != null &&
-                                                mounted) {
-                                              await ThreadService().patchThread(
-                                                  widget.threadId,
-                                                  null,
-                                                  selectedProject);
+                                                                titleEditController
+                                                                    .clear();
+                                                                setState(() {
+                                                                  isEditing =
+                                                                      false;
+                                                                  page = 2;
+                                                                });
 
-                                              Navigator.pop(context);
-                                            }
-                                          },
-                                          text: '확인',
-                                          fontSize: 16,
-                                          textColor: const Color(0xffffffff),
-                                          backgroundColor:
-                                              selectedProject != null
-                                                  ? const Color(0xff000000)
-                                                  : const Color(0xffb3b3b3),
-                                          borderColor: selectedProject != null
-                                              ? const Color(0xff000000)
-                                              : const Color(0xffb3b3b3))
-                                    ]),
-                              ]))
-                    ]));
-          } else {
-            return Container();
-          }
-        }));
+                                                                if (mounted) {
+                                                                  BaseToast(
+                                                                          content:
+                                                                              '새로운 프로젝트가 생성되었어요.',
+                                                                          context:
+                                                                              context)
+                                                                      .showToast();
+                                                                }
+                                                              },
+                                                              style: OutlinedButton.styleFrom(
+                                                                  backgroundColor:
+                                                                      const Color(
+                                                                          0xff000000),
+                                                                  side: const BorderSide(
+                                                                      color: Color(
+                                                                          0xff000000),
+                                                                      width:
+                                                                          1.0),
+                                                                  shape: RoundedRectangleBorder(
+                                                                      borderRadius: BorderRadius.circular(
+                                                                          4.0)),
+                                                                  padding: const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          12,
+                                                                      vertical:
+                                                                          6)),
+                                                              child: const Text(
+                                                                  "완료",
+                                                                  style: TextStyle(
+                                                                      fontSize: 14,
+                                                                      fontWeight: FontWeight.w600,
+                                                                      color: Color(0xffffffff)))))
+                                                      : Container()
+                                                ]))
+                                        : Container(),
+                                    ...projectsList.map<Widget>((project) {
+                                      return _projectRow(project);
+                                    })
+                                  ]))),
+                  Container(
+                      padding: const EdgeInsets.fromLTRB(20, 26, 20, 0),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  BaseOutlineButton(
+                                      onPressedFunc: () async {
+                                        if (selectedProject != null &&
+                                            mounted) {
+                                          await ThreadService().patchThread(
+                                              widget.threadIds,
+                                              null,
+                                              selectedProject);
+
+                                          BaseToast(
+                                                  content: '스레드를 프로젝트로 이동했어요.',
+                                                  context: context)
+                                              .showToast();
+
+                                          if (widget.funcForMultiple != null) {
+                                            widget.funcForMultiple!();
+                                          }
+
+                                          Navigator.pop(context);
+                                        }
+                                      },
+                                      text: '확인',
+                                      fontSize: 16,
+                                      textColor: const Color(0xffffffff),
+                                      backgroundColor: selectedProject != null
+                                          ? const Color(0xff000000)
+                                          : const Color(0xffb3b3b3),
+                                      borderColor: selectedProject != null
+                                          ? const Color(0xff000000)
+                                          : const Color(0xffb3b3b3))
+                                ]),
+                          ]))
+                ]));
+      } else {
+        return Container();
+      }
+    }));
   }
 }
