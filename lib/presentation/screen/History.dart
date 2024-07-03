@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/history/threadWidget.dart';
+import 'package:acebot_front/presentation/widget/history/projectWidget.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 
 import 'package:acebot_front/bloc/thread/threadCubit.dart';
@@ -53,7 +54,8 @@ class _HistoryState extends State<History> {
                     tabButton('PROJECTS', 'project')
                   ]),
               const SizedBox(height: 20),
-              tabMode == 'thread' ? const ThreadWidget() : Container()
+              tabMode == 'thread' ? const ThreadWidget() : Container(),
+              tabMode == 'project' ? const ProjectWidget() : Container()
             ])));
   }
 

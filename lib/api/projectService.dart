@@ -9,7 +9,21 @@ class ProjectService {
         queryParameters: {"page": page, "size": size, "search": search});
   }
 
+  getThreadsInProject(int page, int projectId) {
+    return dio.get("/v1/projects/$projectId",
+        queryParameters: {"page": page, "size": 20});
+  }
+
   postProject(String title) {
     return dio.post("/v1/projects", data: {"title": title});
+  }
+
+  patchProject(int projectId, String title) {
+    return dio.patch("/v1/projects/$projectId", data: {"title": title});
+  }
+
+  deleteProjects(List<dynamic> projectIds) {
+    String ids = projectIds.join(",");
+    return dio.delete("/v1/projects", queryParameters: {"ids": ids});
   }
 }

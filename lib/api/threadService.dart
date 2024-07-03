@@ -15,13 +15,16 @@ class ThreadService {
   }
 
   patchThread(List<dynamic> threadIds, String? title, int? projectId) {
-    dynamic data = {};
+    dynamic data = {"threadIds": threadIds};
 
-    if (title == null) {
-      data = {"projectId": projectId, "threadIds": threadIds};
-    } else {
-      data = {"title": title, "projectId": projectId, "threadIds": threadIds};
+    if (title != null) {
+      data = {...data, "title": title};
     }
+
+    if (projectId != null) {
+      data = {...data, "projectId": projectId};
+    }
+
     return dio.patch("/v1/threads", data: data);
   }
 
