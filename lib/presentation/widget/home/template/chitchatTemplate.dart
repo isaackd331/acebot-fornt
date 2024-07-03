@@ -14,6 +14,7 @@ class ChitChatTemplate extends StatefulWidget {
   final String question;
   final Function setChatContent;
   final String initMp;
+  final List<dynamic> recommendPrompts;
 
   const ChitChatTemplate(
       {super.key,
@@ -22,7 +23,8 @@ class ChitChatTemplate extends StatefulWidget {
       required this.threadId,
       required this.question,
       required this.setChatContent,
-      required this.initMp});
+      required this.initMp,
+      required this.recommendPrompts});
 
   @override
   _ChitChatTemplateState createState() => _ChitChatTemplateState();

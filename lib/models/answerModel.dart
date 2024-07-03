@@ -8,7 +8,7 @@ class AnswerModel {
   final List<dynamic>? sub_paragraph;
   final String? feedback;
   final String? date;
-  final List<dynamic>? recommend_prompt;
+  final List<dynamic> recommend_prompt;
   final String? progress_state;
   final List<dynamic>? progress_message;
   final List<dynamic>? file_list;
@@ -38,7 +38,7 @@ class AnswerModel {
       sub_paragraph: json['sub_paragraph'] as List<dynamic>?,
       feedback: json['feedback'] as String?,
       date: json['date'] as String?,
-      recommend_prompt: json['recommend_prompt'] as List<dynamic>?,
+      recommend_prompt: json['recommend_prompt'] as List<dynamic>,
       progress_state: json['progress_state'] as String?,
       progress_message: json['progress_message'] as List<dynamic>?,
       file_list: json['file_list'] as List<dynamic>?);

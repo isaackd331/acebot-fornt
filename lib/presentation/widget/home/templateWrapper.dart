@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:acebot_front/presentation/widget/home/template/chitchatTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/template/weatherTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/template/placeTemplate.dart';
+import 'package:acebot_front/presentation/widget/home/recommendPromptSection.dart';
 
 import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
@@ -19,6 +20,7 @@ class TemplateWrapper extends StatefulWidget {
   final dynamic idsArray;
   final Function setChatContent;
   final ScrollController answerListController;
+  final Function setPromptToChat;
 
   const TemplateWrapper(
       {super.key,
@@ -26,7 +28,8 @@ class TemplateWrapper extends StatefulWidget {
       // required this.index,
       required this.idsArray,
       required this.setChatContent,
-      required this.answerListController});
+      required this.answerListController,
+      required this.setPromptToChat});
 
   @override
   _TemplateWrapperState createState() => _TemplateWrapperState();
@@ -35,6 +38,7 @@ class TemplateWrapper extends StatefulWidget {
 class _TemplateWrapperState extends State<TemplateWrapper> {
   String? templateName = "";
   String mainParagraph = "";
+  List<dynamic> recommendPrompts = [];
 
   @override
   void initState() {
@@ -60,6 +64,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           question: widget.question,
           setChatContent: widget.setChatContent,
           initMp: mainParagraph,
+          recommendPrompts: recommendPrompts,
         );
 
       case 'cur_weather':
@@ -73,6 +78,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           threadId: widget.idsArray['threadId'],
           question: widget.question,
           setChatContent: widget.setChatContent, initMp: mainParagraph,
+          recommendPrompts: recommendPrompts,
         );
 
       case 'weekly_weather':
@@ -86,6 +92,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           threadId: widget.idsArray['threadId'],
           question: widget.question,
           setChatContent: widget.setChatContent, initMp: mainParagraph,
+          recommendPrompts: recommendPrompts,
         );
 
       case 'place_search':
@@ -99,6 +106,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           threadId: widget.idsArray['threadId'],
           question: widget.question,
           setChatContent: widget.setChatContent, initMp: mainParagraph,
+          recommendPrompts: recommendPrompts,
         );
 
       default:
@@ -141,16 +149,20 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
         setState(() {
           templateName = theState.answerJson.template_name;
           mainParagraph = theState.answerJson.main_paragraph;
+          recommendPrompts = theState.answerJson.recommend_prompt;
         });
-      }
 
-      if (widget.answerListController.hasClients) {
-        if (lastState is EmptyState || lastState is LoadingState) {
-          scrollToBottom(100);
-        } else if (lastState is LoadedState) {
+        if (widget.answerListController.hasClients) {
           scrollToBottom(0);
         }
       }
+      // if (widget.answerListController.hasClients) {
+      //   if (lastState is EmptyState || lastState is LoadingState) {
+      //     scrollToBottom(100);
+      //   } else if (lastState is LoadedState) {
+      //     scrollToBottom(0);
+      //   }
+      // }
     },
         // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
         // 1차 개발에서는 한 화면에 한 질문/답변만
@@ -242,7 +254,13 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
             (theState is LoadedState &&
                     widget.idsArray['questionId'] != null &&
                     widget.idsArray['threadId'] != null)
-                ? _templateSelector()
+                ? Column(children: [
+                    _templateSelector(),
+                    RecommendPromptSection(
+                      recommendPrompts: recommendPrompts,
+                      setPromptToChat: widget.setPromptToChat,
+                    )
+                  ])
                 : Container()
           ]));
     }));

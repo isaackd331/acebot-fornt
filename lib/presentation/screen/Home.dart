@@ -221,11 +221,11 @@ class _HomeState extends State<Home> {
           //     .toList()
           children: [
             TemplateWrapper(
-              question: questArray,
-              idsArray: idsArray,
-              setChatContent: setChatContent,
-              answerListController: answerListController,
-            )
+                question: questArray,
+                idsArray: idsArray,
+                setChatContent: setChatContent,
+                answerListController: answerListController,
+                setPromptToChat: setPromptToChat)
           ]),
       Container(
           padding:

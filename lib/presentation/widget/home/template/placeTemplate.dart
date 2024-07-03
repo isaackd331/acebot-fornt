@@ -15,6 +15,7 @@ class PlaceTemplate extends StatefulWidget {
   final String question;
   final Function setChatContent;
   final String initMp;
+  final List<dynamic> recommendPrompts;
 
   const PlaceTemplate(
       {super.key,
@@ -23,7 +24,8 @@ class PlaceTemplate extends StatefulWidget {
       required this.threadId,
       required this.question,
       required this.setChatContent,
-      required this.initMp});
+      required this.initMp,
+      required this.recommendPrompts});
 
   @override
   _PlaceTemplateState createState() => _PlaceTemplateState();

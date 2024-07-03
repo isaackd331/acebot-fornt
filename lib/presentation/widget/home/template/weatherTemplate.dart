@@ -14,6 +14,7 @@ class WeatherTemplate extends StatefulWidget {
   final String question;
   final Function setChatContent;
   final String initMp;
+  final List<dynamic> recommendPrompts;
 
   const WeatherTemplate(
       {super.key,
@@ -22,7 +23,8 @@ class WeatherTemplate extends StatefulWidget {
       required this.threadId,
       required this.question,
       required this.setChatContent,
-      required this.initMp});
+      required this.initMp,
+      required this.recommendPrompts});
 
   @override
   _WeatherTemplateState createState() => _WeatherTemplateState();
