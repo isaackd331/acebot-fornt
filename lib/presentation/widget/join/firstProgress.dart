@@ -129,8 +129,8 @@ class _FirstProgressState extends State<FirstProgress> {
             ]),
             const SizedBox(height: 12),
             Row(children: [
-              Flexible(
-                  flex: 3,
+              Expanded(
+                  flex: 1,
                   child: TextField(
                     focusNode: idFocusNode,
                     controller: idController,
@@ -168,8 +168,8 @@ class _FirstProgressState extends State<FirstProgress> {
                         border: InputBorder.none),
                   )),
               const SizedBox(width: 6),
-              Flexible(
-                  flex: 1,
+              Expanded(
+                  flex: 0,
                   child: SizedBox(
                       height: 46,
                       child: OutlinedButton(
