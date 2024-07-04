@@ -27,13 +27,13 @@ class _SecondProgressState extends State<SecondProgress> {
   String passwordPlaceholder = "새 비밀번호";
   FocusNode checkPasswordFocusNode = FocusNode();
   String checkPasswordPlaceholder = "새 비밀번호 확인";
-  bool isPasswordInvalid = false;
-  String passwordInvalidType = "";
+  bool? isPasswordInvalid;
+  String passwordStatusType = "";
+  bool? isCheckPasswordInvalid;
+  String checkPasswordStatusType = "";
   bool passwordInvisible = true;
   bool checkPasswordInvisible = true;
-  bool isPasswordEmpty = true;
   TextEditingController passwordController = TextEditingController();
-  bool isCheckPasswordEmpty = true;
   TextEditingController checkPasswordController = TextEditingController();
 
   @override
@@ -41,48 +41,78 @@ class _SecondProgressState extends State<SecondProgress> {
     super.initState();
 
     passwordFocusNode.addListener(() {
-      passwordFocusNode.hasFocus
-          ? setState(() {
-              passwordPlaceholder = "";
-            })
-          : setState(() {
-              passwordPlaceholder = "새 비밀번호";
-            });
+      if (passwordFocusNode.hasFocus) {
+        setState(() {
+          passwordPlaceholder = "";
+          passwordStatusType = "";
+          isPasswordInvalid = null;
+        });
+      } else {
+        setState(() {
+          passwordPlaceholder = "새 비밀번호";
+        });
+
+        String passwordPattern =
+            r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,30}$';
+        RegExp regExp = RegExp(passwordPattern);
+
+        if (!regExp.hasMatch(passwordController.text)) {
+          //
+        } else {
+          //
+        }
+      }
     });
 
     checkPasswordFocusNode.addListener(() {
-      checkPasswordFocusNode.hasFocus
-          ? setState(() {
-              checkPasswordPlaceholder = "";
-            })
-          : setState(() {
-              checkPasswordPlaceholder = "새 비밀번호";
-            });
-    });
+      if (checkPasswordFocusNode.hasFocus) {
+        setState(() {
+          checkPasswordPlaceholder = "";
+          checkPasswordStatusType = "";
+          isCheckPasswordInvalid = null;
+        });
+      } else {
+        setState(() {
+          checkPasswordPlaceholder = "새 비밀번호 확인";
+        });
 
-    passwordController.addListener(() {
-      setState(() {
-        isPasswordEmpty = passwordController.text.isEmpty;
-
-        if (isPasswordEmpty) {
-          passwordInvalidType = "";
+        if (passwordController.text != checkPasswordController.text) {
+          //
         } else {
-          String emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-          RegExp regExp = new RegExp(emailPattern);
-
-          if (!regExp.hasMatch(passwordController.text)) {
-            passwordInvalidType = "invalidForm";
-          } else {
-            //
-          }
+          //
         }
-      });
+      }
     });
+  }
 
-    isPasswordInvalid = false;
-    passwordInvalidType = "";
-    passwordInvisible = true;
-    checkPasswordInvisible = true;
+  Widget _errorState(String str) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.clear, color: Color(0xffe72929), size: 16),
+          const SizedBox(width: 2),
+          Text(str,
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffe72929)))
+        ]);
+  }
+
+  Widget _successState(String str) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(str,
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xff17c452)))
+        ]);
   }
 
   @override
@@ -90,31 +120,31 @@ class _SecondProgressState extends State<SecondProgress> {
     return Container(
         padding: const EdgeInsets.only(top: 30.0),
         child: Column(children: [
-          Row(children: [
+          const Row(children: [
             Expanded(
                 child: Text("비밀번호를 입력해 주세요.",
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xff000000))))
+                        color: Color(0xff000000))))
           ]),
 
           const SizedBox(height: 16.0),
 
-          Row(children: [
+          const Row(children: [
             Expanded(
                 child: Text("비밀번호는 영문/숫자/특수문자를\n모두 포함하여 8-30자로 설정해 주세요.",
                     style: TextStyle(
                         fontSize: 12.0,
                         fontWeight: FontWeight.w400,
-                        color: const Color(0xff737373))))
+                        color: Color(0xff737373))))
           ]),
 
           const SizedBox(height: 30.0),
 
           // 비밀번호
           Column(children: [
-            Row(children: [
+            const Row(children: [
               Expanded(
                   child: Text('비밀번호',
                       style: TextStyle(
@@ -135,7 +165,7 @@ class _SecondProgressState extends State<SecondProgress> {
                   fontWeight: FontWeight.w500,
                   color: Color(0xff000000)),
               decoration: InputDecoration(
-                  suffixIcon: !isPasswordEmpty
+                  suffixIcon: passwordController.text.isNotEmpty
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
@@ -180,7 +210,7 @@ class _SecondProgressState extends State<SecondProgress> {
                           iconSize: 24.0,
                           padding: const EdgeInsets.all(0)),
                   hintText: passwordPlaceholder,
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff939393)),
@@ -192,11 +222,11 @@ class _SecondProgressState extends State<SecondProgress> {
             ),
           ]),
 
-          SizedBox(height: 52.0),
+          const SizedBox(height: 52.0),
 
           // 비밀번호 확인
           Column(children: [
-            Row(children: [
+            const Row(children: [
               Expanded(
                   child: Text('비밀번호 확인',
                       style: TextStyle(
@@ -204,7 +234,7 @@ class _SecondProgressState extends State<SecondProgress> {
                           fontWeight: FontWeight.w500,
                           color: Color(0xff444444))))
             ]),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextField(
               focusNode: checkPasswordFocusNode,
               controller: checkPasswordController,
@@ -212,12 +242,12 @@ class _SecondProgressState extends State<SecondProgress> {
               obscureText: checkPasswordInvisible,
               enableSuggestions: false,
               autocorrect: false,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
                   color: Color(0xff000000)),
               decoration: InputDecoration(
-                  suffixIcon: !isCheckPasswordEmpty
+                  suffixIcon: checkPasswordController.text.isNotEmpty
                       ? Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           mainAxisSize: MainAxisSize.min,
@@ -229,8 +259,8 @@ class _SecondProgressState extends State<SecondProgress> {
                                       widget.setUserCheckPassword("");
                                     });
                                   },
-                                  icon: Icon(Icons.clear,
-                                      color: const Color(0xff000000)),
+                                  icon: const Icon(Icons.clear,
+                                      color: Color(0xff000000)),
                                   iconSize: 24.0,
                                   padding: const EdgeInsets.all(0)),
                               IconButton(
@@ -262,14 +292,14 @@ class _SecondProgressState extends State<SecondProgress> {
                           iconSize: 24.0,
                           padding: const EdgeInsets.all(0)),
                   hintText: checkPasswordPlaceholder,
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff939393)),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8.0, vertical: 11.5),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 11.5),
                   filled: true,
-                  fillColor: Color(0xfff4f4f4),
+                  fillColor: const Color(0xfff4f4f4),
                   border: InputBorder.none),
             ),
           ]),
