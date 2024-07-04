@@ -28,9 +28,7 @@ class _SecondProgressState extends State<SecondProgress> {
   FocusNode checkPasswordFocusNode = FocusNode();
   String checkPasswordPlaceholder = "새 비밀번호 확인";
   bool? isPasswordInvalid;
-  String passwordStatusType = "";
   bool? isCheckPasswordInvalid;
-  String checkPasswordStatusType = "";
   bool passwordInvisible = true;
   bool checkPasswordInvisible = true;
   TextEditingController passwordController = TextEditingController();
@@ -44,7 +42,6 @@ class _SecondProgressState extends State<SecondProgress> {
       if (passwordFocusNode.hasFocus) {
         setState(() {
           passwordPlaceholder = "";
-          passwordStatusType = "";
           isPasswordInvalid = null;
         });
       } else {
@@ -57,9 +54,13 @@ class _SecondProgressState extends State<SecondProgress> {
         RegExp regExp = RegExp(passwordPattern);
 
         if (!regExp.hasMatch(passwordController.text)) {
-          //
+          setState(() {
+            isPasswordInvalid = true;
+          });
         } else {
-          //
+          setState(() {
+            isPasswordInvalid = false;
+          });
         }
       }
     });
@@ -68,7 +69,6 @@ class _SecondProgressState extends State<SecondProgress> {
       if (checkPasswordFocusNode.hasFocus) {
         setState(() {
           checkPasswordPlaceholder = "";
-          checkPasswordStatusType = "";
           isCheckPasswordInvalid = null;
         });
       } else {
@@ -77,9 +77,13 @@ class _SecondProgressState extends State<SecondProgress> {
         });
 
         if (passwordController.text != checkPasswordController.text) {
-          //
+          setState(() {
+            isCheckPasswordInvalid = true;
+          });
         } else {
-          //
+          setState(() {
+            isCheckPasswordInvalid = false;
+          });
         }
       }
     });
@@ -113,6 +117,30 @@ class _SecondProgressState extends State<SecondProgress> {
                   fontWeight: FontWeight.w400,
                   color: Color(0xff17c452)))
         ]);
+  }
+
+  Widget _passwordStatusRenderer() {
+    if (isPasswordInvalid != null) {
+      if (isPasswordInvalid!) {
+        return _errorState("비밀번호는 영문, 숫자, 특수문자 8~30글자 입력해주세요.");
+      } else {
+        return _successState("사용 가능한 비밀번호 입니다.");
+      }
+    } else {
+      return Container();
+    }
+  }
+
+  Widget _checkPasswordStatusRender() {
+    if (isCheckPasswordInvalid != null) {
+      if (isCheckPasswordInvalid!) {
+        return _errorState("비밀번호가 일치하지 않습니다.");
+      } else {
+        return Container();
+      }
+    } else {
+      return Container();
+    }
   }
 
   @override
@@ -220,6 +248,8 @@ class _SecondProgressState extends State<SecondProgress> {
                   fillColor: const Color(0xfff4f4f4),
                   border: InputBorder.none),
             ),
+            const SizedBox(height: 8),
+            _passwordStatusRenderer()
           ]),
 
           const SizedBox(height: 52.0),
@@ -302,6 +332,8 @@ class _SecondProgressState extends State<SecondProgress> {
                   fillColor: const Color(0xfff4f4f4),
                   border: InputBorder.none),
             ),
+            const SizedBox(height: 8),
+            _checkPasswordStatusRender()
           ]),
         ]));
   }
