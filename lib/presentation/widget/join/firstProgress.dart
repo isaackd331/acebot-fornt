@@ -7,14 +7,13 @@ class FirstProgress extends StatefulWidget {
   final Function setProgress;
   final Function setAbleToProgress;
   final Function setUserId;
-  final String userId;
 
-  const FirstProgress(
-      {super.key,
-      required this.setProgress,
-      required this.setAbleToProgress,
-      required this.setUserId,
-      required this.userId});
+  const FirstProgress({
+    super.key,
+    required this.setProgress,
+    required this.setAbleToProgress,
+    required this.setUserId,
+  });
 
   @override
   _FirstProgressState createState() => _FirstProgressState();
@@ -179,7 +178,7 @@ class _FirstProgressState extends State<FirstProgress> {
                                 statusType != "notEmail")) {
                               try {
                                 await UserService()
-                                    .verify(widget.userId, null, 'email');
+                                    .verify(idController.text, null, 'email');
 
                                 setState(() {
                                   statusType = "success";

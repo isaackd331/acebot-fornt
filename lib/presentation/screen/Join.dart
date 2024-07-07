@@ -12,6 +12,7 @@ import 'package:percent_indicator/percent_indicator.dart';
 
 import 'package:acebot_front/presentation/widget/join/firstProgress.dart';
 import 'package:acebot_front/presentation/widget/join/secondProgress.dart';
+import 'package:acebot_front/presentation/widget/join/thirdProgress.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
@@ -107,10 +108,10 @@ class _JoinState extends State<Join> {
       switch (progress) {
         case 1:
           return FirstProgress(
-              setProgress: setProgress,
-              setAbleToProgress: setAbleToProgress,
-              setUserId: setUserId,
-              userId: userId);
+            setProgress: setProgress,
+            setAbleToProgress: setAbleToProgress,
+            setUserId: setUserId,
+          );
         case 2:
           return SecondProgress(
               setProgress: setProgress,
@@ -119,6 +120,13 @@ class _JoinState extends State<Join> {
               userPassword: userPassword,
               setUserCheckPassword: setUserCheckPassword,
               userCheckPassword: userCheckPassword);
+        case 3:
+          return ThirdProgress(
+            setProgress: setProgress,
+            setAbleToProgress: setAbleToProgress,
+            setUserName: setUserName,
+          );
+
         default:
           return Container();
       }

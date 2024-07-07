@@ -44,6 +44,8 @@ class _SecondProgressState extends State<SecondProgress> {
           passwordPlaceholder = "";
           isPasswordInvalid = null;
         });
+
+        widget.setAbleToProgress(false);
       } else {
         setState(() {
           passwordPlaceholder = "새 비밀번호";
