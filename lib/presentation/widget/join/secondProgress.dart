@@ -71,6 +71,8 @@ class _SecondProgressState extends State<SecondProgress> {
           checkPasswordPlaceholder = "";
           isCheckPasswordInvalid = null;
         });
+
+        widget.setAbleToProgress(false);
       } else {
         setState(() {
           checkPasswordPlaceholder = "새 비밀번호 확인";
@@ -81,6 +83,7 @@ class _SecondProgressState extends State<SecondProgress> {
             isCheckPasswordInvalid = true;
           });
         } else {
+          widget.setAbleToProgress(true);
           setState(() {
             isCheckPasswordInvalid = false;
           });
