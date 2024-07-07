@@ -4,13 +4,14 @@ class ThirdProgress extends StatefulWidget {
   final Function setProgress;
   final Function setAbleToProgress;
   final Function setUserName;
+  final String userName;
 
-  const ThirdProgress({
-    super.key,
-    required this.setProgress,
-    required this.setAbleToProgress,
-    required this.setUserName,
-  });
+  const ThirdProgress(
+      {super.key,
+      required this.setProgress,
+      required this.setAbleToProgress,
+      required this.setUserName,
+      required this.userName});
 
   @override
   _ThirdProgressState createState() => _ThirdProgressState();
@@ -50,6 +51,8 @@ class _ThirdProgressState extends State<ThirdProgress> {
   @override
   void initState() {
     super.initState();
+
+    nameController.text = widget.userName;
 
     nameFocusNode.addListener(() {
       if (nameFocusNode.hasFocus) {

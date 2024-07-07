@@ -7,12 +7,14 @@ class FirstProgress extends StatefulWidget {
   final Function setProgress;
   final Function setAbleToProgress;
   final Function setUserId;
+  final String userId;
 
   const FirstProgress({
     super.key,
     required this.setProgress,
     required this.setAbleToProgress,
     required this.setUserId,
+    required this.userId,
   });
 
   @override
@@ -29,6 +31,8 @@ class _FirstProgressState extends State<FirstProgress> {
   @override
   void initState() {
     super.initState();
+
+    idController.text = widget.userId;
 
     idFocusNode.addListener(() {
       if (idFocusNode.hasFocus) {

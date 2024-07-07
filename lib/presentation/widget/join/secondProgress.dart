@@ -38,6 +38,9 @@ class _SecondProgressState extends State<SecondProgress> {
   void initState() {
     super.initState();
 
+    passwordController.text = widget.userPassword;
+    checkPasswordController.text = widget.userCheckPassword;
+
     passwordFocusNode.addListener(() {
       if (passwordFocusNode.hasFocus) {
         setState(() {
