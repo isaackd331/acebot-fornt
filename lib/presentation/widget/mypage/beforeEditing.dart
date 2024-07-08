@@ -1,6 +1,5 @@
-/**
- * 마이페이지 수정 전
- */
+/// 마이페이지 수정 전
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,28 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 
-class BeforeEditting extends StatefulWidget {
-  final Function setIsEditting;
+class BeforeEditing extends StatelessWidget {
+  final Function setIsEditing;
 
-  const BeforeEditting({
+  const BeforeEditing({
     super.key,
-    required this.setIsEditting,
+    required this.setIsEditing,
   });
-
-  @override
-  _BeforeEdittingState createState() => _BeforeEdittingState();
-}
-
-class _BeforeEdittingState extends State<BeforeEditting> {
-  @override
-  void initState() {
-    super.initState();
-
-    /**
-     * 사용할 Cubit 초기화
-     */
-    context.read<SelfCubit>();
-  }
 
   Widget _listView(String title, List<Widget> child) {
     return Column(children: [
@@ -72,14 +56,14 @@ class _BeforeEdittingState extends State<BeforeEditting> {
                     height: 35,
                     child: IconButton(
                         onPressed: () {
-                          widget.setIsEditting(true);
+                          setIsEditing(true);
                         },
                         icon: Image.asset('assets/icons/icon_edit.png'),
                         iconSize: 24))
               ]),
           const SizedBox(height: 30),
           _listView('이름/메일', [
-            Text("${state.userJson.name}",
+            Text(state.userJson.name,
                 style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -91,7 +75,7 @@ class _BeforeEdittingState extends State<BeforeEditting> {
               decoration: const BoxDecoration(color: Color(0xffd9d9d9)),
             ),
             const SizedBox(width: 8),
-            Text("${state.userJson.email}",
+            Text(state.userJson.email,
                 style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
@@ -99,7 +83,7 @@ class _BeforeEdittingState extends State<BeforeEditting> {
           ]),
           const SizedBox(height: 28),
           _listView('직군', [
-            Text("Marketing",
+            Text(state.userJson.role,
                 style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
@@ -108,8 +92,7 @@ class _BeforeEdittingState extends State<BeforeEditting> {
           const SizedBox(height: 28),
           _listView('업무', [
             Flexible(
-                child: Text(
-                    "커뮤니케이션, 로드맵 작성, SWOT 분석, 경쟁사 분석, 텍스트 분석, 텍스트 분석, 텍스트 분석",
+                child: Text(state.userJson.work.join(','),
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,

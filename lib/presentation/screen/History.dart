@@ -107,7 +107,28 @@ class _HistoryState extends State<History> {
         child: Scaffold(
             appBar: BaseAppBar(
                 title: '',
-                actions: const [],
+                actions: [
+                  GestureDetector(
+                    onTap: () {
+                      context.go('/mypage');
+                    },
+                    child: Container(
+                        width: 20,
+                        height: 20,
+                        margin: const EdgeInsets.only(right: 20),
+                        decoration: const BoxDecoration(
+                            shape: BoxShape.circle, color: Color(0xff666666)),
+                        // TODO : 추후 유저 아이콘으로 변경 필요
+                        child: const Text(
+                          'L',
+                          style: TextStyle(
+                              fontSize: 11.5,
+                              fontWeight: FontWeight.w600,
+                              color: Color(0xffffffff)),
+                          textAlign: TextAlign.center,
+                        )),
+                  )
+                ],
                 leading: IconButton(
                     onPressed: () {
                       context.go('/home');

@@ -2,7 +2,7 @@ class UserModel {
   final String email;
   final String name;
   final String? description;
-  final String role;
+  final dynamic role;
   final List<dynamic> work;
 
   UserModel(
@@ -16,7 +16,7 @@ class UserModel {
       email: json['email'] as String,
       name: json['name'] as String,
       description: json['description'] as String?,
-      role: json['role'] as String,
+      role: json['role'] as dynamic,
       work: json['work'] as List<dynamic>);
 
   Map<String, dynamic> toJson() => {
