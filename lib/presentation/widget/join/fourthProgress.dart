@@ -41,6 +41,8 @@ class _FourthProgressState extends State<FourthProgress> {
             tasksList = res.data["work"];
           })
         });
+
+    widget.setUserTasks([]);
   }
 
   @override

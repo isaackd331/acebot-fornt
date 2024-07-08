@@ -5,6 +5,7 @@
 /// 3: 이름 입력
 /// 4: 직군/업무 입력
 /// 5: 이메일 인증
+/// 6: 가입완료 화면
 library;
 
 import 'package:flutter/material.dart';
@@ -221,27 +222,29 @@ class _JoinState extends State<Join> {
   Widget build(BuildContext context) {
     return SafeArea(
         child: Scaffold(
-      appBar: BaseAppBar(
-          title: '회원가입',
-          actions: [
-            IconButton(
-                onPressed: () {
-                  context.go('/login');
-                },
-                icon: const Icon(Icons.clear),
-                padding: const EdgeInsets.all(0))
-          ],
-          leading: progress != 1
-              ? IconButton(
-                  onPressed: () {
-                    setProgress(progress - 1);
+      appBar: progress <= 5
+          ? BaseAppBar(
+              title: progress < 5 ? '회원가입' : "이메일 인증",
+              actions: [
+                IconButton(
+                    onPressed: () {
+                      context.go('/login');
+                    },
+                    icon: const Icon(Icons.clear),
+                    padding: const EdgeInsets.all(0))
+              ],
+              leading: progress != 1
+                  ? IconButton(
+                      onPressed: () {
+                        setProgress(progress - 1);
 
-                    setAbleToProgress(false);
-                  },
-                  icon: const Icon(Icons.arrow_back_ios_new_outlined),
-                  iconSize: 16,
-                  padding: const EdgeInsets.all(0))
-              : Container()),
+                        setAbleToProgress(false);
+                      },
+                      icon: const Icon(Icons.arrow_back_ios_new_outlined),
+                      iconSize: 16,
+                      padding: const EdgeInsets.all(0))
+                  : Container())
+          : AppBar(),
       body: BaseBody(child: _bodyWidget()),
     ));
   }
