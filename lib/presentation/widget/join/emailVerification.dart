@@ -3,13 +3,13 @@ import 'package:dio/dio.dart';
 
 import 'package:acebot_front/api/userService.dart';
 
-class FirstProgress extends StatefulWidget {
+class EmailVerification extends StatefulWidget {
   final Function setProgress;
   final Function setAbleToProgress;
   final Function setUserId;
   final String userId;
 
-  const FirstProgress({
+  const EmailVerification({
     super.key,
     required this.setProgress,
     required this.setAbleToProgress,
@@ -18,15 +18,15 @@ class FirstProgress extends StatefulWidget {
   });
 
   @override
-  _FirstProgressState createState() => _FirstProgressState();
+  _EmailVerificationState createState() => _EmailVerificationState();
 }
 
-class _FirstProgressState extends State<FirstProgress> {
-  FocusNode idFocusNode = FocusNode();
-  String idPlaceholder = "아이디";
-  bool? isIdInvalid;
-  String statusType = "";
+class _EmailVerificationState extends State<EmailVerification> {
+  int _seconds = 300;
   TextEditingController idController = TextEditingController();
+  String statusType = "";
+  TextEditingController codeController = TextEditingController();
+  FocusNode codeFocusNode = FocusNode();
 
   @override
   void initState() {
@@ -34,34 +34,10 @@ class _FirstProgressState extends State<FirstProgress> {
 
     idController.text = widget.userId;
 
-    idFocusNode.addListener(() {
-      if (idFocusNode.hasFocus) {
-        setState(() {
-          idPlaceholder = "";
-          statusType = "";
-          isIdInvalid = null;
-        });
-      } else {
-        setState(() {
-          idPlaceholder = "아이디";
-        });
+    startTimer();
 
-        String emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-        RegExp regExp = RegExp(emailPattern);
-
-        if (!regExp.hasMatch(idController.text)) {
-          setState(() {
-            statusType = "notEmail";
-            isIdInvalid = true;
-          });
-        } else {
-          setState(() {
-            statusType = "";
-            isIdInvalid = false;
-          });
-        }
-      }
-    });
+    // 이메일 보냄
+    UserService().verify(widget.userId, null, 'send-activated');
   }
 
   Widget _errorState(String str) {
@@ -96,15 +72,30 @@ class _FirstProgressState extends State<FirstProgress> {
 
   Widget stateRenderer() {
     switch (statusType) {
-      case 'notEmail':
-        return _errorState('유효한 이메일 주소가 아닙니다.');
-      case 'duplicated':
-        return _errorState('중복된 이메일 주소입니다.');
+      case 'wrong':
+        return _errorState('인증번호가 일치하지 않습니다.');
       case 'success':
-        return _successState('사용할 수 있는 이메일 주소입니다.');
+        return _successState('인증 번호가 일치합니다.');
       default:
         return Container();
     }
+  }
+
+  void startTimer() {
+    Future.delayed(const Duration(seconds: 1), () {
+      if (_seconds > 0) {
+        setState(() {
+          _seconds--;
+        });
+        startTimer();
+      }
+    });
+  }
+
+  String get timerString {
+    int minutes = _seconds ~/ 60;
+    int seconds = _seconds % 60;
+    return '${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -114,7 +105,7 @@ class _FirstProgressState extends State<FirstProgress> {
         child: Column(children: [
           const Row(children: [
             Expanded(
-                child: Text("이메일을\n입력해 주세요.",
+                child: Text("메일로 발송된\n인증 번호를 입력해 주세요.",
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w700,
@@ -122,6 +113,7 @@ class _FirstProgressState extends State<FirstProgress> {
           ]),
           const SizedBox(height: 56.0),
           Column(children: [
+            // 아이디 영역
             const Row(children: [
               Expanded(
                   child: Text('아이디',
@@ -135,23 +127,70 @@ class _FirstProgressState extends State<FirstProgress> {
               Expanded(
                   flex: 1,
                   child: TextField(
-                    focusNode: idFocusNode,
+                    enabled: false,
                     controller: idController,
                     onChanged: (value) => {widget.setUserId(value)},
                     style: const TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.w500,
                         color: Color(0xff000000)),
+                    decoration: const InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 11.5),
+                        filled: true,
+                        fillColor: Color(0xfff4f4f4),
+                        border: InputBorder.none),
+                  )),
+              const SizedBox(width: 6),
+              Expanded(
+                  flex: 0,
+                  child: SizedBox(
+                      height: 46,
+                      child: OutlinedButton(
+                          onPressed: () async {},
+                          style: OutlinedButton.styleFrom(
+                              backgroundColor: const Color(0xff000000),
+                              side: const BorderSide(
+                                  color: Color(0xff000000), width: 1.0),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(4.0)),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 31.5, vertical: 12)),
+                          child: const Text("재전송",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xffffffff))))))
+            ]),
+            const SizedBox(height: 54),
+            // 인증번호 영역
+            const Row(children: [
+              Expanded(
+                  child: Text('인증 번호',
+                      style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xff444444))))
+            ]),
+            const SizedBox(height: 12),
+            Row(children: [
+              Expanded(
+                  flex: 1,
+                  child: TextField(
+                    controller: codeController,
+                    focusNode: codeFocusNode,
+                    style: const TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff000000)),
                     decoration: InputDecoration(
-                        suffixIcon: idController.text.isNotEmpty
+                        suffixIcon: codeController.text.isNotEmpty
                             ? IconButton(
                                 onPressed: () {
-                                  idController.clear();
+                                  codeController.clear();
 
                                   setState(() {
-                                    widget.setUserId("");
                                     statusType = "";
-                                    isIdInvalid = false;
                                   });
                                 },
                                 icon: const Icon(Icons.clear,
@@ -159,7 +198,7 @@ class _FirstProgressState extends State<FirstProgress> {
                                 iconSize: 24.0,
                                 padding: const EdgeInsets.all(0))
                             : null,
-                        hintText: idPlaceholder,
+                        hintText: codeFocusNode.hasFocus ? '' : "인증 번호",
                         hintStyle: const TextStyle(
                             fontSize: 14.0,
                             fontWeight: FontWeight.w500,
@@ -177,56 +216,42 @@ class _FirstProgressState extends State<FirstProgress> {
                       height: 46,
                       child: OutlinedButton(
                           onPressed: () async {
-                            if ((idController.text.isNotEmpty &&
-                                isIdInvalid != null &&
-                                statusType != "notEmail")) {
-                              try {
-                                await UserService()
-                                    .verify(idController.text, null, 'email');
-
-                                setState(() {
-                                  statusType = "success";
-                                  isIdInvalid = false;
-                                });
-
-                                widget.setAbleToProgress(true);
-                              } on DioException catch (err) {
-                                int? status = err.response?.statusCode;
-
-                                if (status == 409) {
-                                  setState(() {
-                                    statusType = "duplicated";
-                                    isIdInvalid = true;
-                                  });
-                                }
-                              }
-                            }
+                            if (codeController.text.length == 6) {}
                           },
                           style: OutlinedButton.styleFrom(
-                              backgroundColor: (idController.text.isNotEmpty &&
-                                      isIdInvalid != null &&
-                                      statusType != "notEmail")
+                              backgroundColor: codeController.text.length == 6
                                   ? const Color(0xff000000)
                                   : const Color(0xffb3b3b3),
                               side: BorderSide(
-                                  color: (idController.text.isNotEmpty &&
-                                          isIdInvalid != null &&
-                                          !isIdInvalid!)
+                                  color: codeController.text.length == 6
                                       ? const Color(0xff000000)
                                       : const Color(0xffb3b3b3),
                                   width: 1.0),
                               shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(4.0)),
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 24, vertical: 12)),
-                          child: const Text("중복 확인",
+                              padding: const EdgeInsets.all(12)),
+                          child: const Text("인증번호 확인",
                               style: TextStyle(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: Color(0xffffffff))))))
             ]),
             const SizedBox(height: 8),
-            stateRenderer()
+            Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: Image.asset('assets/icons/icon_time.png')),
+                  const SizedBox(width: 2),
+                  Text(timerString,
+                      style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w400,
+                          color: Color(0xff1b1b1b)))
+                ])
           ])
         ]));
   }

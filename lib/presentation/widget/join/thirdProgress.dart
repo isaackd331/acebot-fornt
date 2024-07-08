@@ -19,47 +19,73 @@ class ThirdProgress extends StatefulWidget {
 
 class _ThirdProgressState extends State<ThirdProgress> {
   FocusNode nameFocusNode = FocusNode();
-  String namePlaceholder = "아이디";
-  bool isIdInvalid = false;
-  String idInvalidType = "";
-  bool isIdEmpty = true;
-  TextEditingController idController = TextEditingController();
+  String namePlaceholder = "공백없이 한글 or 영어 or 숫자 포함 12자";
+  bool? isNameInvalid;
+  TextEditingController nameController = TextEditingController();
+
+  Widget _errorState(String str) {
+    return Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Icon(Icons.clear, color: Color(0xffe72929), size: 16),
+          const SizedBox(width: 2),
+          Text(str,
+              style: const TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400,
+                  color: Color(0xffe72929)))
+        ]);
+  }
+
+  Widget stateRenderer() {
+    switch (isNameInvalid) {
+      case true:
+        return _errorState('이름은 한글, 영어 숫자를 사용한 1~12글자 입력해주세요.');
+      default:
+        return Container();
+    }
+  }
 
   @override
   void initState() {
     super.initState();
 
+    nameController.text = widget.userName;
+
     nameFocusNode.addListener(() {
-      nameFocusNode.hasFocus
-          ? setState(() {
-              namePlaceholder = "";
-            })
-          : setState(() {
-              namePlaceholder = "아이디";
-            });
-    });
+      if (nameFocusNode.hasFocus) {
+        setState(() {
+          namePlaceholder = "";
+          isNameInvalid = null;
+        });
+        widget.setAbleToProgress(false);
+      } else {
+        setState(() {
+          namePlaceholder = "공백없이 한글 or 영어 or 숫자 포함 12자";
+        });
 
-    idController.addListener(() {
-      setState(() {
-        isIdEmpty = idController.text.isEmpty;
+        String namePattern = r'^(?=.*[가-힣A-Za-z0-9])[가-힣A-Za-z0-9]{1,12}$';
+        RegExp regExp = RegExp(namePattern);
 
-        if (isIdEmpty) {
-          idInvalidType = "";
+        if (!regExp.hasMatch(nameController.text)) {
+          setState(() {
+            isNameInvalid = true;
+          });
         } else {
-          String emailPattern = r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$';
-          RegExp regExp = RegExp(emailPattern);
-
-          if (regExp.hasMatch(idController.text)) {
-            idInvalidType = "notEmail";
-          } else {
-            // 이메일 중복 체크 후 idInvalidType을 조정
-          }
+          widget.setAbleToProgress(true);
+          setState(() {
+            isNameInvalid = false;
+          });
         }
-      });
+      }
     });
+  }
 
-    isIdInvalid = false;
-    idInvalidType = "";
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -69,7 +95,7 @@ class _ThirdProgressState extends State<ThirdProgress> {
         child: Column(children: [
           const Row(children: [
             Expanded(
-                child: Text("이메일을\n입력해 주세요.",
+                child: Text("이름을\n입력해 주세요.",
                     style: TextStyle(
                         fontSize: 20.0,
                         fontWeight: FontWeight.w700,
@@ -79,46 +105,54 @@ class _ThirdProgressState extends State<ThirdProgress> {
           Column(children: [
             const Row(children: [
               Expanded(
-                  child: Text('아이디',
+                  child: Text('이름',
                       style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.w500,
                           color: Color(0xff444444))))
             ]),
             const SizedBox(height: 12),
-            TextField(
-              focusNode: nameFocusNode,
-              controller: idController,
-              onChanged: (value) => {widget.setUserName(value)},
-              style: const TextStyle(
-                  fontSize: 14.0,
-                  fontWeight: FontWeight.w500,
-                  color: Color(0xff000000)),
-              decoration: InputDecoration(
-                  suffixIcon: !isIdEmpty
-                      ? IconButton(
-                          onPressed: () {
-                            setState(() {
-                              idController.clear();
-                              widget.setUserName("");
-                            });
-                          },
-                          icon:
-                              const Icon(Icons.clear, color: Color(0xff000000)),
-                          iconSize: 24.0,
-                          padding: const EdgeInsets.all(0))
-                      : null,
-                  hintText: namePlaceholder,
-                  hintStyle: const TextStyle(
-                      fontSize: 14.0,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff939393)),
-                  contentPadding: const EdgeInsets.symmetric(
-                      horizontal: 8.0, vertical: 11.5),
-                  filled: true,
-                  fillColor: const Color(0xfff4f4f4),
-                  border: InputBorder.none),
-            ),
+            Row(children: [
+              Expanded(
+                  flex: 1,
+                  child: TextField(
+                    focusNode: nameFocusNode,
+                    controller: nameController,
+                    onChanged: (value) => {widget.setUserName(value)},
+                    style: const TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff000000)),
+                    decoration: InputDecoration(
+                        suffixIcon: nameController.text.isNotEmpty
+                            ? IconButton(
+                                onPressed: () {
+                                  nameController.clear();
+
+                                  setState(() {
+                                    widget.setUserName("");
+                                    isNameInvalid = false;
+                                  });
+                                },
+                                icon: const Icon(Icons.clear,
+                                    color: Color(0xff000000)),
+                                iconSize: 24.0,
+                                padding: const EdgeInsets.all(0))
+                            : null,
+                        hintText: namePlaceholder,
+                        hintStyle: const TextStyle(
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xff939393)),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8.0, vertical: 11.5),
+                        filled: true,
+                        fillColor: const Color(0xfff4f4f4),
+                        border: InputBorder.none),
+                  )),
+            ]),
+            const SizedBox(height: 8),
+            stateRenderer()
           ])
         ]));
   }

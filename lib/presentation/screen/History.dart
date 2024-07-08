@@ -113,7 +113,7 @@ class _HistoryState extends State<History> {
                       context.go('/home');
                     },
                     icon: const Icon(Icons.arrow_back_ios_new_outlined),
-                    iconSize: 8,
+                    iconSize: 16,
                     padding: const EdgeInsets.all(0))),
             body: _bodyWidget()));
   }

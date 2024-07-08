@@ -1,17 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 
-class ItemOptions {
-  final String value;
-  final String label;
-
-  const ItemOptions({required this.value, required this.label});
-}
-
 class BaseDropdown extends StatefulWidget {
   Function onChanged;
-  List<String> options;
-  String selected;
+  List<dynamic> options;
+  dynamic selected;
 
   BaseDropdown(
       {super.key,
@@ -25,12 +18,17 @@ class BaseDropdown extends StatefulWidget {
 
 class _BaseDropdownState extends State<BaseDropdown> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return DropdownButtonHideUnderline(
-      child: DropdownButton2<String>(
+      child: DropdownButton2<dynamic>(
         isExpanded: true,
         items: widget.options
-            .map((String option) => DropdownMenuItem<String>(
+            .map((dynamic option) => DropdownMenuItem<dynamic>(
                 value: option,
                 child: Text(option,
                     style: const TextStyle(
