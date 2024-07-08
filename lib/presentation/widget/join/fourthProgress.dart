@@ -10,6 +10,7 @@ class FourthProgress extends StatefulWidget {
   final Function setUserJob;
   final Function setUserTasks;
   final String userJob;
+  final List<dynamic> userTasks;
 
   const FourthProgress({
     super.key,
@@ -18,6 +19,7 @@ class FourthProgress extends StatefulWidget {
     required this.setUserJob,
     required this.setUserTasks,
     required this.userJob,
+    required this.userTasks,
   });
 
   @override
@@ -47,6 +49,19 @@ class _FourthProgressState extends State<FourthProgress> {
   }
 
   Widget _listView(String title, Widget child) {
+    bool ableToProgress =
+        widget.userJob.isNotEmpty && widget.userTasks.isNotEmpty;
+
+    if (ableToProgress) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.setAbleToProgress(true);
+      });
+    } else {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.setAbleToProgress(false);
+      });
+    }
+
     return Column(children: [
       Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -61,6 +76,48 @@ class _FourthProgressState extends State<FourthProgress> {
       const SizedBox(height: 8),
       Row(children: [Expanded(child: child)])
     ]);
+  }
+
+  Widget _taskCheckbox(String value) {
+    return GestureDetector(
+        onTap: () {
+          setState(() {
+            widget.userTasks.contains(value)
+                ? widget.userTasks.remove(value)
+                : widget.userTasks.add(value);
+          });
+        },
+        child: Container(
+            height: 32,
+            padding: const EdgeInsets.fromLTRB(6, 6, 12, 6),
+            decoration: BoxDecoration(
+              color: const Color(0xffffffff),
+              border: Border.all(
+                  color: widget.userTasks.contains(value)
+                      ? const Color(0xff000000)
+                      : const Color(0xffebebeb)),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Row(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: Image.asset('assets/icons/icon_check.png',
+                          color: widget.userTasks.contains(value)
+                              ? const Color(0xff000000)
+                              : const Color(0xffebebeb))),
+                  const SizedBox(width: 7),
+                  Text(value,
+                      style: TextStyle(
+                          fontSize: 14,
+                          color: const Color(0xff1a1a1a),
+                          fontWeight: widget.userTasks.contains(value)
+                              ? FontWeight.w700
+                              : FontWeight.w500))
+                ])));
   }
 
   @override
@@ -99,6 +156,19 @@ class _FourthProgressState extends State<FourthProgress> {
                         options: jobList,
                         selected: userJob))
                 : Container(),
+            widget.userJob.isNotEmpty
+                ? _listView(
+                    '업무',
+                    Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
+                        direction: Axis.horizontal,
+                        alignment: WrapAlignment.start,
+                        children: tasksList
+                            .where((task) => task != null)
+                            .map((task) => _taskCheckbox(task))
+                            .toList()))
+                : Container()
           ])
         ]));
   }

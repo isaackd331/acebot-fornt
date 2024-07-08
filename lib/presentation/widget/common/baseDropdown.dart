@@ -20,8 +20,6 @@ class _BaseDropdownState extends State<BaseDropdown> {
   @override
   void initState() {
     super.initState();
-
-    print(widget.options);
   }
 
   @override

@@ -157,7 +157,8 @@ class _JoinState extends State<Join> {
               setAbleToProgress: setAbleToProgress,
               setUserJob: setUserJob,
               setUserTasks: setUserTasks,
-              userJob: userJob);
+              userJob: userJob,
+              userTasks: userTasks);
 
         default:
           return Container();
