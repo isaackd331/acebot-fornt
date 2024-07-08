@@ -16,6 +16,8 @@ import 'package:acebot_front/presentation/widget/join/firstProgress.dart';
 import 'package:acebot_front/presentation/widget/join/secondProgress.dart';
 import 'package:acebot_front/presentation/widget/join/thirdProgress.dart';
 import 'package:acebot_front/presentation/widget/join/fourthProgress.dart';
+import 'package:acebot_front/presentation/widget/join/emailVerification.dart';
+import 'package:acebot_front/presentation/widget/join/joinSuccess.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
@@ -28,7 +30,7 @@ class Join extends StatefulWidget {
 }
 
 class _JoinState extends State<Join> {
-  double progress = 1;
+  double progress = 6;
   bool ableToProgress = false;
   String userId = "";
   String userPassword = "";
@@ -40,7 +42,7 @@ class _JoinState extends State<Join> {
   @override
   void initState() {
     super.initState();
-    progress = 1;
+    progress = 6;
     ableToProgress = false;
     userId = "";
     userPassword = "";
@@ -160,6 +162,12 @@ class _JoinState extends State<Join> {
               setUserTasks: setUserTasks,
               userJob: userJob,
               userTasks: userTasks);
+        case 5:
+          return EmailVerification(
+              setProgress: setProgress,
+              setAbleToProgress: setAbleToProgress,
+              setUserId: setUserId,
+              userId: userId);
 
         default:
           return Container();
@@ -171,11 +179,13 @@ class _JoinState extends State<Join> {
             padding: const EdgeInsets.fromLTRB(20, 0, 20, 24),
             child: Column(
               children: [
-                LinearPercentIndicator(
-                    progressColor: const Color(0xff595959),
-                    backgroundColor: const Color(0xffebebeb),
-                    lineHeight: 2.0,
-                    percent: progress / 5),
+                progress <= 5
+                    ? LinearPercentIndicator(
+                        progressColor: const Color(0xff595959),
+                        backgroundColor: const Color(0xffebebeb),
+                        lineHeight: 2.0,
+                        percent: progress / 5)
+                    : Container(),
 
                 /**
                   * Progress = 1 : 이메일 입력
@@ -185,35 +195,45 @@ class _JoinState extends State<Join> {
                   * Progress = 5 : 이메일 인증
                   */
                 progressWidget(),
-                Expanded(
-                    child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                      /**
+                progress <= 5
+                    ? Expanded(
+                        child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                            /**
                            * 네이티브 키보드 출현 시 컨텐츠와 버튼이 너무 붙는
                            * 문제를 해결하기 위해 삽입
                            */
-                      const SizedBox(height: 20),
-                      Row(children: [
-                        BaseOutlineButton(
-                            onPressedFunc: () {
-                              if (ableToProgress) {
-                                setProgress(progress + 1);
+                            const SizedBox(height: 20),
+                            Row(children: [
+                              BaseOutlineButton(
+                                  onPressedFunc: () {
+                                    if (progress < 5) {
+                                      if (ableToProgress) {
+                                        setProgress(progress + 1);
 
-                                setAbleToProgress(false);
-                              }
-                            },
-                            text: '다음',
-                            fontSize: 16.0,
-                            textColor: const Color(0xffffffff),
-                            backgroundColor: ableToProgress
-                                ? const Color(0xff000000)
-                                : const Color(0xffb3b3b3),
-                            borderColor: ableToProgress
-                                ? const Color(0xff000000)
-                                : const Color(0xffb3b3b3))
-                      ])
-                    ]))
+                                        setAbleToProgress(false);
+                                      }
+                                    } else if (progress == 5) {
+                                      if (ableToProgress) {
+                                        setProgress(progress + 1);
+
+                                        setAbleToProgress(true);
+                                      }
+                                    }
+                                  },
+                                  text: '다음',
+                                  fontSize: 16.0,
+                                  textColor: const Color(0xffffffff),
+                                  backgroundColor: ableToProgress
+                                      ? const Color(0xff000000)
+                                      : const Color(0xffb3b3b3),
+                                  borderColor: ableToProgress
+                                      ? const Color(0xff000000)
+                                      : const Color(0xffb3b3b3))
+                            ])
+                          ]))
+                    : Container()
               ],
             )));
   }
@@ -244,8 +264,11 @@ class _JoinState extends State<Join> {
                       iconSize: 16,
                       padding: const EdgeInsets.all(0))
                   : Container())
-          : AppBar(),
-      body: BaseBody(child: _bodyWidget()),
+          : AppBar(
+              backgroundColor: const Color(0xffffffff),
+            ),
+      body:
+          progress <= 5 ? BaseBody(child: _bodyWidget()) : const JoinSuccess(),
     ));
   }
 }

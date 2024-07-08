@@ -41,8 +41,6 @@ class _FourthProgressState extends State<FourthProgress> {
             tasksList = res.data["work"];
           })
         });
-
-    widget.setUserTasks([]);
   }
 
   @override
@@ -158,6 +156,7 @@ class _FourthProgressState extends State<FourthProgress> {
                         options: jobList,
                         selected: userJob))
                 : Container(),
+            const SizedBox(height: 60),
             widget.userJob.isNotEmpty
                 ? _listView(
                     '업무',
