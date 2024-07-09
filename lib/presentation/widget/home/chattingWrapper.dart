@@ -228,9 +228,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   focusNode: widget.chatFocusNode,
                   controller: widget.chatController,
                   onChanged: (value) {
-                    setState(() {
-                      widget.setChatContent(value);
-                    });
+                    widget.setChatContent(value);
                   },
                   minLines: 1,
                   maxLines: widget.chatFocusNode.hasFocus ? 6 : 1,

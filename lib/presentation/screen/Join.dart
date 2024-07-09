@@ -22,6 +22,8 @@ import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 
+import 'package:acebot_front/api/utilService.dart';
+
 class Join extends StatefulWidget {
   const Join({super.key});
 
@@ -30,7 +32,7 @@ class Join extends StatefulWidget {
 }
 
 class _JoinState extends State<Join> {
-  double progress = 6;
+  double progress = 1;
   bool ableToProgress = false;
   String userId = "";
   String userPassword = "";
@@ -38,11 +40,13 @@ class _JoinState extends State<Join> {
   String userName = "";
   dynamic userJob = "직군을 선택해 주세요";
   List<dynamic> userTasks = [];
+  String termsVer = "";
+  String privacyVer = "";
 
   @override
   void initState() {
     super.initState();
-    progress = 6;
+    progress = 1;
     ableToProgress = false;
     userId = "";
     userPassword = "";
@@ -50,6 +54,8 @@ class _JoinState extends State<Join> {
     userName = "";
     userJob = "";
     userTasks = [];
+
+    WidgetsBinding.instance.addPostFrameCallback(_fetchPolicyData);
   }
 
   @override
@@ -129,6 +135,19 @@ class _JoinState extends State<Join> {
         userTasks = [...userTasks, value];
       });
     }
+  }
+
+  void _fetchPolicyData(Duration timeStamp) async {
+    final dynamic privacyRes = await UtilService().getPrivacyPolicy();
+    final dynamic termsRes = await UtilService().getServicePolicy();
+
+    setState(() {
+      privacyVer = privacyRes.data['version'];
+      termsVer = termsRes.data['version'];
+    });
+
+    print(privacyVer);
+    print(termsVer);
   }
 
   Widget _bodyWidget() {

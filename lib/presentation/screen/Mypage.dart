@@ -1,41 +1,38 @@
-/**
- * 마이페이지
- */
+/// 마이페이지
+library;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
-import 'package:acebot_front/presentation/widget/mypage/beforeEditting.dart';
-import 'package:acebot_front/presentation/widget/mypage/afterEditting.dart';
+import 'package:acebot_front/presentation/widget/mypage/beforeEditing.dart';
+import 'package:acebot_front/presentation/widget/mypage/afterEditing.dart';
+import 'package:acebot_front/presentation/widget/common/baseDialog.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 
 class Mypage extends StatefulWidget {
+  const Mypage({super.key});
+
   @override
   _MypageState createState() => _MypageState();
 }
 
 class _MypageState extends State<Mypage> {
-  bool isEditting = false;
+  bool isEditing = false;
 
+  @override
   void initState() {
     super.initState();
-
-    /**
-     * 사용할 Cubit 초기화
-     */
-    context.read<SelfCubit>();
   }
 
-  /**
-   * 수정 여부 업데이트
-   */
-  void setIsEditting(bool value) {
+  /// 수정 여부 업데이트
+  void setIsEditing(bool value) {
     setState(() {
-      isEditting = value;
+      isEditing = value;
     });
   }
 
@@ -44,12 +41,14 @@ class _MypageState extends State<Mypage> {
       if (state is LoadedState) {
         return Center(
             child: Container(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                child: !isEditting
-                    ? BeforeEditting(
-                        setIsEditting: setIsEditting,
+                padding: const EdgeInsets.all(20),
+                child: !isEditing
+                    ? BeforeEditing(
+                        setIsEditing: setIsEditing,
                       )
-                    : AfterEditting()));
+                    : AfterEditing(
+                        setIsEditing: setIsEditing,
+                      )));
       } else {
         return Container();
       }
@@ -61,27 +60,95 @@ class _MypageState extends State<Mypage> {
     return SafeArea(
         child: Scaffold(
             appBar: BaseAppBar(
-                title: !isEditting ? '마이페이지' : '개인 정보 수정',
+                title: !isEditing ? '마이페이지' : '개인 정보 수정',
                 actions: [
-                  !isEditting
+                  !isEditing
                       ? IconButton(
                           onPressed: () {
-                            setIsEditting(true);
+                            setIsEditing(true);
                           },
                           icon: const Icon(Icons.clear),
                           iconSize: 12,
                           padding: const EdgeInsets.all(0))
                       : IconButton(
                           onPressed: () {
-                            setIsEditting(false);
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BaseDialog(
+                                      title: "수정한 내용이 저장되지 않습니다.",
+                                      content:
+                                          "변경된 내용을 저장하지 않고 화면을\n이탈하는 경우, 변경 값이 저장되지 않습니다.",
+                                      buttonsList: [
+                                        Expanded(
+                                            child: OutlinedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                style: OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xffffffff),
+                                                    side: const BorderSide(
+                                                        color:
+                                                            Color(0xffe7e7e7),
+                                                        width: 1.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 13)),
+                                                child: const Text("닫기",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xff000000))))),
+                                        const SizedBox(width: 9),
+                                        Expanded(
+                                            child: OutlinedButton(
+                                                onPressed: () async {
+                                                  if (mounted) {
+                                                    setIsEditing(false);
+
+                                                    Navigator.pop(context);
+                                                  }
+                                                },
+                                                style: OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xff000000),
+                                                    side: const BorderSide(
+                                                        color:
+                                                            Color(0xff000000),
+                                                        width: 1.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 13)),
+                                                child: const Text("확인",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xffffffff))))),
+                                      ]);
+                                });
                           },
                           icon: const Icon(Icons.clear),
                           iconSize: 12,
                           padding: const EdgeInsets.all(0))
                 ],
-                leading: !isEditting
+                leading: !isEditing
                     ? IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          context.go('/history');
+                        },
                         icon: const Icon(Icons.arrow_back_ios_new),
                         iconSize: 15,
                         padding: const EdgeInsets.all(0))
