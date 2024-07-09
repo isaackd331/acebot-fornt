@@ -1,11 +1,13 @@
-// /// TODO
-// /// 녹음 후 파일 처리 필요
+/// TODO
+/// 녹음 후 파일 처리 필요
 library;
 
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
 
@@ -21,16 +23,15 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   int elapsedSeconds = 0;
   Timer? _timer;
   FlutterSoundRecorder? _myRecorder = FlutterSoundRecorder();
-  String fileName =
-      '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded';
   bool isFirstRecord = true;
-  String? recordedUrl;
+  String filePath = '';
 
   @override
   void initState() {
     super.initState();
 
     _myRecorder!.openRecorder();
+    startRecord();
   }
 
   @override
@@ -54,10 +55,23 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
   }
 
   Future<void> startRecord() async {
+    final dir = await getApplicationCacheDirectory();
+    setState(() {
+      filePath = path.join(dir.path,
+          '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded.wav');
+    });
+
+    const int numChannel = 1;
+    const int sampleRate = 16000;
+    const int bitRate = sampleRate * 16;
+
     await _myRecorder!
         .startRecorder(
-      toFile: fileName,
-    )
+            codec: Codec.pcm16WAV,
+            toFile: filePath,
+            numChannels: numChannel,
+            sampleRate: sampleRate,
+            bitRate: bitRate)
         .then((value) {
       startTimer();
 
@@ -92,13 +106,14 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
     });
   }
 
-  Future<void> stopRecorder() async {
+  Future<void> stopRecord() async {
     await _myRecorder!.stopRecorder().then((value) {
+      print(value);
+
       pauseTimer();
 
       setState(() {
         isRecording = false;
-        recordedUrl = value;
       });
 
       Navigator.pop(context);
@@ -109,7 +124,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
           builder: (BuildContext context) {
             return FractionallySizedBox(
                 heightFactor: 0.7,
-                child: AfterRecordBottomSheet(recordedUrl: recordedUrl));
+                child: AfterRecordBottomSheet(recordedUrl: filePath));
           });
     });
   }
@@ -124,11 +139,9 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.height;
-
     return Container(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
-        height: screenWidth * 0.9,
+        height: MediaQuery.of(context).size.height * 0.9,
         decoration: const BoxDecoration(color: Color(0xffffffff)),
         child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -148,7 +161,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                                 color: Color(0xff000000)))),
                     GestureDetector(
                         onTap: () {
-                          stopRecorder();
+                          stopRecord();
                         },
                         child: const Text('저장',
                             style: TextStyle(
