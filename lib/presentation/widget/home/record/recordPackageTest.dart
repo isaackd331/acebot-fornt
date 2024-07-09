@@ -4,8 +4,10 @@
 
 // import 'dart:async';
 // import 'package:flutter/material.dart';
-// import 'package:flutter_sound/flutter_sound.dart';
+// import 'package:record/record.dart';
 // import 'package:intl/intl.dart';
+// import 'package:path_provider/path_provider.dart';
+// import 'package:path/path.dart' as path;
 
 // import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
 
@@ -22,16 +24,18 @@
 //   bool isRecording = false;
 //   int elapsedSeconds = 0;
 //   Timer? _timer;
-//   FlutterSoundRecorder? _myRecorder = FlutterSoundRecorder();
-//   String fileName = '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded';
 //   bool isFirstRecord = true;
 //   String? recordedUrl;
+
+//   /// record package
+//   final myRecorder = AudioRecorder();
+//   String filePath = "";
 
 //   @override
 //   void initState() {
 //     super.initState();
 
-//     _myRecorder!.openRecorder();
+//     startRecord();
 //   }
 
 //   @override
@@ -40,8 +44,8 @@
 //     setState(() {
 //         isRecording = false;
 //       });
-//     _myRecorder!.closeRecorder();
-//     _myRecorder = null;
+
+//     myRecorder.dispose();
 
 //     super.dispose();
 //   }
@@ -57,26 +61,30 @@
 //   }
 
 //   Future<void> startRecord() async {
-//     await _myRecorder!.startRecorder(
-//       toFile: fileName,
-//     ).then((value) {
-//       startTimer();
+//     final dir = await getApplicationDocumentsDirectory();
 
-//       setState(() {
-//         isRecording = true;
-//         isFirstRecord = false;
-//       });
+//     setState(() {
+//       filePath = path.join(dir.path, '${DateFormat('yyyyMMddHHmm').format(DateTime.now())}_recorded.wav');
+//       isRecording = true;
+//       isFirstRecord = false;
 //     });
-//   }
 
-//   Future<void> resumeRecord() async {
-//     await _myRecorder!.resumeRecorder().then((value) {
-//       startTimer();
+//     /// record encoding options
+//     const int numChannel = 1;
+//     const int sampleRate = 16000;
+//     const int bitRate = sampleRate * 16;
 
-//       setState(() {
-//         isRecording = true;
-//       });
-//     });
+//     await myRecorder.start(
+//       const RecordConfig(
+//         encoder: AudioEncoder.wav,
+//         numChannels: numChannel,
+//         sampleRate: sampleRate,
+//         bitRate: bitRate,
+//       ),
+//       path: filePath
+//     );
+
+//     startTimer();
 //   }
 
 //   void pauseTimer() {
@@ -84,39 +92,46 @@
 //   }
 
 //   Future<void> pauseRecord() async {
-//     await _myRecorder!.pauseRecorder().then(
-//       (value) {
-//         pauseTimer();
+//     await myRecorder.pause();
 
-//         setState(() {
-//           isRecording = false;
-//         });
-//       }
-//     );
+//     setState(() {
+//       isRecording = false;
+//     });
 //   }
 
-//   Future<void> stopRecorder() async {
-//     await _myRecorder!.stopRecorder().then((value) {
-//       pauseTimer();
+//   Future<void> resumeRecord() async {
+//     await myRecorder.resume();
 
-//       setState(() {
-//         isRecording = false;
-//         recordedUrl = value;
-//       });
-
-//       Navigator.pop(context);
-
-//       showModalBottomSheet(
-//         context: context,
-//         isScrollControlled: true,
-//         builder: (BuildContext context) {
-//           return FractionallySizedBox(
-//             heightFactor: 0.7,
-//             child: AfterRecordBottomSheet(recordedUrl: recordedUrl)
-//           );
-//         }
-//       );
+//     setState(() {
+//       isRecording = true;
 //     });
+//   }
+
+//   Future<void> stopRecord() async {
+//     final path = await myRecorder.stop();
+//     print(path);
+
+//     // await _myRecorder!.stopRecord().then((value) {
+//     //   pauseTimer();
+
+//     //   setState(() {
+//     //     isRecording = false;
+//     //     recordedUrl = value;
+//     //   });
+
+//     //   Navigator.pop(context);
+
+//     //   showModalBottomSheet(
+//     //     context: context,
+//     //     isScrollControlled: true,
+//     //     builder: (BuildContext context) {
+//     //       return FractionallySizedBox(
+//     //         heightFactor: 0.7,
+//     //         child: AfterRecordBottomSheet(recordedUrl: recordedUrl)
+//     //       );
+//     //     }
+//     //   );
+//     // });
 //   }
 
 //   /// calculate elapsedSeconds to MM:SS
@@ -159,7 +174,7 @@
 //                   ),
 //                   GestureDetector(
 //                     onTap: () {
-//                         stopRecorder();
+//                         stopRecord();
 //                     },
 //                     child: const Text(
 //                       '저장',
