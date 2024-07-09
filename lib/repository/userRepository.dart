@@ -10,4 +10,9 @@ class UserRepository {
 
     return res.data;
   }
+
+  // 유저 정보 수정
+  Future<void> patchUserInfo(dynamic params) async {
+    await UserService().patchUserInfo(params);
+  }
 }

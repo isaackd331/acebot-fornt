@@ -26,4 +26,22 @@ class SelfCubit extends Cubit<SelfState> {
           message: err.toString(), statusCode: err.response?.statusCode));
     }
   }
+
+  // 유저 정보 수정
+  Future<void> patchSelfData(dynamic params) async {
+    try {
+      await repo.patchUserInfo(params);
+
+      if (state is LoadedState) {
+        // how to get the previous userJson
+        final thePrev = (state as LoadedState).userJson.toJson();
+
+        emit(
+            LoadedState(userJson: UserModel.fromJson({...thePrev, ...params})));
+      }
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
 }

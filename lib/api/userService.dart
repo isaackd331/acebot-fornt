@@ -32,4 +32,9 @@ class UserService {
   join(dynamic params) {
     return dio.post("/v1/users", data: params);
   }
+
+  // 유저 정보 수정
+  patchUserInfo(dynamic params) {
+    return dio.patch('/v1/users', data: params);
+  }
 }

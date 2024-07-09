@@ -1,27 +1,31 @@
 /// 마이페이지 수정 후
 library;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:dio/dio.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseDropdown.dart';
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
+import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 
 import 'package:acebot_front/api/utilService.dart';
+import 'package:acebot_front/api/userService.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 
 class AfterEditing extends StatefulWidget {
-  const AfterEditing({super.key});
+  final Function setIsEditing;
+
+  const AfterEditing({super.key, required this.setIsEditing});
 
   @override
   _AfterEditingState createState() => _AfterEditingState();
 }
 
-class _AfterEditingState extends State<StatefulWidget> {
+class _AfterEditingState extends State<AfterEditing> {
   FocusNode userNameFocusNode = FocusNode();
   String userNamePlaceholder = "이름";
   TextEditingController userNameController = TextEditingController();
@@ -34,6 +38,9 @@ class _AfterEditingState extends State<StatefulWidget> {
   String initialUserName = "";
   dynamic initialUserJob = "";
   List<dynamic> initialUserTasks = [];
+
+  // 폼 유효성 여부 파악
+  bool isValidForm = true;
 
   // 직군 드롭다운 아이템
   List<dynamic> jobList = [];
@@ -140,6 +147,18 @@ class _AfterEditingState extends State<StatefulWidget> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (userName!.isNotEmpty && userJob.isNotEmpty && userTasks.isNotEmpty) {
+        setState(() {
+          isValidForm = true;
+        });
+      } else {
+        setState(() {
+          isValidForm = false;
+        });
+      }
+    });
+
     return BlocBuilder<SelfCubit, SelfState>(
       builder: (_, state) {
         if (state is LoadedState &&
@@ -209,21 +228,32 @@ class _AfterEditingState extends State<StatefulWidget> {
             const SizedBox(height: 20),
             Row(children: [
               BaseOutlineButton(
-                  onPressedFunc: () {
-                    if (isEditted) {
-                      /**
-                     * TODO
-                     * Toast Message + Edit Function
-                     */
+                  onPressedFunc: () async {
+                    if (isEditted && isValidForm) {
+                      final selfCubit = context.read<SelfCubit>();
+                      try {
+                        await selfCubit.patchSelfData({
+                          "name": userName,
+                          "role": userJob,
+                          "work": userTasks
+                        });
+
+                        if (mounted) {
+                          BaseToast(content: '수정 완료되었습니다.', context: context)
+                              .showToast();
+                        }
+
+                        widget.setIsEditing(false);
+                      } on DioException catch (err) {}
                     }
                   },
                   text: '저장',
                   fontSize: 16.0,
                   textColor: const Color(0xffffffff),
-                  backgroundColor: isEditted
+                  backgroundColor: (isEditted && isValidForm)
                       ? const Color(0xff000000)
                       : const Color(0xffb3b3b3),
-                  borderColor: isEditted
+                  borderColor: (isEditted && isValidForm)
                       ? const Color(0xff000000)
                       : const Color(0xffb3b3b3))
             ])

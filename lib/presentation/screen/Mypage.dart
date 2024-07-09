@@ -9,6 +9,7 @@ import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 import 'package:acebot_front/presentation/widget/mypage/beforeEditing.dart';
 import 'package:acebot_front/presentation/widget/mypage/afterEditing.dart';
+import 'package:acebot_front/presentation/widget/common/baseDialog.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
@@ -45,7 +46,9 @@ class _MypageState extends State<Mypage> {
                     ? BeforeEditing(
                         setIsEditing: setIsEditing,
                       )
-                    : const AfterEditing()));
+                    : AfterEditing(
+                        setIsEditing: setIsEditing,
+                      )));
       } else {
         return Container();
       }
@@ -69,7 +72,73 @@ class _MypageState extends State<Mypage> {
                           padding: const EdgeInsets.all(0))
                       : IconButton(
                           onPressed: () {
-                            setIsEditing(false);
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BaseDialog(
+                                      title: "수정한 내용이 저장되지 않습니다.",
+                                      content:
+                                          "변경된 내용을 저장하지 않고 화면을\n이탈하는 경우, 변경 값이 저장되지 않습니다.",
+                                      buttonsList: [
+                                        Expanded(
+                                            child: OutlinedButton(
+                                                onPressed: () {
+                                                  Navigator.pop(context);
+                                                },
+                                                style: OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xffffffff),
+                                                    side: const BorderSide(
+                                                        color:
+                                                            Color(0xffe7e7e7),
+                                                        width: 1.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 13)),
+                                                child: const Text("닫기",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xff000000))))),
+                                        const SizedBox(width: 9),
+                                        Expanded(
+                                            child: OutlinedButton(
+                                                onPressed: () async {
+                                                  if (mounted) {
+                                                    setIsEditing(false);
+
+                                                    Navigator.pop(context);
+                                                  }
+                                                },
+                                                style: OutlinedButton.styleFrom(
+                                                    backgroundColor:
+                                                        const Color(0xff000000),
+                                                    side: const BorderSide(
+                                                        color:
+                                                            Color(0xff000000),
+                                                        width: 1.0),
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(4.0)),
+                                                    padding: const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 13)),
+                                                child: const Text("확인",
+                                                    style: TextStyle(
+                                                        fontSize: 14,
+                                                        fontWeight:
+                                                            FontWeight.w600,
+                                                        color:
+                                                            Color(0xffffffff))))),
+                                      ]);
+                                });
                           },
                           icon: const Icon(Icons.clear),
                           iconSize: 12,

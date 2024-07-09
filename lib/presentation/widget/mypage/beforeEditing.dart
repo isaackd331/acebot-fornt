@@ -92,7 +92,7 @@ class BeforeEditing extends StatelessWidget {
           const SizedBox(height: 28),
           _listView('업무', [
             Flexible(
-                child: Text(state.userJson.work.join(','),
+                child: Text(state.userJson.work.join(', '),
                     style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
