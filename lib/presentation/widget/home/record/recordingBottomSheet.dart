@@ -108,8 +108,6 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
 
   Future<void> stopRecord() async {
     await _myRecorder!.stopRecorder().then((value) {
-      print(value);
-
       pauseTimer();
 
       setState(() {

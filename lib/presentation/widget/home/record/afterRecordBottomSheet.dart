@@ -31,6 +31,10 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
   @override
   void initState() {
     super.initState();
+
+    print("==========");
+    print(widget.recordedUrl);
+    print("==========");
   }
 
   /// format Converter
@@ -167,6 +171,7 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
 
                       try {
                         final converted = await convert(widget.recordedUrl);
+                        print(converted);
 
                         FormData formData = FormData.fromMap({
                           'organization': (theState as LoadedState)
@@ -180,6 +185,7 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
 
                         await NoteService().uploadRecords(formData);
                       } catch (err) {
+                        print(err);
                         setState(() {
                           isUploading = false;
                         });
@@ -201,6 +207,16 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
   }
 
   Widget _uploading() {
+    Widget description(String desc) {
+      return Text(desc,
+          style: const TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Color(0xff666666),
+            height: 1.8,
+          ));
+    }
+
     return Column(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -220,22 +236,18 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                 decoration: const BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(4)),
                     color: Color(0xffe6e6e6)),
-                child: const Column(
+                child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("아래와 같은 질문이 가능해요!",
+                      const Text("아래와 같은 질문이 가능해요!",
                           style: TextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w600,
                               color: Color(0xff000000))),
-                      SizedBox(height: 10),
-                      Text(
-                          '"이 회의에서 결정된 주요 사항은 무엇입니까?"\n"회의에서 논의된 핵심 포인트를 간략하게 요약해 주세요."\n"오늘 논의된 내용에 대한 회의록을 작성해주세요."',
-                          style: TextStyle(
-                              fontSize: 14,
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xff666666),
-                              height: 1.8))
+                      const SizedBox(height: 10),
+                      description("이 회의에서 결정된 주요 사항은 무엇입니까?"),
+                      description("회의에서 논의된 핵심 포인트를 간략하게 요약해 주세요."),
+                      description("오늘 논의된 내용에 대한 회의록을 작성해주세요."),
                     ]))
           ])
         ]);

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:path_provider/path_provider.dart' as path;
 
 import 'package:acebot_front/presentation/widget/home/record/recordingBottomSheet.dart';
+import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
 
 class RecordUploadBottomSheet extends StatelessWidget {
   const RecordUploadBottomSheet({super.key});
@@ -77,8 +80,32 @@ class RecordUploadBottomSheet extends StatelessWidget {
                                     ]),
                               )),
                           GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
+                              onTap: () async {
+                                final tmpPath =
+                                    await path.getTemporaryDirectory();
+
+                                print("tmpPath: ${tmpPath.path}");
+
+                                FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles(
+                                        initialDirectory: tmpPath.path,
+                                        allowMultiple: false,
+                                        type: FileType.custom,
+                                        allowedExtensions: ['wav']);
+
+                                if (result != null) {
+                                  Navigator.pop(context);
+
+                                  showModalBottomSheet(
+                                      context: context,
+                                      isScrollControlled: true,
+                                      builder: (BuildContext context) {
+                                        return FractionallySizedBox(
+                                            heightFactor: 0.7,
+                                            child: AfterRecordBottomSheet(
+                                                recordedUrl: result.paths[0]!));
+                                      });
+                                }
                               },
                               child: Container(
                                 width: 160,
