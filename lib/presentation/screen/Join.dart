@@ -263,13 +263,14 @@ class _JoinState extends State<Join> {
         child: Scaffold(
       appBar: progress <= 5
           ? BaseAppBar(
-              title: progress < 5 ? '회원가입' : "이메일 인증",
+              title: progress < 5 ? const Text('회원가입') : const Text("이메일 인증"),
               actions: [
                 IconButton(
                     onPressed: () {
                       context.go('/login');
                     },
                     icon: const Icon(Icons.clear),
+                    iconSize: 24,
                     padding: const EdgeInsets.all(0))
               ],
               leading: progress != 1

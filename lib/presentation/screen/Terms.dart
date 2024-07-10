@@ -239,7 +239,7 @@ class _TermsState extends State<Terms> {
     return SafeArea(
         child: Scaffold(
             appBar: BaseAppBar(
-                title: '서비스 이용 약관',
+                title: const Text('서비스 이용 약관'),
                 actions: !isShowing
                     ? [
                         IconButton(

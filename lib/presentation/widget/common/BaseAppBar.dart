@@ -7,7 +7,7 @@ library;
 import 'package:flutter/material.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
-  final String title;
+  final Widget title;
   final List<Widget> actions;
   final Widget leading;
 
@@ -20,8 +20,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     List<Widget> paddedActions = actions.map((action) {
-      return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 18), child: action);
+      return action;
     }).toList();
 
     return AppBar(
@@ -32,7 +31,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
             fontSize: 18,
             fontWeight: FontWeight.w600,
             color: Color(0xff000000)),
-        title: Text(title),
+        title: title,
         actions: paddedActions,
         leading: Padding(
             padding: const EdgeInsets.symmetric(vertical: 18, horizontal: 20),

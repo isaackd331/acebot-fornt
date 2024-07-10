@@ -246,7 +246,7 @@ class _HomeState extends State<Home> {
     return SafeArea(
         child: Scaffold(
       appBar: BaseAppBar(
-        title: '',
+        title: Container(),
         actions: [
           IconButton(
               onPressed: () {
@@ -264,7 +264,7 @@ class _HomeState extends State<Home> {
                   BlocProvider.of<AnswerCubit>(context).clearCubit();
                 }
               },
-              icon: Image.asset('assets/icons/icon_newchat.png'),
+              icon: Image.asset('assets/icons/icon_newchat.png', scale: 4),
               iconSize: 18,
               padding: const EdgeInsets.all(0),
               color: questArray.isNotEmpty
@@ -272,7 +272,7 @@ class _HomeState extends State<Home> {
                   : const Color(0xff5d5d5d)),
           IconButton(
             onPressed: () {},
-            icon: Image.asset('assets/icons/icon_streamline.png'),
+            icon: Image.asset('assets/icons/icon_streamline.png', scale: 4),
             iconSize: 16,
             padding: const EdgeInsets.all(0),
           ),
