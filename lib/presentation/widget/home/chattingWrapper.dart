@@ -12,6 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 import 'package:acebot_front/presentation/widget/home/record/recordUploadBottomSheet.dart';
+import 'package:acebot_front/presentation/widget/home/image/imageBottomSheet.dart';
 
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
@@ -145,10 +146,17 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                           isUploadButtonClicked = false;
                         });
 
-                        final cameraStatus = await Permission.camera.request();
+                        final fileStatus =
+                            await Permission.manageExternalStorage.request();
 
-                        if (cameraStatus.isGranted) {
-                        } else {}
+                        if (fileStatus.isGranted) {
+                          showModalBottomSheet(
+                              context: context,
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return const ImageBottomSheet();
+                              });
+                        }
                       },
                       child: SizedBox(
                           height: 40,
