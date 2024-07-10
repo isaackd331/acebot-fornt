@@ -81,14 +81,8 @@ class RecordUploadBottomSheet extends StatelessWidget {
                               )),
                           GestureDetector(
                               onTap: () async {
-                                final tmpPath =
-                                    await path.getTemporaryDirectory();
-
-                                print("tmpPath: ${tmpPath.path}");
-
                                 FilePickerResult? result =
                                     await FilePicker.platform.pickFiles(
-                                        initialDirectory: tmpPath.path,
                                         allowMultiple: false,
                                         type: FileType.custom,
                                         allowedExtensions: ['wav']);

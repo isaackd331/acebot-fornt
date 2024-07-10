@@ -60,12 +60,13 @@ class _MypageState extends State<Mypage> {
     return SafeArea(
         child: Scaffold(
             appBar: BaseAppBar(
-                title: !isEditing ? '마이페이지' : '개인 정보 수정',
+                title:
+                    !isEditing ? const Text('마이페이지') : const Text('개인 정보 수정'),
                 actions: [
                   !isEditing
                       ? IconButton(
                           onPressed: () {
-                            setIsEditing(true);
+                            context.go('/history');
                           },
                           icon: const Icon(Icons.clear),
                           iconSize: 12,

@@ -55,6 +55,7 @@ dependencies:
   flutter_sound: ^9.6.0
   ffmpeg_kit_flutter_audio: ^6.0.3
   file_picker: ^8.0.6
+  lottie: ^3.1.2
 
 dev_dependencies:
   flutter_test:
@@ -114,6 +115,7 @@ flutter:
     - assets/icons/icon_arrow-downward.png
     - assets/icons/icon_time.png
     - assets/icons/icon_image-upload-beta.png
+    - assets/icons/icon_image-upload-add.png
 
   # images
     # 원래는 아이콘 폴더에 들어가야하나 만들어진 위젯을 재활용하기 위해 images 폴더에 삽입
@@ -132,6 +134,16 @@ flutter:
     - assets/images/sunny_light.png
     - assets/images/thunder.png
     - assets/images/windy.png
+
+  # lotties
+    - assets/lottie/chat.json
+    - assets/lottie/data_01.json
+    - assets/lottie/data_02.json
+    - assets/lottie/default_loading.json
+    - assets/lottie/doc_upload.json
+    - assets/lottie/hexagon.json
+    - assets/lottie/splash_01.json
+    - assets/lottie/splash_02.json
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
