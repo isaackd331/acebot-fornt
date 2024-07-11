@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
@@ -18,8 +19,8 @@ class ImageBottomSheet extends StatefulWidget {
 }
 
 class _ImageBottomSheetState extends State<ImageBottomSheet> {
-  String filePath = "";
   bool isUploading = false;
+  Uint8List? filePath;
 
   @override
   void initState() {
@@ -95,31 +96,53 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
           // Image upload box
           GestureDetector(
               onTap: () async {
-                FilePickerResult? result = await FilePicker.platform.pickFiles(
-                    allowMultiple: false,
-                    type: FileType.custom,
-                    allowedExtensions: ['jpeg', 'png', 'gif', 'tiff']);
+                if (!isUploading) {
+                  FilePickerResult? result = await FilePicker.platform
+                      .pickFiles(
+                          allowMultiple: false,
+                          type: FileType.custom,
+                          allowedExtensions: ['jpeg', 'png', 'gif', 'tiff']);
 
-                if (result != null) {
-                  String fileName = result.files.single.path!.split('/').last;
+                  if (result != null) {
+                    PlatformFile file = result.files.first;
 
-                  FormData formData = FormData.fromMap({
-                    "files": await MultipartFile.fromFile(
-                        result.files.single.path!,
-                        filename: fileName)
-                  });
+                    if (file.size > 1024 * 1024 * 10) {
+                      // TODO : 얼럿창 띄우기
+                    } else {
+                      String fileName =
+                          result.files.single.path!.split('/').last;
 
-                  setState(() {
-                    isUploading = true;
-                  });
+                      FormData formData = FormData.fromMap({
+                        "files": await MultipartFile.fromFile(
+                            result.files.single.path!,
+                            filename: fileName)
+                      });
 
-                  Response res = await FileService().uploadFiles(formData);
+                      setState(() {
+                        isUploading = true;
+                      });
 
-                  setState(() {
-                    isUploading = false;
-                  });
+                      try {
+                        Response firstRes =
+                            await FileService().uploadFiles(formData);
 
-                  // TODO : 리스폰스로 돌아오는 path를 filePath에 삽입, isUploading을 false로 만들고 보여주기
+                        Response secondRes = await FileService()
+                            .getFileInWorking(
+                                firstRes.data["content"][0]['id']);
+
+                        final List<int> intList = secondRes.data.codeUnits;
+                        final test = GZipCodec().decode(intList);
+
+                        setState(() {
+                          isUploading = false;
+                        });
+                      } catch (err) {
+                        setState(() {
+                          isUploading = false;
+                        });
+                      }
+                    }
+                  }
                 }
               },
               child: Container(
@@ -127,7 +150,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                   height: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(color: Color(0xfff4f4f4)),
                   child: isUploading == false
-                      ? filePath.isEmpty
+                      ? filePath == null
                           ? Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -144,7 +167,12 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                                           color: Color(0xffb3b3b3),
                                           height: 1.5))
                                 ])
-                          : Image.network(filePath)
+                          : Container(
+                              width: 50,
+                              height: 50,
+                              decoration:
+                                  const BoxDecoration(color: Colors.red),
+                              child: Image.memory(filePath!))
                       : Column(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
