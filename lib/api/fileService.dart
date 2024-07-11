@@ -1,7 +1,15 @@
+import 'package:dio/dio.dart';
+
 import 'package:acebot_front/api/http.dart';
 
 class FileService {
-  uploadFiles(dynamic params) {
-    return dio.post('/v1/files', data: params);
+  uploadFiles(FormData formData) {
+    return dio.post('/v1/files',
+        data: formData,
+        options: Options(headers: {"Content-Type": "multipart/form-data"}));
+  }
+
+  getFileInWorking(String id) {
+    return dio.get('/v1/files/$id');
   }
 }

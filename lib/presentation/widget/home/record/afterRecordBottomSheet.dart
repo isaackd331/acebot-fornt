@@ -149,8 +149,8 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                   fontWeight: FontWeight.w600,
                   color: Color(0xff000000))),
           const SizedBox(height: 30),
-          _checkbox("회의", 'meeting'),
-          const SizedBox(height: 32),
+          // _checkbox("회의", 'meeting'),
+          // const SizedBox(height: 32),
           // _checkbox("인터뷰", 'interview'),
           // const SizedBox(height: 32),
           // _checkbox("메모", 'memo'),
@@ -171,21 +171,24 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
 
                       try {
                         final converted = await convert(widget.recordedUrl);
-                        print(converted);
 
-                        FormData formData = FormData.fromMap({
-                          'organization': (theState as LoadedState)
-                              .userJson
-                              .email
-                              .split('@')[1],
-                          'domain': type,
-                          'numSpeakers': speakers,
-                          'file': await MultipartFile.fromFile(converted!)
-                        });
+                        if (converted != null) {
+                          String fileName = converted.split('/').last;
 
-                        await NoteService().uploadRecords(formData);
+                          FormData formData = FormData.fromMap({
+                            'organization': (theState as LoadedState)
+                                .userJson
+                                .email
+                                .split('@')[1],
+                            'domain': type,
+                            'numSpeakers': speakers,
+                            'file': await MultipartFile.fromFile(converted,
+                                filename: fileName)
+                          });
+
+                          await NoteService().uploadRecords(formData);
+                        }
                       } catch (err) {
-                        print(err);
                         setState(() {
                           isUploading = false;
                         });

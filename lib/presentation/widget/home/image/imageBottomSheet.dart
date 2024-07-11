@@ -101,8 +101,12 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                     allowedExtensions: ['jpeg', 'png', 'gif', 'tiff']);
 
                 if (result != null) {
+                  String fileName = result.files.single.path!.split('/').last;
+
                   FormData formData = FormData.fromMap({
-                    "files": [File(result.files.single.path!)]
+                    "files": await MultipartFile.fromFile(
+                        result.files.single.path!,
+                        filename: fileName)
                   });
 
                   setState(() {
