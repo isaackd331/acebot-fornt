@@ -109,13 +109,9 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                     if (file.size > 1024 * 1024 * 10) {
                       // TODO : 얼럿창 띄우기
                     } else {
-                      String fileName =
-                          result.files.single.path!.split('/').last;
-
                       FormData formData = FormData.fromMap({
-                        "files": await MultipartFile.fromFile(
-                            result.files.single.path!,
-                            filename: fileName)
+                        "files": await MultipartFile.fromFile(file.path!,
+                            filename: file.name)
                       });
 
                       setState(() {

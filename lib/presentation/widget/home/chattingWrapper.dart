@@ -1,18 +1,19 @@
 /// 홈 화면 채팅 영역
-
-/// TODO
-/// 네이티브 권한 체크
-/// 업로드
 library;
 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:dio/dio.dart';
 
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 import 'package:acebot_front/presentation/widget/home/record/recordUploadBottomSheet.dart';
 import 'package:acebot_front/presentation/widget/home/image/imageBottomSheet.dart';
+
+import 'package:acebot_front/api/fileService.dart';
 
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
 
@@ -39,6 +40,7 @@ class ChattingWrapper extends StatefulWidget {
 
 class _ChattingWrapperState extends State<ChattingWrapper> {
   bool isUploadButtonClicked = false;
+  List<File> uploadedFiles = [];
 
   @override
   void initState() {
@@ -185,7 +187,77 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                           isUploadButtonClicked = false;
                         });
 
-                        print('doc upload');
+                        final fileStatus =
+                            await Permission.manageExternalStorage.request();
+
+                        if (fileStatus.isGranted) {
+                          FilePickerResult? result =
+                              await FilePicker.platform.pickFiles(
+                            allowMultiple: true,
+                            type: FileType.custom,
+                            allowedExtensions: [
+                              'ppt',
+                              'csv',
+                              'pdf',
+                            ],
+                          );
+
+                          if (result != null) {
+                            bool isValid = true;
+                            List<PlatformFile> files = result.files;
+
+                            for (PlatformFile file in files) {
+                              String fileExtension = file.name.split('.').last;
+                              if (fileExtension == 'ppt' &&
+                                  file.size > 1024 * 1024 * 10) {
+                                BaseToast(
+                                        content: '10MB 이하의 ppt파일만 업로드할 수 있습니다.',
+                                        context: context)
+                                    .showToast();
+
+                                isValid = false;
+                                break;
+                              }
+
+                              if (fileExtension == 'csv' &&
+                                  file.size > 1024 * 1024 * 3) {
+                                BaseToast(
+                                        content: '3MB 이하의 csv파일만 업로드할 수 있습니다.',
+                                        context: context)
+                                    .showToast();
+
+                                isValid = false;
+                                break;
+                              }
+
+                              if (fileExtension == 'pdf' &&
+                                  file.size > 1024 * 1024 * 3) {
+                                BaseToast(
+                                        content: '3MB 이하의 pdf파일만 업로드할 수 있습니다.',
+                                        context: context)
+                                    .showToast();
+
+                                isValid = false;
+                                break;
+                              }
+                            }
+
+                            List<MultipartFile> multipartFiles =
+                                await Future.wait(files
+                                    .map((file) => MultipartFile.fromFile(
+                                        file.path!,
+                                        filename: file.name))
+                                    .toList());
+
+                            FormData formData =
+                                FormData.fromMap({"files": multipartFiles});
+
+                            Response firstRes =
+                                await FileService().uploadFiles(formData);
+
+                            print(firstRes);
+                          }
+                        }
                       },
                       child: SizedBox(
                           height: 40,
