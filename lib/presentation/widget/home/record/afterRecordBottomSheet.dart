@@ -1,23 +1,30 @@
 /// 녹음 후 추가 정보
 library;
 
+import 'package:lottie/lottie.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/return_code.dart';
 import 'package:path_provider/path_provider.dart' as path;
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
-import 'package:acebot_front/api/noteService.dart';
+import 'package:acebot_front/presentation/widget/home/record/sttResult.dart';
 
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 import 'package:acebot_front/bloc/user/selfState.dart';
 
-class AfterRecordBottomSheet extends StatefulWidget {
-  final String recordedUrl;
+import 'package:acebot_front/api/noteService.dart';
 
-  const AfterRecordBottomSheet({super.key, required this.recordedUrl});
+class AfterRecordBottomSheet extends StatefulWidget {
+  String recordedUrl;
+  Function setUploadedFiles;
+
+  AfterRecordBottomSheet(
+      {super.key, required this.recordedUrl, required this.setUploadedFiles});
 
   @override
   _AfterRecordBottomSheetState createState() => _AfterRecordBottomSheetState();
@@ -31,10 +38,6 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
   @override
   void initState() {
     super.initState();
-
-    print("==========");
-    print(widget.recordedUrl);
-    print("==========");
   }
 
   /// format Converter
@@ -186,9 +189,34 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                                 filename: fileName)
                           });
 
-                          await NoteService().uploadRecords(formData);
+                          // final PlatformFile file =
+                          //     PlatformFile.fromMap({"data": converted});
+
+                          widget.setUploadedFiles([File(converted)]);
+
+                          final secondRes =
+                              await NoteService().uploadRecords(formData);
+
+                          Navigator.pop(context);
+
+                          // TODO : 실제 secondRes 들어올 시 outputs 제대로 들어가는지 디버그
+                          showModalBottomSheet(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return const SttResult(
+                                    // outputs: secondRes.data['outputs'],
+                                    outputs: [
+                                      "0|2005|4000|달밤입니다",
+                                      "1|5240|7080|사람이 살아가는 의의는",
+                                      "0|7080|8320|무엇일까요",
+                                      "1|9680|10720|행복이란 또",
+                                      "0|10720|11880|무엇일까요",
+                                      "1|13520|25520|5000년에 걸친 유태인의 지적 재산이 농축되어 있는 탈무드 탈모드 읽는 것이 아니라 배우는 데에 의미가 있는 책입니다"
+                                    ]);
+                              });
                         }
                       } catch (err) {
+                        print(err);
                         setState(() {
                           isUploading = false;
                         });
@@ -231,7 +259,7 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                     fontWeight: FontWeight.w600,
                     color: Color(0xff000000)))
           ]),
-          // TODO: lottie
+          Lottie.asset('assets/lottie/hexagon.json'),
           Row(children: [
             Container(
                 padding:

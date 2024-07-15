@@ -6,7 +6,9 @@ import 'package:acebot_front/presentation/widget/home/record/recordingBottomShee
 import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
 
 class RecordUploadBottomSheet extends StatelessWidget {
-  const RecordUploadBottomSheet({super.key});
+  Function setUploadedFiles;
+
+  RecordUploadBottomSheet({super.key, required this.setUploadedFiles});
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +49,8 @@ class RecordUploadBottomSheet extends StatelessWidget {
                          */
                                     isScrollControlled: true,
                                     builder: (BuildContext context) {
-                                      return const RecordingBottomSheet();
+                                      return RecordingBottomSheet(
+                                          setUploadedFiles: setUploadedFiles);
                                     });
                               },
                               child: Container(
@@ -97,7 +100,9 @@ class RecordUploadBottomSheet extends StatelessWidget {
                                         return FractionallySizedBox(
                                             heightFactor: 0.7,
                                             child: AfterRecordBottomSheet(
-                                                recordedUrl: result.paths[0]!));
+                                                recordedUrl: result.paths[0]!,
+                                                setUploadedFiles:
+                                                    setUploadedFiles));
                                       });
                                 }
                               },

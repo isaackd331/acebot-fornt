@@ -30,18 +30,19 @@ class _RecommendPromptSectionState extends State<RecommendPromptSection> {
           onTap: () {
             widget.setPromptToChat(title);
           },
-          child: Row(children: [
+          child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text("${idx + 1}",
                 style: const TextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w500,
                     color: Color(0xff4f4f4f))),
             const SizedBox(width: 10),
-            Text(title,
-                style: const TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500,
-                    color: Color(0xff4f4f4f)))
+            Expanded(
+                child: Text(title,
+                    style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff4f4f4f))))
           ])),
       const SizedBox(height: 20)
     ]);
@@ -77,7 +78,7 @@ class _RecommendPromptSectionState extends State<RecommendPromptSection> {
             int idx = entry.key;
             dynamic value = entry.value;
 
-            return _promptRow(value['prompt'], idx);
+            return SizedBox(child: _promptRow(value['prompt'], idx));
           }).toList())
         ]);
   }

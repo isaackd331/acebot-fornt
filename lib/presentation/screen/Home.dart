@@ -1,9 +1,13 @@
 /// 홈 페이지
 library;
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
+import 'dart:io';
+import 'package:collection/collection.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarousel.dart';
 import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
@@ -38,6 +42,8 @@ class _HomeState extends State<Home> {
   String questArray = '';
   dynamic idsArray = {};
   ScrollController answerListController = ScrollController();
+  List<File> uploadedFiles = [];
+  ScrollController fileScrollController = ScrollController();
 
   @override
   void initState() {
@@ -70,6 +76,16 @@ class _HomeState extends State<Home> {
     chatController.text = value;
   }
 
+  void setUploadedFiles(List<File> value) {
+    List<File> copiedList = List.from(uploadedFiles);
+
+    copiedList = [...copiedList, ...value];
+
+    setState(() {
+      uploadedFiles = copiedList.toSet().toList();
+    });
+  }
+
   /// 프롬프트 데이터 업데이트
   void setPromptData(int idx, int value) {
     setState(() {
@@ -95,6 +111,67 @@ class _HomeState extends State<Home> {
       // idsArray = [...idsArray, value];
       idsArray = value;
     });
+  }
+
+  // Uploaded Files
+  Widget _uploadedFiles(File file) {
+    String filename = file.path.split('/').last;
+
+    return Container(
+        width: 210,
+        height: 40,
+        margin: const EdgeInsets.only(left: 10),
+        padding: const EdgeInsets.only(left: 12),
+        decoration: BoxDecoration(
+            color: const Color(0xffffffff),
+            borderRadius: const BorderRadius.all(Radius.circular(3)),
+            border: Border.all(color: const Color(0xffb3b3b3))),
+        child: Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
+                // TODO : 확장자에 맞는 아이콘 추가 필요
+                SizedBox(
+                    width: 20,
+                    height: 20,
+                    child: Image.asset('assets/icons/icon_etc.png',
+                        scale: 4, fit: BoxFit.fill)),
+                const SizedBox(width: 6),
+                Text(filename,
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff000000)),
+                    overflow: TextOverflow.ellipsis)
+              ]),
+              IconButton(
+                  onPressed: () {
+                    List<File> tempList = List.from(uploadedFiles);
+
+                    tempList.remove(file);
+
+                    setState(() {
+                      uploadedFiles = tempList.toSet().toList();
+                    });
+                  },
+                  icon: const Icon(Icons.clear),
+                  iconSize: 16,
+                  color: const Color(0xffb3b3b3))
+            ]));
+  }
+
+  Widget _fileSwiper() {
+    return SingleChildScrollView(
+        controller: fileScrollController,
+        scrollDirection: Axis.horizontal,
+        child: Row(
+            children: uploadedFiles.mapIndexed((idx, file) {
+          return Builder(builder: (BuildContext context) {
+            return _uploadedFiles(file);
+          });
+        }).toList()));
   }
 
   Widget _beforeChatting() {
@@ -155,49 +232,110 @@ class _HomeState extends State<Home> {
                             color: Color(0xff000000),
                             height: 1.5)),
                     const SizedBox(height: 20),
-                    SizedBox(
-                        width: 40,
-                        height: 10,
-                        child: Image.asset('assets/images/acebot_logo.png')),
+                    Lottie.asset('assets/lottie/chat.json'),
                     Expanded(
-                        child: Column(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                          const SizedBox(height: 20),
+                        child: Stack(children: [
+                      Column(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            const SizedBox(height: 20),
 
-                          /**
+                            /**
                              * 포커싱될 시 캐로셀 hide
                              * 채팅 박스에 채팅 있을 시 캐로셀 hide
                              */
-                          (!chatFocusNode.hasFocus)
-                              ? SizedBox(
-                                  height: 314,
-                                  child: ListView.separated(
-                                      itemCount: 4,
-                                      separatorBuilder:
-                                          (BuildContext context, int idx) {
-                                        return const SizedBox(height: 18);
-                                      },
-                                      itemBuilder:
-                                          (BuildContext context, int idx) {
-                                        return Builder(
-                                            builder: (BuildContext context) {
-                                          return PromptCarousel(
-                                              setPromptToChat: setPromptToChat,
-                                              setPromptData: setPromptData);
-                                        });
-                                      }))
-                              : Container(),
-                          const SizedBox(height: 24),
-                          ChattingWrapper(
-                            setChatContent: setChatContent,
-                            updateQuestArray: updateQuestArray,
-                            updateIdsArray: updateIdsArray,
-                            chatController: chatController,
-                            chatFocusNode: chatFocusNode,
-                            questArrayLength: questArray.length,
-                          )
-                        ])),
+                            (!chatFocusNode.hasFocus)
+                                ? SizedBox(
+                                    height: 314,
+                                    child: ListView.separated(
+                                        itemCount: 4,
+                                        separatorBuilder:
+                                            (BuildContext context, int idx) {
+                                          return const SizedBox(height: 18);
+                                        },
+                                        itemBuilder:
+                                            (BuildContext context, int idx) {
+                                          return Builder(
+                                              builder: (BuildContext context) {
+                                            return PromptCarousel(
+                                                setPromptToChat:
+                                                    setPromptToChat,
+                                                setPromptData: setPromptData);
+                                          });
+                                        }))
+                                : Container(),
+                            ChattingWrapper(
+                              setChatContent: setChatContent,
+                              updateQuestArray: updateQuestArray,
+                              updateIdsArray: updateIdsArray,
+                              chatController: chatController,
+                              chatFocusNode: chatFocusNode,
+                              questArrayLength: questArray.length,
+                              uploadedFiles: uploadedFiles,
+                              setUploadedFiles: setUploadedFiles,
+                            )
+                          ]),
+                      Positioned(
+                          bottom: 60,
+                          child: uploadedFiles.isNotEmpty
+                              ? _fileSwiper()
+                              : Container()),
+                      Positioned(
+                          bottom: 60,
+                          right: 0,
+                          child: uploadedFiles.isNotEmpty
+                              ? IconButton(
+                                  onPressed: () {
+                                    print('oh hi');
+                                    fileScrollController.animateTo(100,
+                                        duration:
+                                            const Duration(milliseconds: 2),
+                                        curve: Curves.ease);
+
+                                    print(fileScrollController.offset);
+                                  },
+                                  icon: Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: const Color(0xffffffff),
+                                          border: Border.all(
+                                              color: const Color(0xffe7e7e7))),
+                                      child: const Center(
+                                          child: Icon(
+                                              Icons.arrow_forward_ios_rounded,
+                                              color: Color(0xff000000),
+                                              size: 10))))
+                              : Container()),
+                      Positioned(
+                          bottom: 60,
+                          left: 0,
+                          child: uploadedFiles.isNotEmpty
+                              ? IconButton(
+                                  onPressed: () {
+                                    fileScrollController.animateTo(
+                                        fileScrollController.offset - 100,
+                                        duration:
+                                            const Duration(milliseconds: 2),
+                                        curve: Curves.ease);
+                                  },
+                                  icon: Container(
+                                      width: 24,
+                                      height: 24,
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: const Color(0xffffffff),
+                                          border: Border.all(
+                                              color: const Color(0xffe7e7e7))),
+                                      child: const Center(
+                                          child: Icon(
+                                              Icons.arrow_back_ios_rounded,
+                                              color: Color(0xff000000),
+                                              size: 10))))
+                              : Container())
+                    ]))
                   ])));
         }));
   }
@@ -237,6 +375,8 @@ class _HomeState extends State<Home> {
             chatController: chatController,
             chatFocusNode: chatFocusNode,
             questArrayLength: questArray.length,
+            uploadedFiles: uploadedFiles,
+            setUploadedFiles: setUploadedFiles,
           ))
     ]);
   }
@@ -249,27 +389,31 @@ class _HomeState extends State<Home> {
         title: Container(),
         actions: [
           IconButton(
-              onPressed: () {
-                if (questArray.isNotEmpty) {
-                  chatController.clear();
-                  setState(() {
-                    chatContent = '';
-                    // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
-                    // 1차 개발에서는 한 화면에 한 질문/답변만
-                    // questArray = [];
-                    // idsArray = [];
-                    questArray = '';
-                    idsArray = {};
-                  });
-                  BlocProvider.of<AnswerCubit>(context).clearCubit();
-                }
-              },
-              icon: Image.asset('assets/icons/icon_newchat.png', scale: 4),
-              iconSize: 18,
-              padding: const EdgeInsets.all(0),
-              color: questArray.isNotEmpty
-                  ? const Color(0xff000000)
-                  : const Color(0xff5d5d5d)),
+            onPressed: () {
+              if (questArray.isNotEmpty) {
+                chatController.clear();
+                setState(() {
+                  chatContent = '';
+                  // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+                  // 1차 개발에서는 한 화면에 한 질문/답변만
+                  // questArray = [];
+                  // idsArray = [];
+                  questArray = '';
+                  idsArray = {};
+                  uploadedFiles = [];
+                });
+                BlocProvider.of<AnswerCubit>(context).clearCubit();
+              }
+            },
+            icon: Image.asset(
+              questArray.isNotEmpty
+                  ? 'assets/icons/icon_newchat-enabled.png'
+                  : 'assets/icons/icon_newchat-disabled.png',
+              scale: 4,
+            ),
+            iconSize: 18,
+            padding: const EdgeInsets.all(0),
+          ),
           IconButton(
             onPressed: () {},
             icon: Image.asset('assets/icons/icon_streamline.png', scale: 4),
@@ -286,7 +430,15 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(0)),
       ),
       body: questArray.isEmpty
-          ? BaseBody(child: _beforeChatting())
+          ? Column(children: [
+              Expanded(child: LayoutBuilder(builder: (context, constraint) {
+                return NoScrollbarWrapper(
+                    child: ConstrainedBox(
+                        constraints:
+                            BoxConstraints(minHeight: constraint.maxHeight),
+                        child: IntrinsicHeight(child: _beforeChatting())));
+              }))
+            ])
           // scrollController를 쉽게 조작하기 위해 BaseBody의 위젯을 그대로 복붙하였음.
           : Column(children: [
               Expanded(child: LayoutBuilder(builder: (context, constraint) {

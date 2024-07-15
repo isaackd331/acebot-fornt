@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:file_picker/file_picker.dart';
+import 'dart:io';
 
 import 'package:acebot_front/models/answerModel.dart';
 import 'package:acebot_front/bloc/answer/answerState.dart';
@@ -29,8 +31,8 @@ class AnswerCubit extends Cubit<AnswerState> {
   // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
   // 1차 개발에서는 한 화면에 한 질문/답변만
   // Future<dynamic> quest(String question, int idx) async {
-  Future<dynamic> quest(
-      String question, TextEditingController controller) async {
+  Future<dynamic> quest(String question, TextEditingController controller,
+      List<File>? uploadedFiles) async {
     void setLoadedState(dynamic value) {
       try {
         // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
@@ -54,7 +56,8 @@ class AnswerCubit extends Cubit<AnswerState> {
       final receivedQuestion = question;
       controller.clear();
 
-      final firstRes = await qRepo.createQuestion(receivedQuestion, null);
+      final firstRes =
+          await qRepo.createQuestion(receivedQuestion, uploadedFiles);
 
       final questionId = firstRes['questionId'];
       final threadId = firstRes['threadId'];
