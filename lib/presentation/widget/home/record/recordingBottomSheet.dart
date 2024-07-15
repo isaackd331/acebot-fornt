@@ -12,7 +12,8 @@ import 'package:path/path.dart' as path;
 import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
 
 class RecordingBottomSheet extends StatefulWidget {
-  const RecordingBottomSheet({super.key});
+  Function setUploadedFiles;
+  RecordingBottomSheet({super.key, required this.setUploadedFiles});
 
   @override
   _RecordingBottomSheetState createState() => _RecordingBottomSheetState();
@@ -122,7 +123,9 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
           builder: (BuildContext context) {
             return FractionallySizedBox(
                 heightFactor: 0.7,
-                child: AfterRecordBottomSheet(recordedUrl: filePath));
+                child: AfterRecordBottomSheet(
+                    recordedUrl: filePath,
+                    setUploadedFiles: widget.setUploadedFiles));
           });
     });
   }

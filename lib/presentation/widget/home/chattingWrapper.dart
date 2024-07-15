@@ -40,7 +40,7 @@ class ChattingWrapper extends StatefulWidget {
 
 class _ChattingWrapperState extends State<ChattingWrapper> {
   bool isUploadButtonClicked = false;
-  List<int> uploadedFiles = [];
+  List<PlatformFile> uploadedFiles = [];
 
   @override
   void initState() {
@@ -59,8 +59,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
     super.dispose();
   }
 
-  void setUploadedFiles(List<int> value) {
-    List<int> copiedList = List.from(uploadedFiles);
+  void setUploadedFiles(List<PlatformFile> value) {
+    List<PlatformFile> copiedList = List.from(uploadedFiles);
 
     copiedList = [...copiedList, ...value];
 
@@ -103,7 +103,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                             showModalBottomSheet(
                                 context: context,
                                 builder: (BuildContext context) {
-                                  return const RecordUploadBottomSheet();
+                                  return RecordUploadBottomSheet(
+                                      setUploadedFiles: setUploadedFiles);
                                 });
                           } else {
                             BaseToast(
@@ -169,6 +170,16 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                     updateQuestArray: widget.updateQuestArray,
                                     updateIdsArray: widget.updateIdsArray);
                               });
+                        } else {
+                          BaseToast(
+                                  content: '해당 기능을 사용하려면\n파일 접근 권한이 필요합니다.',
+                                  context: context)
+                              .showToast();
+
+                          if (await Permission
+                              .manageExternalStorage.isPermanentlyDenied) {
+                            openAppSettings();
+                          }
                         }
                       },
                       child: SizedBox(
@@ -267,6 +278,16 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                 await FileService().uploadFiles(formData);
 
                             print(firstRes);
+                          }
+                        } else {
+                          BaseToast(
+                                  content: '해당 기능을 사용하려면\n파일 접근 권한이 필요합니다.',
+                                  context: context)
+                              .showToast();
+
+                          if (await Permission
+                              .manageExternalStorage.isPermanentlyDenied) {
+                            openAppSettings();
                           }
                         }
                       },
