@@ -52,6 +52,10 @@ class _PromptCarouselWrapperState extends State<PromptCarouselWrapper> {
           height: 65,
           viewportFraction: 0.6,
           pageSnapping: false,
+          autoPlay: true,
+          autoPlayAnimationDuration: const Duration(milliseconds: 7000),
+          reverse: widget.groupIdx % 2 != 0 ? true : false,
+          padEnds: widget.groupIdx % 2 != 0 ? true : false,
           onPageChanged: (index, reason) {
             setState(() {
               curIdx = index;

@@ -16,6 +16,8 @@ class QuestionService {
           : []
     });
 
+    print(formData.files);
+
     return dio.post('/v1/questions',
         data: formData,
         options: Options(headers: {"Content-Type": "multipart/form-data"}));

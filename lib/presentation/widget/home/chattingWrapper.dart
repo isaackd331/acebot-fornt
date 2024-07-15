@@ -24,6 +24,8 @@ class ChattingWrapper extends StatefulWidget {
   final TextEditingController chatController;
   final FocusNode chatFocusNode;
   final int questArrayLength;
+  final List<File> uploadedFiles;
+  final Function setUploadedFiles;
 
   const ChattingWrapper(
       {super.key,
@@ -32,7 +34,9 @@ class ChattingWrapper extends StatefulWidget {
       required this.updateIdsArray,
       required this.chatController,
       required this.chatFocusNode,
-      required this.questArrayLength});
+      required this.questArrayLength,
+      required this.uploadedFiles,
+      required this.setUploadedFiles});
 
   @override
   _ChattingWrapperState createState() => _ChattingWrapperState();
@@ -40,9 +44,8 @@ class ChattingWrapper extends StatefulWidget {
 
 class _ChattingWrapperState extends State<ChattingWrapper> {
   bool isUploadButtonClicked = false;
-  List<File> uploadedFiles = [];
-  final LayerLink _chattingBarLink = LayerLink();
-  final GlobalKey _chattingKey = GlobalKey();
+  final LayerLink _additionalBtnLink = LayerLink();
+  final GlobalKey _additionalKey = GlobalKey();
 
   @override
   void initState() {
@@ -54,58 +57,32 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
     /**
      * 홈페이지에서 벗어날 시 Overlay remove
      */
-    if (overlayEntry.mounted) {
-      overlayEntry.remove();
+    if (additionalBoxOverlayEntry.mounted) {
+      additionalBoxOverlayEntry.remove();
     }
 
     super.dispose();
   }
 
-  void setUploadedFiles(List<File> value) {
-    List<File> copiedList = List.from(uploadedFiles);
-
-    copiedList = [...copiedList, ...value];
-
-    setState(() {
-      uploadedFiles = copiedList;
-    });
-
-    print('========uploadedFiles==========');
-    print(uploadedFiles);
-  }
-
-  Offset _getOverlayEntryPosition() {
+  Size _getAdditonalOverlayEntrySize() {
     RenderBox renderBox =
-        _chattingKey.currentContext!.findRenderObject()! as RenderBox;
-
-    return Offset(renderBox.localToGlobal(Offset.zero).dx,
-        renderBox.localToGlobal(Offset.zero).dy + renderBox.size.height);
-  }
-
-  Size _getOverlayEntrySize() {
-    RenderBox renderBox =
-        _chattingKey.currentContext!.findRenderObject()! as RenderBox;
+        _additionalKey.currentContext!.findRenderObject()! as RenderBox;
 
     return renderBox.size;
   }
 
-  // Uploaded Files
-  // Widget _uploadedFiles(File file) {
-
-  // }
-
-  /// Overlay Builder
-  late final OverlayEntry overlayEntry =
+  /// Overlay Builder - additional Box
+  late final OverlayEntry additionalBoxOverlayEntry =
       OverlayEntry(builder: (BuildContext context) {
-    Size size = _getOverlayEntrySize();
+    Size size = _getAdditonalOverlayEntrySize();
 
     return Positioned(
         width: 142,
         height: 120,
         child: CompositedTransformFollower(
-            link: _chattingBarLink,
+            link: _additionalBtnLink,
             showWhenUnlinked: false,
-            offset: Offset(size.width - 142, -(size.height * 2) - 28),
+            offset: Offset(-(size.width * 2.5), -125),
             child: Container(
                 width: 142,
                 height: 120,
@@ -118,7 +95,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                       GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () async {
-                            overlayEntry.remove();
+                            additionalBoxOverlayEntry.remove();
                             setState(() {
                               isUploadButtonClicked = false;
                             });
@@ -136,7 +113,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                     context: context,
                                     builder: (BuildContext context) {
                                       return RecordUploadBottomSheet(
-                                          setUploadedFiles: setUploadedFiles);
+                                          setUploadedFiles:
+                                              widget.setUploadedFiles);
                                     });
                               } else {
                                 BaseToast(
@@ -185,7 +163,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                       GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () async {
-                            overlayEntry.remove();
+                            additionalBoxOverlayEntry.remove();
                             setState(() {
                               isUploadButtonClicked = false;
                             });
@@ -239,7 +217,7 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                       GestureDetector(
                           behavior: HitTestBehavior.translucent,
                           onTap: () async {
-                            overlayEntry.remove();
+                            additionalBoxOverlayEntry.remove();
                             setState(() {
                               isUploadButtonClicked = false;
                             });
@@ -304,6 +282,10 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                   }
                                 }
 
+                                for (PlatformFile file in files) {
+                                  widget.setUploadedFiles([File(file.path!)]);
+                                }
+
                                 List<MultipartFile> multipartFiles =
                                     await Future.wait(files
                                         .map((file) => MultipartFile.fromFile(
@@ -355,118 +337,113 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
 
   @override
   Widget build(BuildContext context) {
-    return CompositedTransformTarget(
-        link: _chattingBarLink,
-        child: Row(
-            key: _chattingKey,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Expanded(
-                  child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      decoration: BoxDecoration(
-                          color: const Color(0xfff4f4f4),
-                          borderRadius: BorderRadius.circular(3)),
-                      child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            IconButton(
-                                onPressed: () {},
-                                icon: SizedBox(
-                                  width: 24,
-                                  height: 24,
-                                  child: Image.asset(
-                                      'assets/icons/icon_classified_docs.png'),
-                                ),
-                                color: const Color(0xff999999),
-                                padding: const EdgeInsets.only(bottom: 3)),
-                            Expanded(
-                                child: NoScrollbarWrapper(
-                                    child: TextFormField(
-                              keyboardType: TextInputType.multiline,
-                              focusNode: widget.chatFocusNode,
-                              controller: widget.chatController,
-                              onChanged: (value) {
-                                widget.setChatContent(value);
-                              },
-                              minLines: 1,
-                              maxLines: widget.chatFocusNode.hasFocus ? 6 : 1,
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                  color: Color(0xff000000)),
-                              decoration: InputDecoration(
-                                fillColor: const Color(0xfff4f4f4),
-                                hintText: !widget.chatFocusNode.hasFocus
-                                    ? 'ACEBOT에게 요청해 보세요'
-                                    : '',
-                                hintStyle: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color(0xff999999)),
-                                border: InputBorder.none,
-                              ),
-                            ))),
-                            IconButton(
-                                onPressed: () async {
-                                  if (widget.chatController.text.isNotEmpty) {
-                                    final answerCubit =
-                                        BlocProvider.of<AnswerCubit>(context);
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      Expanded(
+          child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              decoration: BoxDecoration(
+                  color: const Color(0xfff4f4f4),
+                  borderRadius: BorderRadius.circular(3)),
+              child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+                IconButton(
+                    onPressed: () {},
+                    icon: SizedBox(
+                      width: 24,
+                      height: 24,
+                      child:
+                          Image.asset('assets/icons/icon_classified_docs.png'),
+                    ),
+                    color: const Color(0xff999999),
+                    padding: const EdgeInsets.only(bottom: 3)),
+                Expanded(
+                    child: NoScrollbarWrapper(
+                        child: TextFormField(
+                  keyboardType: TextInputType.multiline,
+                  focusNode: widget.chatFocusNode,
+                  controller: widget.chatController,
+                  onChanged: (value) {
+                    widget.setChatContent(value);
+                  },
+                  minLines: 1,
+                  maxLines: widget.chatFocusNode.hasFocus ? 6 : 1,
+                  style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff000000)),
+                  decoration: InputDecoration(
+                    fillColor: const Color(0xfff4f4f4),
+                    hintText: !widget.chatFocusNode.hasFocus
+                        ? 'ACEBOT에게 요청해 보세요'
+                        : '',
+                    hintStyle: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w500,
+                        color: Color(0xff999999)),
+                    border: InputBorder.none,
+                  ),
+                ))),
+                IconButton(
+                    onPressed: () async {
+                      if (widget.chatController.text.isNotEmpty) {
+                        final answerCubit =
+                            BlocProvider.of<AnswerCubit>(context);
 
-                                    // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
-                                    // 1차 개발에서는 한 화면에 한 질문/답변만
-                                    // answerCubit.ready();
+                        // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+                        // 1차 개발에서는 한 화면에 한 질문/답변만
+                        // answerCubit.ready();
 
-                                    widget.updateQuestArray(
-                                        widget.chatController.text);
+                        widget.updateQuestArray(widget.chatController.text);
 
-                                    // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
-                                    // 1차 개발에서는 한 화면에 한 질문/답변만
-                                    // final idsData = answerCubit.quest(
-                                    //     chatController.text, widget.questArrayLength);
-                                    final idsData = await answerCubit.quest(
-                                        widget.chatController.text,
-                                        widget.chatController,
-                                        null);
+                        // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+                        // 1차 개발에서는 한 화면에 한 질문/답변만
+                        // final idsData = answerCubit.quest(
+                        //     chatController.text, widget.questArrayLength);
+                        final idsData = await answerCubit.quest(
+                            widget.chatController.text,
+                            widget.chatController,
+                            widget.uploadedFiles);
 
-                                    widget.updateIdsArray(idsData);
-                                  }
-                                },
-                                icon: Icon(Icons.arrow_upward,
-                                    color: widget.chatController.text.isEmpty
-                                        ? const Color(0xff999999)
-                                        : const Color(0xff000000)),
-                                padding: const EdgeInsets.only(bottom: 3)),
-                          ]))),
-              const SizedBox(width: 8),
-              Container(
-                  width: 40,
-                  height: 40,
-                  decoration: BoxDecoration(
-                      color: const Color(0xff000000),
-                      borderRadius: BorderRadius.circular(3)),
-                  child: IconButton(
-                    onPressed: () {
-                      OverlayState overlayState = Overlay.of(context);
-
-                      if (!overlayEntry.mounted) {
-                        overlayState.insert(overlayEntry);
-                      } else {
-                        overlayEntry.remove();
+                        widget.updateIdsArray(idsData);
                       }
-
-                      setState(() {
-                        isUploadButtonClicked = !isUploadButtonClicked;
-                      });
                     },
-                    icon: !isUploadButtonClicked
-                        ? const Icon(Icons.add,
-                            color: Color(0xffffffff),
-                            key: ValueKey('beforeClicked'))
-                        : const Icon(Icons.clear,
-                            color: Color(0xffffffff),
-                            key: ValueKey('afterClicked')),
-                  )),
-            ]));
+                    icon: Icon(Icons.arrow_upward,
+                        color: widget.chatController.text.isEmpty
+                            ? const Color(0xff999999)
+                            : const Color(0xff000000)),
+                    padding: const EdgeInsets.only(bottom: 3)),
+              ]))),
+      const SizedBox(width: 8),
+      CompositedTransformTarget(
+          link: _additionalBtnLink,
+          child: Container(
+              key: _additionalKey,
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                  color: const Color(0xff000000),
+                  borderRadius: BorderRadius.circular(3)),
+              child: IconButton(
+                onPressed: () {
+                  OverlayState overlayState = Overlay.of(context);
+
+                  if (!additionalBoxOverlayEntry.mounted) {
+                    overlayState.insert(additionalBoxOverlayEntry);
+                  } else {
+                    additionalBoxOverlayEntry.remove();
+                  }
+
+                  setState(() {
+                    isUploadButtonClicked = !isUploadButtonClicked;
+                  });
+                },
+                icon: !isUploadButtonClicked
+                    ? const Icon(Icons.add,
+                        color: Color(0xffffffff),
+                        key: ValueKey('beforeClicked'))
+                    : const Icon(Icons.clear,
+                        color: Color(0xffffffff),
+                        key: ValueKey('afterClicked')),
+              ))),
+    ]);
   }
 }
