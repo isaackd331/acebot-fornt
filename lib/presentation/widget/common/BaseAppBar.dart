@@ -27,6 +27,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
         toolbarHeight: 60.0,
         centerTitle: true,
         backgroundColor: const Color(0xffffffff),
+        shadowColor: const Color(0xffffffff),
         titleTextStyle: const TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.w600,
