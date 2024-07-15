@@ -32,7 +32,7 @@ class AnswerCubit extends Cubit<AnswerState> {
   // 1차 개발에서는 한 화면에 한 질문/답변만
   // Future<dynamic> quest(String question, int idx) async {
   Future<dynamic> quest(String question, TextEditingController controller,
-      List<PlatformFile>? uploadedFiles) async {
+      List<File>? uploadedFiles) async {
     void setLoadedState(dynamic value) {
       try {
         // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.

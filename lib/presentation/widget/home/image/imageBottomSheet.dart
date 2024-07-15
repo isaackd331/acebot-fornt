@@ -31,7 +31,7 @@ class ImageBottomSheet extends StatefulWidget {
 
 class _ImageBottomSheetState extends State<ImageBottomSheet> {
   bool isUploading = false;
-  PlatformFile? uploadedFile;
+  File? uploadedFile;
   TextEditingController promptController = TextEditingController();
   String promptContent = "";
 
@@ -129,12 +129,8 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                       FormData formData =
                           FormData.fromMap({"files": uploadingFile});
 
-                      print('======example fields======');
-                      print(formData.fields);
-                      print(formData.files);
-
                       setState(() {
-                        uploadedFile = file;
+                        uploadedFile = File(file.path!);
                       });
 
                       setState(() {
@@ -157,7 +153,6 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
 
                         setState(() {
                           isUploading = false;
-                          uploadedFile = firstRes.data["content"][0]['id'];
                         });
 
                         print(uploadedFile);

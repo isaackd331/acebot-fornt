@@ -5,7 +5,7 @@ import 'package:file_picker/file_picker.dart';
 
 class QuestionRepository {
   Future<Map<String, dynamic>> createQuestion(
-      String question, List<PlatformFile>? files) async {
+      String question, List<File>? files) async {
     Response res = await QuestionService().postInitialQuestion(question, files);
 
     return res.data;

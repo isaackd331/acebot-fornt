@@ -8,6 +8,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/return_code.dart';
 import 'package:path_provider/path_provider.dart' as path;
+import 'dart:io';
+import 'package:file_picker/file_picker.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/home/record/sttResult.dart';
@@ -187,6 +189,11 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                                 filename: fileName)
                           });
 
+                          // final PlatformFile file =
+                          //     PlatformFile.fromMap({"data": converted});
+
+                          widget.setUploadedFiles([File(converted)]);
+
                           final secondRes =
                               await NoteService().uploadRecords(formData);
 
@@ -209,6 +216,7 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                               });
                         }
                       } catch (err) {
+                        print(err);
                         setState(() {
                           isUploading = false;
                         });
