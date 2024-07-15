@@ -8,6 +8,7 @@ import 'package:flutter_sound/flutter_sound.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'package:lottie/lottie.dart';
 
 import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSheet.dart';
 
@@ -176,9 +177,8 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Color(0xff000000))),
-              /**
-               * wave lottie
-               */
+              LottieBuilder.asset('assets/lottie/data_01.json',
+                  repeat: isRecording),
               Column(children: [
                 Text(isRecording ? '음성 인식 중' : '일시 정지 중',
                     style: const TextStyle(

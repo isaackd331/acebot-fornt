@@ -89,6 +89,11 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
     return renderBox.size;
   }
 
+  // Uploaded Files
+  // Widget _uploadedFiles(File file) {
+
+  // }
+
   /// Overlay Builder
   late final OverlayEntry overlayEntry =
       OverlayEntry(builder: (BuildContext context) {

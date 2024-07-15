@@ -4,6 +4,7 @@ library;
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:acebot_front/presentation/widget/home/promptCarousel.dart';
 import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
@@ -155,10 +156,7 @@ class _HomeState extends State<Home> {
                             color: Color(0xff000000),
                             height: 1.5)),
                     const SizedBox(height: 20),
-                    SizedBox(
-                        width: 40,
-                        height: 10,
-                        child: Image.asset('assets/images/acebot_logo.png')),
+                    Lottie.asset('assets/lottie/chat.json'),
                     Expanded(
                         child: Column(
                             mainAxisAlignment: MainAxisAlignment.end,
