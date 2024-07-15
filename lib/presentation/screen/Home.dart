@@ -249,27 +249,29 @@ class _HomeState extends State<Home> {
         title: Container(),
         actions: [
           IconButton(
-              onPressed: () {
-                if (questArray.isNotEmpty) {
-                  chatController.clear();
-                  setState(() {
-                    chatContent = '';
-                    // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
-                    // 1차 개발에서는 한 화면에 한 질문/답변만
-                    // questArray = [];
-                    // idsArray = [];
-                    questArray = '';
-                    idsArray = {};
-                  });
-                  BlocProvider.of<AnswerCubit>(context).clearCubit();
-                }
-              },
-              icon: Image.asset('assets/icons/icon_newchat.png', scale: 4),
-              iconSize: 18,
-              padding: const EdgeInsets.all(0),
-              color: questArray.isNotEmpty
-                  ? const Color(0xff000000)
-                  : const Color(0xff5d5d5d)),
+            onPressed: () {
+              if (questArray.isNotEmpty) {
+                chatController.clear();
+                setState(() {
+                  chatContent = '';
+                  // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+                  // 1차 개발에서는 한 화면에 한 질문/답변만
+                  // questArray = [];
+                  // idsArray = [];
+                  questArray = '';
+                  idsArray = {};
+                });
+                BlocProvider.of<AnswerCubit>(context).clearCubit();
+              }
+            },
+            icon: Image.asset('assets/icons/icon_newchat.png',
+                scale: 4,
+                color: questArray.isNotEmpty
+                    ? const Color(0xff000000)
+                    : const Color(0xff5d5d5d)),
+            iconSize: 18,
+            padding: const EdgeInsets.all(0),
+          ),
           IconButton(
             onPressed: () {},
             icon: Image.asset('assets/icons/icon_streamline.png', scale: 4),

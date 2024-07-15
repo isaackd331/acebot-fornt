@@ -40,7 +40,7 @@ class ChattingWrapper extends StatefulWidget {
 
 class _ChattingWrapperState extends State<ChattingWrapper> {
   bool isUploadButtonClicked = false;
-  List<File> uploadedFiles = [];
+  List<int> uploadedFiles = [];
 
   @override
   void initState() {
@@ -57,6 +57,16 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
     }
 
     super.dispose();
+  }
+
+  void setUploadedFiles(List<int> value) {
+    List<int> copiedList = List.from(uploadedFiles);
+
+    copiedList = [...copiedList, ...value];
+
+    setState(() {
+      uploadedFiles = copiedList;
+    });
   }
 
   /// Overlay Builder
@@ -104,7 +114,6 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
 
                             if (await Permission
                                 .manageExternalStorage.isPermanentlyDenied) {
-                              await Future.delayed(const Duration(seconds: 3));
                               openAppSettings();
                             }
                           }
@@ -116,7 +125,6 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                               .showToast();
 
                           if (await Permission.microphone.isPermanentlyDenied) {
-                            await Future.delayed(const Duration(seconds: 3));
                             openAppSettings();
                           }
                         }
@@ -156,7 +164,10 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                               context: context,
                               isScrollControlled: true,
                               builder: (BuildContext context) {
-                                return const ImageBottomSheet();
+                                return ImageBottomSheet(
+                                    chatController: widget.chatController,
+                                    updateQuestArray: widget.updateQuestArray,
+                                    updateIdsArray: widget.updateIdsArray);
                               });
                         }
                       },
@@ -345,7 +356,9 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         // final idsData = answerCubit.quest(
                         //     chatController.text, widget.questArrayLength);
                         final idsData = await answerCubit.quest(
-                            widget.chatController.text, widget.chatController);
+                            widget.chatController.text,
+                            widget.chatController,
+                            null);
 
                         widget.updateIdsArray(idsData);
                       }

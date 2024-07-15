@@ -4,15 +4,26 @@ import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:lottie/lottie.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
 
+import 'package:acebot_front/bloc/answer/answerCubit.dart';
+
 import 'package:acebot_front/api/fileService.dart';
 
 class ImageBottomSheet extends StatefulWidget {
-  const ImageBottomSheet({super.key});
+  TextEditingController chatController;
+  Function updateQuestArray;
+  Function updateIdsArray;
+
+  ImageBottomSheet(
+      {super.key,
+      required this.chatController,
+      required this.updateQuestArray,
+      required this.updateIdsArray});
 
   @override
   _ImageBottomSheetState createState() => _ImageBottomSheetState();
@@ -20,7 +31,9 @@ class ImageBottomSheet extends StatefulWidget {
 
 class _ImageBottomSheetState extends State<ImageBottomSheet> {
   bool isUploading = false;
-  Uint8List? filePath;
+  PlatformFile? uploadedFile;
+  TextEditingController promptController = TextEditingController();
+  String promptContent = "";
 
   @override
   void initState() {
@@ -109,9 +122,19 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                     if (file.size > 1024 * 1024 * 10) {
                       // TODO : 얼럿창 띄우기
                     } else {
-                      FormData formData = FormData.fromMap({
-                        "files": await MultipartFile.fromFile(file.path!,
-                            filename: file.name)
+                      MultipartFile uploadingFile =
+                          await MultipartFile.fromFile(file.path!,
+                              filename: file.name);
+
+                      FormData formData =
+                          FormData.fromMap({"files": uploadingFile});
+
+                      print('======example fields======');
+                      print(formData.fields);
+                      print(formData.files);
+
+                      setState(() {
+                        uploadedFile = file;
                       });
 
                       setState(() {
@@ -119,19 +142,25 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                       });
 
                       try {
+                        // TODO : secondRes로 오는 바이너리 코드를 원래 프리뷰에 보여주는 단계가 있어야 함.
                         Response firstRes =
                             await FileService().uploadFiles(formData);
 
-                        Response secondRes = await FileService()
-                            .getFileInWorking(
-                                firstRes.data["content"][0]['id']);
+                        print(firstRes);
 
-                        final List<int> intList = secondRes.data.codeUnits;
-                        final test = GZipCodec().decode(intList);
+                        // Response secondRes = await FileService()
+                        //     .getFileInWorking(
+                        //         firstRes.data["content"][0]['id']);
+
+                        // final List<int> intList = secondRes.data.codeUnits;
+                        // final test = GZipCodec().decode(intList);
 
                         setState(() {
                           isUploading = false;
+                          uploadedFile = firstRes.data["content"][0]['id'];
                         });
+
+                        print(uploadedFile);
                       } catch (err) {
                         setState(() {
                           isUploading = false;
@@ -146,7 +175,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                   height: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(color: Color(0xfff4f4f4)),
                   child: isUploading == false
-                      ? filePath == null
+                      ? uploadedFile == null
                           ? Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -163,12 +192,18 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                                           color: Color(0xffb3b3b3),
                                           height: 1.5))
                                 ])
-                          : Container(
-                              width: 50,
-                              height: 50,
-                              decoration:
-                                  const BoxDecoration(color: Colors.red),
-                              child: Image.memory(filePath!))
+                          : const Column(
+                              mainAxisSize: MainAxisSize.max,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                  Text('이미지가 업로드 되었습니다. 아래의 프롬프트를 작성해 보세요',
+                                      style: TextStyle(
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                          color: Color(0xffb3b3b3),
+                                          height: 1.5))
+                                ])
                       : Column(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -180,31 +215,37 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
           const SizedBox(height: 30),
 
           // prompt
-          const Expanded(
+          Expanded(
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                Text("프롬프트 입력",
+                const Text("프롬프트 입력",
                     style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
                         color: Color(0xff1b1b1b),
                         height: 1.5)),
-                Text("해당 이미지로 마케팅 문구 생성과 캡션을 추가할 수 있어요.",
+                const Text("해당 이미지로 마케팅 문구 생성과 캡션을 추가할 수 있어요.",
                     style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w500,
                         color: Color(0xff929292),
                         height: 1.5)),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 TextField(
+                  onChanged: (value) {
+                    setState(() {
+                      promptContent = value;
+                    });
+                  },
+                  controller: promptController,
                   minLines: 3,
                   maxLines: 3,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff000000)),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       hintText: "원하시는 내용을 입력하세요",
                       hintStyle: TextStyle(
                           fontSize: 14.0,
@@ -222,12 +263,36 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
           // button
           Row(children: [
             BaseOutlineButton(
-                onPressedFunc: () {},
+                onPressedFunc: () async {
+                  if (uploadedFile != null &&
+                      promptContent.isNotEmpty &&
+                      !isUploading) {
+                    AnswerCubit answerCubit =
+                        BlocProvider.of<AnswerCubit>(context);
+
+                    widget.updateQuestArray(promptContent);
+
+                    Navigator.pop(context);
+
+                    final idsData = await answerCubit.quest(
+                        promptContent, widget.chatController, [uploadedFile!]);
+
+                    widget.updateIdsArray(idsData);
+                  }
+                },
                 text: '요청하기',
                 fontSize: 16.0,
                 textColor: const Color(0xffffffff),
-                backgroundColor: const Color(0xffb3b3b3),
-                borderColor: const Color(0xffb3b3b3))
+                backgroundColor: (uploadedFile != null &&
+                        promptController.text.isNotEmpty &&
+                        !isUploading)
+                    ? const Color(0xff000000)
+                    : const Color(0xffb3b3b3),
+                borderColor: (uploadedFile != null &&
+                        promptController.text.isNotEmpty &&
+                        !isUploading)
+                    ? const Color(0xff000000)
+                    : const Color(0xffb3b3b3))
           ])
         ]));
   }
