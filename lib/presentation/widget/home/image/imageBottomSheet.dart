@@ -144,13 +144,6 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
 
                         print(firstRes);
 
-                        // Response secondRes = await FileService()
-                        //     .getFileInWorking(
-                        //         firstRes.data["content"][0]['id']);
-
-                        // final List<int> intList = secondRes.data.codeUnits;
-                        // final test = GZipCodec().decode(intList);
-
                         setState(() {
                           isUploading = false;
                         });

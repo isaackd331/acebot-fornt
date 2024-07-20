@@ -9,9 +9,7 @@ class FileService {
         options: Options(headers: {"Content-Type": "multipart/form-data"}));
   }
 
-  getFileInWorking(int id) {
-    print(id);
-
-    return dio.get('/v1/files/$id');
+  getFiles() {
+    return dio.get('/v1/files');
   }
 }
