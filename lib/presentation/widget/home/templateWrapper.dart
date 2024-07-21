@@ -2,14 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:carousel_slider/carousel_slider.dart';
+import 'dart:io';
+import 'package:collection/collection.dart';
 
 import 'package:acebot_front/presentation/widget/home/template/chitchatTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/template/weatherTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/template/placeTemplate.dart';
+import 'package:acebot_front/presentation/widget/home/template/noteTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/recommendPromptSection.dart';
+import 'package:acebot_front/presentation/widget/home/record/sttResult.dart';
 
 import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
+
+import 'package:acebot_front/api/noteService.dart';
 
 class TemplateWrapper extends StatefulWidget {
   final String question;
@@ -21,6 +28,7 @@ class TemplateWrapper extends StatefulWidget {
   final Function setChatContent;
   final ScrollController answerListController;
   final Function setPromptToChat;
+  final List<dynamic> uploadedFiles;
 
   const TemplateWrapper(
       {super.key,
@@ -29,7 +37,8 @@ class TemplateWrapper extends StatefulWidget {
       required this.idsArray,
       required this.setChatContent,
       required this.answerListController,
-      required this.setPromptToChat});
+      required this.setPromptToChat,
+      required this.uploadedFiles});
 
   @override
   _TemplateWrapperState createState() => _TemplateWrapperState();
@@ -39,6 +48,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
   String? templateName = "";
   String mainParagraph = "";
   List<dynamic> recommendPrompts = [];
+  bool isOpenUploadedFiles = false;
 
   @override
   void initState() {
@@ -109,8 +119,141 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           recommendPrompts: recommendPrompts,
         );
 
+      case 'note':
+        return NoteTemplate(
+          // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+          // 1차 개발에서는 한 화면에 한 질문/답변만
+          // index: widget.index,
+          // questionId: widget.idsArray[widget.index]['questionId'],
+          // threadId: widget.idsArray[widget.index]['threadId'],
+          questionId: widget.idsArray['questionId'],
+          threadId: widget.idsArray['threadId'],
+          question: widget.question,
+          setChatContent: widget.setChatContent,
+          initMp: mainParagraph,
+          recommendPrompts: recommendPrompts,
+        );
+
       default:
         return Container();
+    }
+  }
+
+  Widget _uploadedFile(dynamic file) {
+    String filename;
+
+    if (file is File) {
+      filename = file.path.split('/').last;
+    } else {
+      filename = file;
+    }
+
+    String ellipsizeMiddle(String text, int maxLength) {
+      if (text.length <= maxLength) {
+        return text;
+      }
+      int ellipsisLength = 3;
+      int keepLength = (maxLength - ellipsisLength) ~/ 2;
+      return '${text.substring(0, keepLength)}...${text.substring(text.length - keepLength)}';
+    }
+
+    return GestureDetector(
+        onTap: () async {
+          if (file.runtimeType != File) {
+            final String fileId = filename.split('.')[0];
+
+            final res = await NoteService().getStt(fileId);
+
+            // TODO : 실제 secondRes 들어올 시 outputs 제대로 들어가는지 디버그
+            showModalBottomSheet(
+                context: context,
+                builder: (BuildContext context) {
+                  return SttResult(
+                    outputs: res.data['outputs'],
+                  );
+                });
+          } else {}
+        },
+        child: Container(
+          height: 44,
+          padding: const EdgeInsets.all(12),
+          decoration: const BoxDecoration(
+              color: Color(0xfff6f6f6),
+              borderRadius: BorderRadius.all(Radius.circular(4))),
+          child: Row(mainAxisSize: MainAxisSize.max, children: [
+            SizedBox(
+                width: 20,
+                height: 20,
+                child: Image.asset('assets/icons/icon_etc.png',
+                    scale: 4, fit: BoxFit.fill)),
+            const SizedBox(width: 6),
+            SizedBox(
+                width: 120,
+                child: Text(ellipsizeMiddle(filename, 16),
+                    style: const TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: Color(0xff000000)),
+                    overflow: TextOverflow.ellipsis)),
+          ]),
+        ));
+  }
+
+  Widget _uploadedFilesWrapper() {
+    if (widget.uploadedFiles.isNotEmpty) {
+      return Column(children: [
+        const SizedBox(height: 14),
+        GestureDetector(
+            onTap: () {
+              setState(() {
+                isOpenUploadedFiles = !isOpenUploadedFiles;
+              });
+            },
+            child: Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(children: [
+                    const Text('업로드 파일',
+                        style: TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xff4f4f4f))),
+                    const SizedBox(width: 6),
+                    Text('${widget.uploadedFiles.length}',
+                        style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Color(0xff4f4f4f)))
+                  ]),
+                  Image.asset(
+                      !isOpenUploadedFiles
+                          ? 'assets/icons/icon_arrow-downward.png'
+                          : 'assets/icons/icon_arrow-upward.png',
+                      scale: 4,
+                      color: const Color(0xff000000))
+                ])),
+        const SizedBox(height: 12),
+        isOpenUploadedFiles
+            ? Align(
+                alignment: Alignment.centerLeft,
+                child: CarouselSlider(
+                    items: widget.uploadedFiles.mapIndexed((idx, datum) {
+                      return Builder(builder: (BuildContext context) {
+                        return _uploadedFile(datum);
+                      });
+                    }).toList(),
+                    options: CarouselOptions(
+                        height: 44,
+                        viewportFraction: 0.5,
+                        pageSnapping: false,
+                        enableInfiniteScroll: false,
+                        disableCenter: false,
+                        padEnds: false)))
+            : Container()
+      ]);
+    } else {
+      return Container();
     }
   }
 
@@ -151,6 +294,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           mainParagraph = theState.answerJson.main_paragraph;
           recommendPrompts = theState.answerJson.recommend_prompt;
         });
+        print(mainParagraph);
 
         if (widget.answerListController.hasClients) {
           scrollToBottom(0);
@@ -212,6 +356,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
                 ))
               ],
             ),
+            _uploadedFilesWrapper(),
             const SizedBox(height: 60),
             Row(children: [
               Image.asset('assets/icons/icon_answer-start-symbol.png', scale: 3)
@@ -256,10 +401,12 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
                     widget.idsArray['threadId'] != null)
                 ? Column(children: [
                     _templateSelector(),
-                    RecommendPromptSection(
-                      recommendPrompts: recommendPrompts,
-                      setPromptToChat: widget.setPromptToChat,
-                    )
+                    templateName != 'note'
+                        ? RecommendPromptSection(
+                            recommendPrompts: recommendPrompts,
+                            setPromptToChat: widget.setPromptToChat,
+                          )
+                        : Container()
                   ])
                 : Container()
           ]));

@@ -14,7 +14,11 @@ import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSh
 
 class RecordingBottomSheet extends StatefulWidget {
   Function setUploadedFiles;
-  RecordingBottomSheet({super.key, required this.setUploadedFiles});
+  Function setIsRecordFile;
+  RecordingBottomSheet(
+      {super.key,
+      required this.setUploadedFiles,
+      required this.setIsRecordFile});
 
   @override
   _RecordingBottomSheetState createState() => _RecordingBottomSheetState();
@@ -125,6 +129,7 @@ class _RecordingBottomSheetState extends State<RecordingBottomSheet> {
             return FractionallySizedBox(
                 heightFactor: 0.7,
                 child: AfterRecordBottomSheet(
+                    setIsRecordFile: widget.setIsRecordFile,
                     recordedUrl: filePath,
                     setUploadedFiles: widget.setUploadedFiles));
           });

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
-import 'package:file_picker/file_picker.dart';
-import 'dart:io';
+import 'package:intl/intl.dart';
 
 import 'package:acebot_front/models/answerModel.dart';
 import 'package:acebot_front/bloc/answer/answerState.dart';
@@ -32,7 +31,7 @@ class AnswerCubit extends Cubit<AnswerState> {
   // 1차 개발에서는 한 화면에 한 질문/답변만
   // Future<dynamic> quest(String question, int idx) async {
   Future<dynamic> quest(String question, TextEditingController controller,
-      List<File>? uploadedFiles) async {
+      List<dynamic>? uploadedFiles, bool isVoiceRecorded) async {
     void setLoadedState(dynamic value) {
       try {
         // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
@@ -56,15 +55,44 @@ class AnswerCubit extends Cubit<AnswerState> {
       final receivedQuestion = question;
       controller.clear();
 
-      final firstRes =
-          await qRepo.createQuestion(receivedQuestion, uploadedFiles);
+      if (!isVoiceRecorded) {
+        final firstRes =
+            await qRepo.createQuestion(receivedQuestion, uploadedFiles);
 
-      final questionId = firstRes['questionId'];
-      final threadId = firstRes['threadId'];
+        final questionId = firstRes['questionId'];
+        final threadId = firstRes['threadId'];
 
-      await aRepo.createAnswer(questionId, setLoadedState);
+        await aRepo.createAnswer(questionId, setLoadedState);
 
-      return {"questionId": questionId, "threadId": threadId};
+        return {"questionId": questionId, "threadId": threadId};
+      } else {
+        final res =
+            await qRepo.createVoiceQuestion(receivedQuestion, uploadedFiles);
+
+        final dynamic tempJson = {
+          "result_code": res['result_code'],
+          "q_id": res['id'],
+          "question": receivedQuestion,
+          "template_name": "note",
+          "main_paragraph": res['outputs'][0],
+          "sub_paragraph": [],
+          "feedback": "0",
+          "date": DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+          "recommend_prompt": [],
+          "progress_state": "",
+          "progress_message": [],
+          "file_list": []
+        };
+
+        print(tempJson);
+
+        emit(LoadedState(answerJson: AnswerModel.fromJson(tempJson)));
+
+        return {
+          "questionId": DateTime.now().millisecondsSinceEpoch,
+          "threadId": DateTime.now().millisecondsSinceEpoch
+        };
+      }
     } on DioException catch (err) {
       // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
       // 1차 개발에서는 한 화면에 한 질문/답변만

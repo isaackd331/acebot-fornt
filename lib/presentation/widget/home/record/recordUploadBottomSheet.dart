@@ -7,8 +7,12 @@ import 'package:acebot_front/presentation/widget/home/record/afterRecordBottomSh
 
 class RecordUploadBottomSheet extends StatelessWidget {
   Function setUploadedFiles;
+  Function setIsRecordFile;
 
-  RecordUploadBottomSheet({super.key, required this.setUploadedFiles});
+  RecordUploadBottomSheet(
+      {super.key,
+      required this.setUploadedFiles,
+      required this.setIsRecordFile});
 
   @override
   Widget build(BuildContext context) {
@@ -50,6 +54,7 @@ class RecordUploadBottomSheet extends StatelessWidget {
                                     isScrollControlled: true,
                                     builder: (BuildContext context) {
                                       return RecordingBottomSheet(
+                                          setIsRecordFile: setIsRecordFile,
                                           setUploadedFiles: setUploadedFiles);
                                     });
                               },
@@ -100,6 +105,8 @@ class RecordUploadBottomSheet extends StatelessWidget {
                                         return FractionallySizedBox(
                                             heightFactor: 0.7,
                                             child: AfterRecordBottomSheet(
+                                                setIsRecordFile:
+                                                    setIsRecordFile,
                                                 recordedUrl: result.paths[0]!,
                                                 setUploadedFiles:
                                                     setUploadedFiles));

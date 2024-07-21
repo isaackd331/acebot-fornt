@@ -24,8 +24,9 @@ class ChattingWrapper extends StatefulWidget {
   final TextEditingController chatController;
   final FocusNode chatFocusNode;
   final int questArrayLength;
-  final List<File> uploadedFiles;
+  final List<dynamic> uploadedFiles;
   final Function setUploadedFiles;
+  final Function clearUploadedFiles;
 
   const ChattingWrapper(
       {super.key,
@@ -36,13 +37,15 @@ class ChattingWrapper extends StatefulWidget {
       required this.chatFocusNode,
       required this.questArrayLength,
       required this.uploadedFiles,
-      required this.setUploadedFiles});
+      required this.setUploadedFiles,
+      required this.clearUploadedFiles});
 
   @override
   _ChattingWrapperState createState() => _ChattingWrapperState();
 }
 
 class _ChattingWrapperState extends State<ChattingWrapper> {
+  bool isRecordFile = false;
   bool isUploadButtonClicked = false;
   final LayerLink _additionalBtnLink = LayerLink();
   final GlobalKey _additionalKey = GlobalKey();
@@ -62,6 +65,12 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
     }
 
     super.dispose();
+  }
+
+  void setIsRecordFile(bool value) {
+    setState(() {
+      isRecordFile = value;
+    });
   }
 
   Size _getAdditonalOverlayEntrySize() {
@@ -109,10 +118,16 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                   .request();
 
                               if (fileStatus.isGranted) {
+                                widget.clearUploadedFiles();
+                                setState(() {
+                                  isRecordFile = false;
+                                });
+
                                 showModalBottomSheet(
                                     context: context,
                                     builder: (BuildContext context) {
                                       return RecordUploadBottomSheet(
+                                          setIsRecordFile: setIsRecordFile,
                                           setUploadedFiles:
                                               widget.setUploadedFiles);
                                     });
@@ -173,6 +188,11 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                 .request();
 
                             if (fileStatus.isGranted) {
+                              widget.clearUploadedFiles();
+                              setState(() {
+                                isRecordFile = false;
+                              });
+
                               showModalBottomSheet(
                                   context: context,
                                   isScrollControlled: true,
@@ -281,6 +301,11 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                                     break;
                                   }
                                 }
+
+                                widget.clearUploadedFiles();
+                                setState(() {
+                                  isRecordFile = false;
+                                });
 
                                 for (PlatformFile file in files) {
                                   widget.setUploadedFiles([File(file.path!)]);
@@ -401,7 +426,14 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         final idsData = await answerCubit.quest(
                             widget.chatController.text,
                             widget.chatController,
-                            widget.uploadedFiles);
+                            widget.uploadedFiles,
+                            isRecordFile);
+
+                        if (mounted) {
+                          setState(() {
+                            isRecordFile = false;
+                          });
+                        }
 
                         widget.updateIdsArray(idsData);
                       }

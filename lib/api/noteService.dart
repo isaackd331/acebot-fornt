@@ -8,4 +8,8 @@ class NoteService {
         data: formData,
         options: Options(headers: {"Content-Type": "multipart/form-data"}));
   }
+
+  getStt(dynamic id) {
+    return dio.get('/v1/note?id=$id');
+  }
 }

@@ -262,8 +262,8 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
 
                     Navigator.pop(context);
 
-                    final idsData = await answerCubit.quest(
-                        promptContent, widget.chatController, [uploadedFile!]);
+                    final idsData = await answerCubit.quest(promptContent,
+                        widget.chatController, [uploadedFile!], false);
 
                     widget.updateIdsArray(idsData);
                   }

@@ -8,8 +8,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:ffmpeg_kit_flutter_audio/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_audio/return_code.dart';
 import 'package:path_provider/path_provider.dart' as path;
-import 'dart:io';
-import 'package:file_picker/file_picker.dart';
 
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
 import 'package:acebot_front/presentation/widget/home/record/sttResult.dart';
@@ -22,9 +20,13 @@ import 'package:acebot_front/api/noteService.dart';
 class AfterRecordBottomSheet extends StatefulWidget {
   String recordedUrl;
   Function setUploadedFiles;
+  Function setIsRecordFile;
 
   AfterRecordBottomSheet(
-      {super.key, required this.recordedUrl, required this.setUploadedFiles});
+      {super.key,
+      required this.recordedUrl,
+      required this.setUploadedFiles,
+      required this.setIsRecordFile});
 
   @override
   _AfterRecordBottomSheetState createState() => _AfterRecordBottomSheetState();
@@ -189,13 +191,15 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                                 filename: fileName)
                           });
 
-                          // final PlatformFile file =
-                          //     PlatformFile.fromMap({"data": converted});
-
-                          widget.setUploadedFiles([File(converted)]);
+                          final firstRes =
+                              await NoteService().uploadRecords(formData);
 
                           final secondRes =
-                              await NoteService().uploadRecords(formData);
+                              await NoteService().getStt(firstRes.data['id']);
+
+                          widget
+                              .setUploadedFiles(['${firstRes.data['id']}.txt']);
+                          widget.setIsRecordFile(true);
 
                           Navigator.pop(context);
 
@@ -203,16 +207,9 @@ class _AfterRecordBottomSheetState extends State<AfterRecordBottomSheet> {
                           showModalBottomSheet(
                               context: context,
                               builder: (BuildContext context) {
-                                return const SttResult(
-                                    // outputs: secondRes.data['outputs'],
-                                    outputs: [
-                                      "0|2005|4000|달밤입니다",
-                                      "1|5240|7080|사람이 살아가는 의의는",
-                                      "0|7080|8320|무엇일까요",
-                                      "1|9680|10720|행복이란 또",
-                                      "0|10720|11880|무엇일까요",
-                                      "1|13520|25520|5000년에 걸친 유태인의 지적 재산이 농축되어 있는 탈무드 탈모드 읽는 것이 아니라 배우는 데에 의미가 있는 책입니다"
-                                    ]);
+                                return SttResult(
+                                  outputs: secondRes.data['outputs'],
+                                );
                               });
                         }
                       } catch (err) {

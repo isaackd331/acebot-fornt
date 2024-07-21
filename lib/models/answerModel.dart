@@ -1,7 +1,7 @@
 class AnswerModel {
   final int? result_code;
   final String? description;
-  final int? q_id;
+  final dynamic q_id;
   final String? question;
   final String? template_name;
   final String main_paragraph;
@@ -31,7 +31,7 @@ class AnswerModel {
   factory AnswerModel.fromJson(Map<String, dynamic> json) => AnswerModel(
       result_code: json['result_code'] as int?,
       description: json['description'] as String?,
-      q_id: json['q_id'] as int?,
+      q_id: json['q_id'] as dynamic,
       question: json['question'] as String?,
       template_name: json['template_name'] as String?,
       main_paragraph: json['main_paragraph'] as String,

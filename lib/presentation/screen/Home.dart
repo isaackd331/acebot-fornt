@@ -1,7 +1,6 @@
 /// 홈 페이지
 library;
 
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -13,7 +12,6 @@ import 'package:acebot_front/presentation/widget/home/promptCarousel.dart';
 import 'package:acebot_front/presentation/widget/home/chattingWrapper.dart';
 import 'package:acebot_front/presentation/widget/home/templateWrapper.dart';
 import 'package:acebot_front/presentation/widget/common/baseAppBar.dart';
-import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 
 import 'package:acebot_front/bloc/user/selfState.dart';
@@ -42,7 +40,7 @@ class _HomeState extends State<Home> {
   String questArray = '';
   dynamic idsArray = {};
   ScrollController answerListController = ScrollController();
-  List<File> uploadedFiles = [];
+  List<dynamic> uploadedFiles = [];
   ScrollController fileScrollController = ScrollController();
 
   @override
@@ -76,13 +74,19 @@ class _HomeState extends State<Home> {
     chatController.text = value;
   }
 
-  void setUploadedFiles(List<File> value) {
-    List<File> copiedList = List.from(uploadedFiles);
+  void setUploadedFiles(List<dynamic> value) {
+    List<dynamic> copiedList = List.from(uploadedFiles);
 
     copiedList = [...copiedList, ...value];
 
     setState(() {
       uploadedFiles = copiedList.toSet().toList();
+    });
+  }
+
+  void clearUploadedFiles() {
+    setState(() {
+      uploadedFiles = [];
     });
   }
 
@@ -114,8 +118,27 @@ class _HomeState extends State<Home> {
   }
 
   // Uploaded Files
-  Widget _uploadedFiles(File file) {
-    String filename = file.path.split('/').last;
+  Widget _uploadedFiles(dynamic file) {
+    String filename;
+    print('======fuckyou');
+    print(file.runtimeType);
+
+    if (file is File) {
+      print('hi');
+      filename = file.path.split('/').last;
+    } else {
+      filename = file;
+    }
+
+    String ellipsizeMiddle(String text, int maxLength) {
+      if (text.length <= maxLength) {
+        return text;
+      }
+      int ellipsisLength = 3;
+      int keepLength = (maxLength - ellipsisLength) ~/ 2;
+
+      return '${text.substring(0, keepLength)}...${text.substring(text.length - keepLength)}';
+    }
 
     return Container(
         width: 210,
@@ -139,16 +162,17 @@ class _HomeState extends State<Home> {
                     child: Image.asset('assets/icons/icon_etc.png',
                         scale: 4, fit: BoxFit.fill)),
                 const SizedBox(width: 6),
-                Text(filename,
-                    style: const TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xff000000)),
-                    overflow: TextOverflow.ellipsis)
+                SizedBox(
+                    width: 120,
+                    child: Text(ellipsizeMiddle(filename, 16),
+                        style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xff000000))))
               ]),
               IconButton(
                   onPressed: () {
-                    List<File> tempList = List.from(uploadedFiles);
+                    List<dynamic> tempList = List.from(uploadedFiles);
 
                     tempList.remove(file);
 
@@ -274,6 +298,7 @@ class _HomeState extends State<Home> {
                               questArrayLength: questArray.length,
                               uploadedFiles: uploadedFiles,
                               setUploadedFiles: setUploadedFiles,
+                              clearUploadedFiles: clearUploadedFiles,
                             )
                           ]),
                       Positioned(
@@ -287,13 +312,10 @@ class _HomeState extends State<Home> {
                           child: uploadedFiles.isNotEmpty
                               ? IconButton(
                                   onPressed: () {
-                                    print('oh hi');
                                     fileScrollController.animateTo(100,
                                         duration:
                                             const Duration(milliseconds: 2),
                                         curve: Curves.ease);
-
-                                    print(fileScrollController.offset);
                                   },
                                   icon: Container(
                                       width: 24,
@@ -359,11 +381,13 @@ class _HomeState extends State<Home> {
           //     .toList()
           children: [
             TemplateWrapper(
-                question: questArray,
-                idsArray: idsArray,
-                setChatContent: setChatContent,
-                answerListController: answerListController,
-                setPromptToChat: setPromptToChat)
+              question: questArray,
+              idsArray: idsArray,
+              setChatContent: setChatContent,
+              answerListController: answerListController,
+              setPromptToChat: setPromptToChat,
+              uploadedFiles: uploadedFiles,
+            )
           ]),
       Container(
           padding:
@@ -377,6 +401,7 @@ class _HomeState extends State<Home> {
             questArrayLength: questArray.length,
             uploadedFiles: uploadedFiles,
             setUploadedFiles: setUploadedFiles,
+            clearUploadedFiles: clearUploadedFiles,
           ))
     ]);
   }
