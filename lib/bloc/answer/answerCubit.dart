@@ -55,9 +55,45 @@ class AnswerCubit extends Cubit<AnswerState> {
       final receivedQuestion = question;
       controller.clear();
 
-      if (!isVoiceRecorded) {
-        final firstRes =
-            await qRepo.createQuestion(receivedQuestion, uploadedFiles);
+      if (uploadedFiles!.isNotEmpty) {
+        if (!isVoiceRecorded) {
+          final firstRes =
+              await qRepo.createQuestion(receivedQuestion, uploadedFiles);
+
+          final questionId = firstRes['questionId'];
+          final threadId = firstRes['threadId'];
+
+          await aRepo.createAnswer(questionId, setLoadedState);
+
+          return {"questionId": questionId, "threadId": threadId};
+        } else {
+          final res =
+              await qRepo.createVoiceQuestion(receivedQuestion, uploadedFiles);
+
+          final dynamic tempJson = {
+            "result_code": res['result_code'],
+            "q_id": res['id'],
+            "question": receivedQuestion,
+            "template_name": "note",
+            "main_paragraph": res['outputs'][0],
+            "sub_paragraph": [],
+            "feedback": "0",
+            "date": DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
+            "recommend_prompt": [],
+            "progress_state": "",
+            "progress_message": [],
+            "file_list": []
+          };
+
+          emit(LoadedState(answerJson: AnswerModel.fromJson(tempJson)));
+
+          return {
+            "questionId": DateTime.now().millisecondsSinceEpoch,
+            "threadId": DateTime.now().millisecondsSinceEpoch
+          };
+        }
+      } else {
+        final firstRes = await qRepo.createQuestion(receivedQuestion, []);
 
         final questionId = firstRes['questionId'];
         final threadId = firstRes['threadId'];
@@ -65,33 +101,6 @@ class AnswerCubit extends Cubit<AnswerState> {
         await aRepo.createAnswer(questionId, setLoadedState);
 
         return {"questionId": questionId, "threadId": threadId};
-      } else {
-        final res =
-            await qRepo.createVoiceQuestion(receivedQuestion, uploadedFiles);
-
-        final dynamic tempJson = {
-          "result_code": res['result_code'],
-          "q_id": res['id'],
-          "question": receivedQuestion,
-          "template_name": "note",
-          "main_paragraph": res['outputs'][0],
-          "sub_paragraph": [],
-          "feedback": "0",
-          "date": DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now()),
-          "recommend_prompt": [],
-          "progress_state": "",
-          "progress_message": [],
-          "file_list": []
-        };
-
-        print(tempJson);
-
-        emit(LoadedState(answerJson: AnswerModel.fromJson(tempJson)));
-
-        return {
-          "questionId": DateTime.now().millisecondsSinceEpoch,
-          "threadId": DateTime.now().millisecondsSinceEpoch
-        };
       }
     } on DioException catch (err) {
       // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.

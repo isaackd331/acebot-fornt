@@ -144,6 +144,8 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
 
     if (file is File) {
       filename = file.path.split('/').last;
+    } else if (file is Map<String, dynamic>) {
+      filename = file['file_name'];
     } else {
       filename = file;
     }
@@ -295,6 +297,7 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           recommendPrompts = theState.answerJson.recommend_prompt;
         });
         print(mainParagraph);
+        print(templateName);
 
         if (widget.answerListController.hasClients) {
           scrollToBottom(0);

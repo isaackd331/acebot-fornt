@@ -437,25 +437,33 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         // 1차 개발에서는 한 화면에 한 질문/답변만
                         // final idsData = answerCubit.quest(
                         //     chatController.text, widget.questArrayLength);
-                        final Future idsData;
+                        final Map<String, dynamic> idsData;
 
-                        if (widget.uploadedFiles[0] is! int) {
-                          idsData = await answerCubit.quest(
-                              widget.chatController.text,
-                              widget.chatController,
-                              widget.uploadedFiles,
-                              isRecordFile);
+                        if (widget.uploadedFiles.isNotEmpty) {
+                          if (widget.uploadedFiles[0] is! int) {
+                            idsData = await answerCubit.quest(
+                                widget.chatController.text,
+                                widget.chatController,
+                                widget.uploadedFiles,
+                                isRecordFile);
+                          } else {
+                            List<dynamic> tempList =
+                                List.from(widget.uploadedFiles);
+
+                            tempList =
+                                tempList.map((item) => item['id']).toList();
+
+                            idsData = await answerCubit.quest(
+                                widget.chatController.text,
+                                widget.chatController,
+                                tempList,
+                                false);
+                          }
                         } else {
-                          List<dynamic> tempList =
-                              List.from(widget.uploadedFiles);
-
-                          tempList =
-                              tempList.map((item) => item['id']).toList();
-
                           idsData = await answerCubit.quest(
                               widget.chatController.text,
                               widget.chatController,
-                              tempList,
+                              [],
                               false);
                         }
 

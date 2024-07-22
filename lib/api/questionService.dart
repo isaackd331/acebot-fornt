@@ -8,7 +8,7 @@ class QuestionService {
     FormData formData = FormData.fromMap({
       "question": question,
     });
-    if (files != null) {
+    if (files != null && files.isNotEmpty) {
       if (files[0] is File) {
         formData = FormData.fromMap({
           "question": question,
