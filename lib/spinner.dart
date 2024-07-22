@@ -16,6 +16,14 @@ class _SpinnerState extends State<Spinner> {
 
   @override
   Widget build(context) {
-    return LottieBuilder.asset('assets/lottie/doc_upload.json');
+    return Center(
+        child: Container(
+            width: 100,
+            height: 100,
+            decoration: const BoxDecoration(
+              color: Color(0xffffffff),
+              borderRadius: BorderRadius.all(Radius.circular(4)),
+            ),
+            child: LottieBuilder.asset('assets/lottie/doc_upload.json')));
   }
 }
