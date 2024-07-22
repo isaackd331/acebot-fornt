@@ -1,6 +1,5 @@
-/**
- * 로그인 페이지 로그인 폼
- */
+/// 로그인 페이지 로그인 폼
+library;
 
 import 'package:flutter/material.dart';
 
@@ -68,7 +67,7 @@ class _LoginFormState extends State<LoginForm> {
         child: Column(children: [
           // 아이디 Input 영역
           Column(children: [
-            Row(children: [
+            const Row(children: [
               Expanded(
                   child: Text('아이디',
                       style: TextStyle(
@@ -76,12 +75,12 @@ class _LoginFormState extends State<LoginForm> {
                           fontWeight: FontWeight.w500,
                           color: Color(0xff444444))))
             ]),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextField(
               focusNode: idFocusNode,
               controller: idController,
               onChanged: (value) => {widget.setUserId(value)},
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
                   color: Color(0xff000000)),
@@ -94,27 +93,27 @@ class _LoginFormState extends State<LoginForm> {
                               widget.setUserId("");
                             });
                           },
-                          icon:
-                              Icon(Icons.clear, color: const Color(0xff000000)),
+                          icon: Image.asset('assets/icons/icon_clear.png',
+                              scale: 4),
                           iconSize: 24.0,
                           padding: const EdgeInsets.all(0))
                       : null,
                   hintText: idPlaceholder,
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff939393)),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8.0, vertical: 11.5),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 11.5),
                   filled: true,
-                  fillColor: Color(0xfff4f4f4),
+                  fillColor: const Color(0xfff4f4f4),
                   border: InputBorder.none),
             )
           ]),
-          SizedBox(height: 28.0),
+          const SizedBox(height: 28.0),
           // 비밀번호 Input 영역
           Column(children: [
-            Row(children: [
+            const Row(children: [
               Expanded(
                   child: Text('비밀번호',
                       style: TextStyle(
@@ -122,7 +121,7 @@ class _LoginFormState extends State<LoginForm> {
                           fontWeight: FontWeight.w500,
                           color: Color(0xff444444))))
             ]),
-            SizedBox(height: 12),
+            const SizedBox(height: 12),
             TextField(
               focusNode: passwordFocusNode,
               controller: passwordController,
@@ -130,7 +129,7 @@ class _LoginFormState extends State<LoginForm> {
               obscureText: passwordInvisible,
               enableSuggestions: false,
               autocorrect: false,
-              style: TextStyle(
+              style: const TextStyle(
                   fontSize: 14.0,
                   fontWeight: FontWeight.w500,
                   color: Color(0xff000000)),
@@ -147,8 +146,9 @@ class _LoginFormState extends State<LoginForm> {
                                       widget.setUserPassword("");
                                     });
                                   },
-                                  icon: Icon(Icons.clear,
-                                      color: const Color(0xff000000)),
+                                  icon: Image.asset(
+                                      'assets/icons/icon_clear.png',
+                                      scale: 4),
                                   iconSize: 24.0,
                                   padding: const EdgeInsets.all(0)),
                               IconButton(
@@ -179,14 +179,14 @@ class _LoginFormState extends State<LoginForm> {
                           iconSize: 24.0,
                           padding: const EdgeInsets.all(0)),
                   hintText: passwordPlaceholder,
-                  hintStyle: TextStyle(
+                  hintStyle: const TextStyle(
                       fontSize: 14.0,
                       fontWeight: FontWeight.w500,
                       color: Color(0xff939393)),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 8.0, vertical: 11.5),
+                  contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8.0, vertical: 11.5),
                   filled: true,
-                  fillColor: Color(0xfff4f4f4),
+                  fillColor: const Color(0xfff4f4f4),
                   border: InputBorder.none),
             )
           ]),

@@ -134,8 +134,8 @@ class _ThirdProgressState extends State<ThirdProgress> {
                                     isNameInvalid = false;
                                   });
                                 },
-                                icon: const Icon(Icons.clear,
-                                    color: Color(0xff000000)),
+                                icon: Image.asset('assets/icons/icon_clear.png',
+                                    scale: 4),
                                 iconSize: 24.0,
                                 padding: const EdgeInsets.all(0))
                             : null,

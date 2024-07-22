@@ -1,6 +1,5 @@
-/**
- * 로그인 실패 시 에러 메세지 출력
- */
+/// 로그인 실패 시 에러 메세지 출력
+library;
 
 import 'package:flutter/material.dart';
 
@@ -51,14 +50,14 @@ class _LoginErrorMessageState extends State<LoginErrorMessage> {
   Widget build(BuildContext context) {
     return widget.loginErrorStatus.isEmpty
         ? Container(height: 32.0)
-        : Container(
+        : SizedBox(
             height: 32.0,
             child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Icon(Icons.clear, color: const Color(0xffE72929), size: 16.0),
-              SizedBox(width: 3.0),
+              const Icon(Icons.clear, color: Color(0xffE72929), size: 16.0),
+              const SizedBox(width: 3.0),
               Text(errorMessage,
-                  style: TextStyle(
-                      color: const Color(0xffe72929),
+                  style: const TextStyle(
+                      color: Color(0xffe72929),
                       fontWeight: FontWeight.w400,
                       fontSize: 12.0))
             ]));
