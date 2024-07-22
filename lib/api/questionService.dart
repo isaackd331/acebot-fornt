@@ -24,7 +24,9 @@ class QuestionService {
 
     return dio.post('/v1/questions',
         data: formData,
-        options: Options(headers: {"Content-Type": "multipart/form-data"}));
+        options: Options(
+            headers: {"Content-Type": "multipart/form-data"},
+            extra: {"skipSpinner": true}));
   }
 
   postVoiceRecordedQuest(String question, List<dynamic>? voicesList) async {
@@ -32,7 +34,8 @@ class QuestionService {
     tempList = tempList.map((item) => item.split('.')[0]).toList();
 
     return dio.post('/v1/note/question',
-        data: {"question": question, "content": tempList});
+        data: {"question": question, "content": tempList},
+        options: Options(extra: {"skipSpinner": true}));
   }
 
   feedback(Map<String, bool?> feedback, int questionId) {

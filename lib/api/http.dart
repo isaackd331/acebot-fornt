@@ -37,7 +37,9 @@ class DioInterceptor extends Interceptor {
       options.headers['Authorization'] = 'Bearer ${state.authJson.accessToken}';
     }
 
-    requestBloc.add(RequestEvent.start);
+    if (options.extra['skipSpinner'] != true) {
+      requestBloc.add(RequestEvent.start);
+    }
 
     return super.onRequest(options, handler);
   }
@@ -45,7 +47,9 @@ class DioInterceptor extends Interceptor {
   // response interceptor
   @override
   void onResponse(Response response, ResponseInterceptorHandler handler) {
-    requestBloc.add(RequestEvent.complete);
+    if (response.requestOptions.extra['skipSpinner'] != true) {
+      requestBloc.add(RequestEvent.complete);
+    }
 
     return super.onResponse(response, handler);
   }
@@ -53,7 +57,9 @@ class DioInterceptor extends Interceptor {
   // error interceptor
   @override
   Future onError(DioException err, ErrorInterceptorHandler handler) async {
-    requestBloc.add(RequestEvent.error);
+    if (err.requestOptions.extra['skipSpinner'] != true) {
+      requestBloc.add(RequestEvent.error);
+    }
 
     return super.onError(err, handler);
   }

@@ -373,6 +373,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
               child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 IconButton(
                     onPressed: () {
+                      widget.chatFocusNode.unfocus();
+
                       setState(() {
                         isUploadButtonClicked = false;
                       });
@@ -423,6 +425,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                 ))),
                 IconButton(
                     onPressed: () async {
+                      widget.chatFocusNode.unfocus();
+
                       if (widget.chatController.text.isNotEmpty) {
                         final answerCubit =
                             BlocProvider.of<AnswerCubit>(context);
@@ -494,6 +498,8 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   borderRadius: BorderRadius.circular(3)),
               child: IconButton(
                 onPressed: () {
+                  widget.chatFocusNode.unfocus();
+
                   OverlayState overlayState = Overlay.of(context);
 
                   if (!additionalBoxOverlayEntry.mounted) {

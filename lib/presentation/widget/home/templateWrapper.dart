@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'dart:io';
 import 'package:collection/collection.dart';
+import 'package:lottie/lottie.dart';
 
 import 'package:acebot_front/presentation/widget/home/template/chitchatTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/template/weatherTemplate.dart';
@@ -296,8 +297,6 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           mainParagraph = theState.answerJson.main_paragraph;
           recommendPrompts = theState.answerJson.recommend_prompt;
         });
-        print(mainParagraph);
-        print(templateName);
 
         if (widget.answerListController.hasClients) {
           scrollToBottom(0);
@@ -361,9 +360,10 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
             ),
             _uploadedFilesWrapper(),
             const SizedBox(height: 60),
-            Row(children: [
-              Image.asset('assets/icons/icon_answer-start-symbol.png', scale: 3)
-            ]),
+            Align(
+                alignment: Alignment.centerLeft,
+                child: LottieBuilder.asset('assets/lottie/default_loading.json',
+                    repeat: theState is! LoadedState, width: 14, height: 14)),
             const SizedBox(height: 20),
             Row(children: [
               Image.asset('assets/icons/icon_exaone-logo.png', scale: 3),
@@ -379,11 +379,12 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
                     Expanded(
                         child: Container(
                             margin: const EdgeInsets.only(top: 20),
-                            child: const Text('Loading...',
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                    color: Color.fromARGB(255, 51, 21, 21)))))
+                            child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: LottieBuilder.asset(
+                                    'assets/lottie/chat.json',
+                                    height: 40,
+                                    width: 100))))
                   ])
                 : Container(),
             theState is ErrorState

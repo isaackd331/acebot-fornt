@@ -62,6 +62,8 @@ class _AdditionalActionState extends State<AdditionalAction> {
               feedback = true;
             });
           } else {
+            await AnswerService().feedback(widget.questionId, null);
+
             setState(() {
               feedback = null;
             });
@@ -85,6 +87,8 @@ class _AdditionalActionState extends State<AdditionalAction> {
               feedback = false;
             });
           } else {
+            await AnswerService().feedback(widget.questionId, null);
+
             setState(() {
               feedback = null;
             });

@@ -41,8 +41,6 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
     setState(() {
       mainParagraph = widget.initMp;
     });
-
-    print('oh hiiii');
   }
 
   @override

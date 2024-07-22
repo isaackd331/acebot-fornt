@@ -414,6 +414,8 @@ class _HomeState extends State<Home> {
         actions: [
           IconButton(
             onPressed: () {
+              chatFocusNode.unfocus();
+
               if (questArray.isNotEmpty) {
                 chatController.clear();
                 setState(() {
@@ -439,7 +441,9 @@ class _HomeState extends State<Home> {
             padding: const EdgeInsets.all(0),
           ),
           IconButton(
-            onPressed: () {},
+            onPressed: () {
+              chatFocusNode.unfocus();
+            },
             icon: Image.asset('assets/icons/icon_streamline.png', scale: 4),
             iconSize: 16,
             padding: const EdgeInsets.all(0),
@@ -447,6 +451,8 @@ class _HomeState extends State<Home> {
         ],
         leading: IconButton(
             onPressed: () {
+              chatFocusNode.unfocus();
+
               context.go('/history');
             },
             icon: Image.asset('assets/icons/icon_history.png'),

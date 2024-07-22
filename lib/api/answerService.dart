@@ -4,7 +4,8 @@ import 'package:dio/dio.dart';
 class AnswerService {
   getAnswer(int questionId) {
     return dio.get('/v1/answers/$questionId',
-        options: Options(responseType: ResponseType.stream));
+        options: Options(
+            responseType: ResponseType.stream, extra: {"skipSpinner": true}));
   }
 
   feedback(int questionId, bool? value) {
