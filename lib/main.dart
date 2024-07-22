@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'package:acebot_front/spinner.dart';
+
 import 'package:acebot_front/api/http.dart';
 import 'package:acebot_front/appRouter.dart';
 import 'package:acebot_front/bloc/eventsObserver.dart';
@@ -20,6 +22,7 @@ import 'package:acebot_front/bloc/prompt/promptCubit.dart';
 import 'package:acebot_front/repository/promptRepository.dart';
 import 'package:acebot_front/bloc/project/projectCubit.dart';
 import 'package:acebot_front/repository/projectRepository.dart';
+import 'package:acebot_front/bloc/request/requestBloc.dart';
 
 void main() async {
   /**
@@ -37,8 +40,11 @@ void main() async {
   final promptCubit = PromptCubit(repo: PromptRepository());
   final projectCubit = ProjectCubit(repo: ProjectRepository());
 
+  // bloc
+  final requestBloc = RequestBloc();
+
   // Dio 인스턴스 생성
-  configureDio(authCubit);
+  configureDio(authCubit, requestBloc);
 
   runApp(MultiBlocProvider(providers: [
     BlocProvider(create: (_) => authCubit),
@@ -47,7 +53,8 @@ void main() async {
     BlocProvider(create: (_) => threadCubit),
     BlocProvider(create: (_) => answerCubit),
     BlocProvider(create: (_) => promptCubit),
-    BlocProvider(create: (_) => projectCubit)
+    BlocProvider(create: (_) => projectCubit),
+    BlocProvider(create: (_) => requestBloc)
   ], child: const AppView()));
 
   Bloc.observer = EventsObserver();
@@ -59,7 +66,20 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      builder: FToastBuilder(),
+      builder: (context, child) {
+        return FToastBuilder()(context, BlocBuilder<RequestBloc, RequestState>(
+            builder: (context, requestState) {
+          if (requestState.isLoading) {
+            return Stack(children: [
+              child!,
+              Container(
+                  color: Colors.black54, child: const Center(child: Spinner()))
+            ]);
+          }
+
+          return child!;
+        }));
+      },
       routerConfig: AppRouter.router,
       theme: ThemeData(
         fontFamily: "Pretendard",

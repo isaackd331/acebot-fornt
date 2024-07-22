@@ -22,6 +22,7 @@ class _myDataBottomSheetState extends State<MyDataBottomSheet> {
   List<dynamic> showingFiles = [];
   String tabMode = '';
   TextEditingController keywordController = TextEditingController();
+  FocusNode keywordFocusNode = FocusNode();
   String curText = '';
   String keyword = '';
   bool deleteMode = false;
@@ -49,6 +50,8 @@ class _myDataBottomSheetState extends State<MyDataBottomSheet> {
 
   // filter
   void _filterByTab(String extensions) {
+    keywordFocusNode.unfocus();
+
     setState(() {
       selected = [];
     });
@@ -178,6 +181,8 @@ class _myDataBottomSheetState extends State<MyDataBottomSheet> {
 
     return GestureDetector(
         onTap: () {
+          keywordFocusNode.unfocus();
+
           List<dynamic> tempList = List.from(selected);
           if (selected.contains(file)) {
             tempList.remove(file);
@@ -366,6 +371,7 @@ class _myDataBottomSheetState extends State<MyDataBottomSheet> {
                             curText = value;
                           });
                         },
+                        focusNode: keywordFocusNode,
                         controller: keywordController,
                         style: const TextStyle(
                             fontSize: 14.0,
