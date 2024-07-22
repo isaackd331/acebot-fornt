@@ -224,11 +224,13 @@ class _SecondProgressState extends State<SecondProgress> {
                                       passwordInvisible = !passwordInvisible;
                                     });
                                   },
-                                  icon: Icon(
-                                      passwordInvisible
-                                          ? Icons.visibility_outlined
-                                          : Icons.visibility_off_outlined,
-                                      color: const Color(0xff000000)),
+                                  icon: passwordInvisible
+                                      ? Image.asset(
+                                          'assets/icons/icon_pw-show.png',
+                                          scale: 4)
+                                      : Image.asset(
+                                          'assets/icons/icon_pw-hide.png',
+                                          scale: 4),
                                   iconSize: 24.0,
                                   padding: const EdgeInsets.all(0))
                             ])
@@ -238,12 +240,11 @@ class _SecondProgressState extends State<SecondProgress> {
                               passwordInvisible = !passwordInvisible;
                             });
                           },
-                          icon: Icon(
-                            passwordInvisible
-                                ? Icons.visibility_outlined
-                                : Icons.visibility_off_outlined,
-                            color: const Color(0xff000000),
-                          ),
+                          icon: passwordInvisible
+                              ? Image.asset('assets/icons/icon_pw-show.png',
+                                  scale: 4)
+                              : Image.asset('assets/icons/icon_pw-hide.png',
+                                  scale: 4),
                           iconSize: 24.0,
                           padding: const EdgeInsets.all(0)),
                   hintText: passwordPlaceholder,
@@ -310,11 +311,13 @@ class _SecondProgressState extends State<SecondProgress> {
                                           !checkPasswordInvisible;
                                     });
                                   },
-                                  icon: Icon(
-                                      checkPasswordInvisible
-                                          ? Icons.visibility_outlined
-                                          : Icons.visibility_off_outlined,
-                                      color: const Color(0xff000000)),
+                                  icon: passwordInvisible
+                                      ? Image.asset(
+                                          'assets/icons/icon_pw-show.png',
+                                          scale: 4)
+                                      : Image.asset(
+                                          'assets/icons/icon_pw-hide.png',
+                                          scale: 4),
                                   iconSize: 24.0,
                                   padding: const EdgeInsets.all(0))
                             ])
@@ -324,11 +327,11 @@ class _SecondProgressState extends State<SecondProgress> {
                               checkPasswordInvisible = !checkPasswordInvisible;
                             });
                           },
-                          icon: Icon(
-                              checkPasswordInvisible
-                                  ? Icons.visibility_outlined
-                                  : Icons.visibility_off_outlined,
-                              color: const Color(0xff000000)),
+                          icon: passwordInvisible
+                              ? Image.asset('assets/icons/icon_pw-show.png',
+                                  scale: 4)
+                              : Image.asset('assets/icons/icon_pw-hide.png',
+                                  scale: 4),
                           iconSize: 24.0,
                           padding: const EdgeInsets.all(0)),
                   hintText: checkPasswordPlaceholder,
