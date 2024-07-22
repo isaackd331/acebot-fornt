@@ -12,6 +12,7 @@ import 'package:acebot_front/presentation/widget/common/noScrollbar.dart';
 import 'package:acebot_front/presentation/widget/common/baseToast.dart';
 import 'package:acebot_front/presentation/widget/home/record/recordUploadBottomSheet.dart';
 import 'package:acebot_front/presentation/widget/home/image/imageBottomSheet.dart';
+import 'package:acebot_front/presentation/widget/home/myDataBottomSheet.dart';
 
 import 'package:acebot_front/api/fileService.dart';
 
@@ -371,7 +372,20 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                   borderRadius: BorderRadius.circular(3)),
               child: Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
                 IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      setState(() {
+                        isUploadButtonClicked = false;
+                      });
+
+                      showModalBottomSheet(
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return MyDataBottomSheet(
+                              setUploadedFiles: widget.setUploadedFiles,
+                            );
+                          });
+                    },
                     icon: SizedBox(
                       width: 24,
                       height: 24,

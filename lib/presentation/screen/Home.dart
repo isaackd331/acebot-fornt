@@ -120,12 +120,11 @@ class _HomeState extends State<Home> {
   // Uploaded Files
   Widget _uploadedFiles(dynamic file) {
     String filename;
-    print('======fuckyou');
-    print(file.runtimeType);
 
     if (file is File) {
-      print('hi');
       filename = file.path.split('/').last;
+    } else if (file is Map<String, dynamic>) {
+      filename = file['file_name'];
     } else {
       filename = file;
     }
