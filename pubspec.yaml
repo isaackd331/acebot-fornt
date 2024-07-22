@@ -125,6 +125,7 @@ flutter:
     - assets/icons/icon_newchat-enabled.png
     - assets/icons/icon_square-check-active.png
     - assets/icons/icon_square-check-inactive.png
+    - assets/icons/icon_clear.png
 
   # images
     # 원래는 아이콘 폴더에 들어가야하나 만들어진 위젯을 재활용하기 위해 images 폴더에 삽입

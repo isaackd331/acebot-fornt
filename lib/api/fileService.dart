@@ -12,4 +12,10 @@ class FileService {
   getFiles() {
     return dio.get('/v1/files');
   }
+
+  deleteFiles(List<dynamic> files) {
+    String ids = files.map((item) => item['id']).join(',');
+
+    return dio.delete('/v1/files?file_ids=$ids');
+  }
 }
