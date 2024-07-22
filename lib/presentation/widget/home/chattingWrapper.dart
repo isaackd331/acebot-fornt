@@ -437,11 +437,27 @@ class _ChattingWrapperState extends State<ChattingWrapper> {
                         // 1차 개발에서는 한 화면에 한 질문/답변만
                         // final idsData = answerCubit.quest(
                         //     chatController.text, widget.questArrayLength);
-                        final idsData = await answerCubit.quest(
-                            widget.chatController.text,
-                            widget.chatController,
-                            widget.uploadedFiles,
-                            isRecordFile);
+                        final Future idsData;
+
+                        if (widget.uploadedFiles[0] is! int) {
+                          idsData = await answerCubit.quest(
+                              widget.chatController.text,
+                              widget.chatController,
+                              widget.uploadedFiles,
+                              isRecordFile);
+                        } else {
+                          List<dynamic> tempList =
+                              List.from(widget.uploadedFiles);
+
+                          tempList =
+                              tempList.map((item) => item['id']).toList();
+
+                          idsData = await answerCubit.quest(
+                              widget.chatController.text,
+                              widget.chatController,
+                              tempList,
+                              false);
+                        }
 
                         if (mounted) {
                           setState(() {

@@ -7,13 +7,20 @@ class QuestionService {
   postInitialQuestion(String question, List<dynamic>? files) async {
     FormData formData = FormData.fromMap({
       "question": question,
-      "files": files != null
-          ? await Future.wait(files
+    });
+    if (files != null) {
+      if (files[0] is File) {
+        formData = FormData.fromMap({
+          "question": question,
+          "files": await Future.wait(files
               .map((file) => MultipartFile.fromFile(file.path,
                   filename: file.path.split('/').last))
               .toList())
-          : []
-    });
+        });
+      } else if (files[0] is int) {
+        formData = FormData.fromMap({"question": question, "fileIds": files});
+      }
+    }
 
     return dio.post('/v1/questions',
         data: formData,
