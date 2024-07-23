@@ -61,6 +61,28 @@ class DioInterceptor extends Interceptor {
       requestBloc.add(RequestEvent.error);
     }
 
-    return super.onError(err, handler);
+    final state = authCubit.state;
+
+    if (err.response?.statusCode == 401 && state is LoadedState) {
+      // Refresh token
+      try {
+        await authCubit.refresh(
+            state.authJson.email!, state.authJson.refreshToken!);
+
+        // Update the original request with new token
+        final newAccessToken =
+            (authCubit.state as LoadedState).authJson.accessToken;
+        err.requestOptions.headers['Authorization'] = 'Bearer $newAccessToken';
+
+        // Retry the original request
+        final response = await dio.fetch(err.requestOptions);
+        return handler.resolve(response);
+      } catch (e) {
+        // Handle token refresh failure
+        return handler.next(err);
+      }
+    } else {
+      return super.onError(err, handler);
+    }
   }
 }

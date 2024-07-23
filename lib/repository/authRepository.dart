@@ -10,4 +10,15 @@ class AuthRepository {
 
     return res.data;
   }
+
+  Future<Map<String, dynamic>> refreshAuthentication(
+      userId, refreshToken) async {
+    Response res = await AuthService().refresh(userId, refreshToken);
+
+    return res.data;
+  }
+
+  void sessionOut() async {
+    await AuthService().logout();
+  }
 }

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/spinner.dart';
+import 'package:acebot_front/presentation/widget/common/baseDialog.dart';
 
 import 'package:acebot_front/api/http.dart';
 import 'package:acebot_front/appRouter.dart';
 import 'package:acebot_front/bloc/eventsObserver.dart';
 
 import 'package:acebot_front/bloc/auth/authCubit.dart';
+import 'package:acebot_front/bloc/auth/authState.dart';
 import 'package:acebot_front/repository/authRepository.dart';
 import 'package:acebot_front/bloc/user/selfCubit.dart';
 import 'package:acebot_front/bloc/user/otherCubit.dart';
@@ -65,26 +68,62 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      builder: (context, child) {
-        return FToastBuilder()(context, BlocBuilder<RequestBloc, RequestState>(
-            builder: (context, requestState) {
-          if (requestState.isLoading) {
-            return Stack(children: [
-              child!,
-              Container(
-                  color: Colors.black54, child: const Center(child: Spinner()))
-            ]);
+    return BlocListener<AuthCubit, AuthState>(
+        listener: (context, state) {
+          if (state is ErrorState && state.statusCode == 401) {
+            showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return BaseDialog(
+                      title: "권한 갱신 실패",
+                      content: "다시 로그인해주시기 바랍니다.",
+                      buttonsList: [
+                        Expanded(
+                            child: OutlinedButton(
+                                onPressed: () {
+                                  context.go('/login');
+                                  Navigator.pop(context);
+                                },
+                                style: OutlinedButton.styleFrom(
+                                    backgroundColor: const Color(0xff000000),
+                                    side: const BorderSide(
+                                        color: Color(0xff000000), width: 1.0),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(4.0)),
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 13)),
+                                child: const Text("확인",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: Color(0xffffffff))))),
+                      ]);
+                });
           }
+        },
+        child: MaterialApp.router(
+          builder: (context, child) {
+            return FToastBuilder()(context,
+                BlocBuilder<RequestBloc, RequestState>(
+                    builder: (context, requestState) {
+              if (requestState.isLoading) {
+                return Stack(children: [
+                  child!,
+                  Container(
+                      color: Colors.black54,
+                      child: const Center(child: Spinner()))
+                ]);
+              }
 
-          return child!;
-        }));
-      },
-      routerConfig: AppRouter.router,
-      theme: ThemeData(
-        fontFamily: "Pretendard",
-        scaffoldBackgroundColor: const Color(0xffffffff),
-      ),
-    );
+              return child!;
+            }));
+          },
+          routerConfig: AppRouter.router,
+          theme: ThemeData(
+            fontFamily: "Pretendard",
+            scaffoldBackgroundColor: const Color(0xffffffff),
+          ),
+        ));
   }
 }

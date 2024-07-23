@@ -1,5 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:dio/dio.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:acebot_front/bloc/auth/authState.dart';
 import 'package:acebot_front/repository/authRepository.dart';
@@ -15,12 +17,33 @@ class AuthCubit extends Cubit<AuthState> {
     try {
       emit(LoadingState());
 
-      final authJson = await repo.authenticate(userId, userPassword);
+      Map<String, dynamic> authJson =
+          await repo.authenticate(userId, userPassword);
+
+      authJson = {...authJson, "email": userId};
 
       emit(LoadedState(authJson: AuthModel.fromJson(authJson)));
     } on DioException catch (err) {
       emit(ErrorState(
           message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
+  Future<void> refresh(String userId, String refreshToken) async {
+    try {
+      emit(LoadingState());
+
+      Map<String, dynamic> authJson =
+          await repo.refreshAuthentication(userId, refreshToken);
+
+      authJson = {...authJson, "email": userId};
+
+      emit(LoadedState(authJson: AuthModel.fromJson(authJson)));
+    } on DioException catch (err) {
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+
+      repo.sessionOut();
     }
   }
 }
