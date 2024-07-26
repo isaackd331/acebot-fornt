@@ -31,15 +31,16 @@ class ChitChatTemplate extends StatefulWidget {
 }
 
 class _ChitChatTemplateState extends State<ChitChatTemplate> {
-  String mainParagraph = "";
+  List<String> mainParagraph = [];
   List<dynamic>? recommendedPrompt = [];
+  int curPage = 0;
 
   @override
   void initState() {
     super.initState();
 
     setState(() {
-      mainParagraph = widget.initMp;
+      mainParagraph[0] = widget.initMp;
     });
   }
 
@@ -61,7 +62,7 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
 
       if (theState is LoadedState) {
         setState(() {
-          mainParagraph = theState.answerJson.main_paragraph;
+          mainParagraph[curPage] = theState.answerJson.main_paragraph;
         });
       }
     },
@@ -81,7 +82,7 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
               Row(children: [
                 Expanded(
                     child: MarkdownBody(
-                  data: mainParagraph,
+                  data: mainParagraph[curPage],
                   listItemCrossAxisAlignment:
                       MarkdownListItemCrossAxisAlignment.start,
                   styleSheet: MarkdownStyleSheet(
@@ -95,7 +96,7 @@ class _ChitChatTemplateState extends State<ChitChatTemplate> {
               ]),
               const SizedBox(height: 28),
               AdditionalAction(
-                  mainParagraph: mainParagraph,
+                  mainParagraph: mainParagraph[curPage],
                   questionId: widget.questionId,
                   threadId: widget.threadId,
                   page: 0,

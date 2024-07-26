@@ -1,10 +1,10 @@
-import 'dart:typed_data';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:dio/dio.dart';
 import 'package:lottie/lottie.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path_provider/path_provider.dart' as path;
 
 import 'package:acebot_front/presentation/widget/common/baseBody.dart';
 import 'package:acebot_front/presentation/widget/common/baseOutlineButton.dart';
@@ -34,6 +34,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
   File? uploadedFile;
   TextEditingController promptController = TextEditingController();
   String promptContent = "";
+  File? previewImageFile;
 
   @override
   void initState() {
@@ -70,7 +71,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                     onPressed: () {
                       Navigator.pop(context);
                     },
-                    icon: const Icon(Icons.clear),
+                    icon: const Icon(Icons.clear, color: Color(0xff000000)),
                     iconSize: 24)
               ],
               leading: Container()),
@@ -142,13 +143,25 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                         Response firstRes =
                             await FileService().uploadFiles(formData);
 
-                        print(firstRes);
-
                         setState(() {
                           isUploading = false;
                         });
 
-                        print(uploadedFile);
+                        Response secondRes = await FileService()
+                            .getImagePreview(firstRes.data['content'][0]['id']);
+
+                        final imageBytes = secondRes.data as List<int>;
+
+                        final directory = await path.getTemporaryDirectory();
+                        final filePath =
+                            '${directory.path}/${firstRes.data['content'][0]['file_name']}';
+
+                        File file = File(filePath);
+                        file = await file.writeAsBytes(imageBytes);
+
+                        setState(() {
+                          previewImageFile = file;
+                        });
                       } catch (err) {
                         setState(() {
                           isUploading = false;
@@ -163,7 +176,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                   height: MediaQuery.of(context).size.width,
                   decoration: const BoxDecoration(color: Color(0xfff4f4f4)),
                   child: isUploading == false
-                      ? uploadedFile == null
+                      ? previewImageFile == null
                           ? Column(
                               mainAxisSize: MainAxisSize.max,
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -180,18 +193,7 @@ class _ImageBottomSheetState extends State<ImageBottomSheet> {
                                           color: Color(0xffb3b3b3),
                                           height: 1.5))
                                 ])
-                          : const Column(
-                              mainAxisSize: MainAxisSize.max,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                  Text('이미지가 업로드 되었습니다. 아래의 프롬프트를 작성해 보세요',
-                                      style: TextStyle(
-                                          fontSize: 12,
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(0xffb3b3b3),
-                                          height: 1.5))
-                                ])
+                          : Image.file(previewImageFile!, fit: BoxFit.fill)
                       : Column(
                           mainAxisSize: MainAxisSize.max,
                           mainAxisAlignment: MainAxisAlignment.center,

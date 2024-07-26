@@ -18,4 +18,9 @@ class FileService {
 
     return dio.delete('/v1/files?file_ids=$ids');
   }
+
+  getImagePreview(int fileId) {
+    return dio.get('/v1/files/$fileId',
+        options: Options(responseType: ResponseType.bytes));
+  }
 }
