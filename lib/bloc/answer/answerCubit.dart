@@ -113,6 +113,36 @@ class AnswerCubit extends Cubit<AnswerState> {
     }
   }
 
+  Future<void> reCreate(int questionId) async {
+    void setLoadedState(dynamic value) {
+      try {
+        // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+        // 1차 개발에서는 한 화면에 한 질문/답변만
+        // state[idx] = LoadedState(answerJson: AnswerModel.fromJson(value));
+
+        // emit([...state]);
+        emit(LoadedState(answerJson: AnswerModel.fromJson(value)));
+      } on DioException catch (err) {
+        emit(ErrorState(
+            message: err.toString(), statusCode: err.response?.statusCode));
+      }
+    }
+
+    emit(LoadingState());
+
+    try {
+      await aRepo.recreateAnswer(questionId, setLoadedState);
+    } on DioException catch (err) {
+      // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
+      // 1차 개발에서는 한 화면에 한 질문/답변만
+      // state[idx] = ErrorState(
+      //     message: err.toString(), statusCode: err.response?.statusCode);
+      // emit([...state]);
+      emit(ErrorState(
+          message: err.toString(), statusCode: err.response?.statusCode));
+    }
+  }
+
   void clearCubit() {
     // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
     // 1차 개발에서는 한 화면에 한 질문/답변만

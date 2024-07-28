@@ -14,8 +14,8 @@ class PlaceTemplate extends StatefulWidget {
   final int threadId;
   final String question;
   final Function setChatContent;
-  final String initMp;
   final List<dynamic> recommendPrompts;
+  final String mainParagraph;
 
   const PlaceTemplate(
       {super.key,
@@ -24,8 +24,8 @@ class PlaceTemplate extends StatefulWidget {
       required this.threadId,
       required this.question,
       required this.setChatContent,
-      required this.initMp,
-      required this.recommendPrompts});
+      required this.recommendPrompts,
+      required this.mainParagraph});
 
   @override
   _PlaceTemplateState createState() => _PlaceTemplateState();
@@ -33,17 +33,11 @@ class PlaceTemplate extends StatefulWidget {
 
 class _PlaceTemplateState extends State<PlaceTemplate> {
   String? templateName = "";
-  String mainParagraph = "";
   List<dynamic>? subParagraph = [];
-  List<dynamic>? recommendedPrompt = [];
 
   @override
   void initState() {
     super.initState();
-
-    setState(() {
-      mainParagraph = widget.initMp;
-    });
   }
 
   @override
@@ -200,7 +194,6 @@ class _PlaceTemplateState extends State<PlaceTemplate> {
       if (theState is LoadedState) {
         setState(() {
           templateName = theState.answerJson.template_name;
-          mainParagraph = theState.answerJson.main_paragraph;
           subParagraph = theState.answerJson.sub_paragraph;
         });
       }
@@ -223,7 +216,7 @@ class _PlaceTemplateState extends State<PlaceTemplate> {
               Row(children: [
                 Expanded(
                     child: MarkdownBody(
-                  data: mainParagraph,
+                  data: widget.mainParagraph,
                   listItemCrossAxisAlignment:
                       MarkdownListItemCrossAxisAlignment.start,
                   styleSheet: MarkdownStyleSheet(
@@ -236,13 +229,6 @@ class _PlaceTemplateState extends State<PlaceTemplate> {
                 ))
               ]),
               const SizedBox(height: 28),
-              AdditionalAction(
-                  mainParagraph: mainParagraph,
-                  questionId: widget.questionId,
-                  threadId: widget.threadId,
-                  page: 0,
-                  answerArrLength: 0,
-                  setPage: () {})
             ]));
       } else {
         return Container();

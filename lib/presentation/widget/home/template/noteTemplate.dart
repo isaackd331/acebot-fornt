@@ -13,8 +13,8 @@ class NoteTemplate extends StatefulWidget {
   final int threadId;
   final String question;
   final Function setChatContent;
-  final String initMp;
   final List<dynamic> recommendPrompts;
+  final String mainParagraph;
 
   const NoteTemplate(
       {super.key,
@@ -23,26 +23,17 @@ class NoteTemplate extends StatefulWidget {
       required this.threadId,
       required this.question,
       required this.setChatContent,
-      required this.initMp,
-      required this.recommendPrompts});
+      required this.recommendPrompts,
+      required this.mainParagraph});
 
   @override
   _NoteTemplateState createState() => _NoteTemplateState();
 }
 
 class _NoteTemplateState extends State<NoteTemplate> {
-  String mainParagraph = "";
-  List<dynamic>? recommendedPrompt = [];
-
   @override
   void initState() {
     super.initState();
-
-    setState(() {
-      mainParagraph = widget.initMp;
-    });
-
-    print(widget.initMp);
   }
 
   @override
@@ -60,12 +51,6 @@ class _NoteTemplateState extends State<NoteTemplate> {
       // 1차 개발에서는 한 화면에 한 질문/답변만
       // AnswerState theState = state[widget.index];
       AnswerState theState = state;
-
-      if (theState is LoadedState) {
-        setState(() {
-          mainParagraph = theState.answerJson.main_paragraph;
-        });
-      }
     },
         // 추후 개발 때는 length가 늘어나며 여러 질문/답변이 한 화면에 나타날 수 있어야 함.
         // 1차 개발에서는 한 화면에 한 질문/답변만
@@ -83,7 +68,7 @@ class _NoteTemplateState extends State<NoteTemplate> {
               Row(children: [
                 Expanded(
                     child: MarkdownBody(
-                  data: mainParagraph,
+                  data: widget.mainParagraph,
                   listItemCrossAxisAlignment:
                       MarkdownListItemCrossAxisAlignment.start,
                   styleSheet: MarkdownStyleSheet(
@@ -96,13 +81,6 @@ class _NoteTemplateState extends State<NoteTemplate> {
                 )),
               ]),
               const SizedBox(height: 28),
-              AdditionalAction(
-                  mainParagraph: mainParagraph,
-                  questionId: widget.questionId,
-                  threadId: widget.threadId,
-                  page: 0,
-                  answerArrLength: 0,
-                  setPage: () {})
             ]));
       } else {
         return Container();

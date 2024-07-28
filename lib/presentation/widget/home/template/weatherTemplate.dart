@@ -13,8 +13,8 @@ class WeatherTemplate extends StatefulWidget {
   final int threadId;
   final String question;
   final Function setChatContent;
-  final String initMp;
   final List<dynamic> recommendPrompts;
+  final String mainParagraph;
 
   const WeatherTemplate(
       {super.key,
@@ -23,8 +23,8 @@ class WeatherTemplate extends StatefulWidget {
       required this.threadId,
       required this.question,
       required this.setChatContent,
-      required this.initMp,
-      required this.recommendPrompts});
+      required this.recommendPrompts,
+      required this.mainParagraph});
 
   @override
   _WeatherTemplateState createState() => _WeatherTemplateState();
@@ -32,17 +32,11 @@ class WeatherTemplate extends StatefulWidget {
 
 class _WeatherTemplateState extends State<WeatherTemplate> {
   String? templateName = "";
-  String mainParagraph = "";
   List<dynamic>? subParagraph = [];
-  List<dynamic>? recommendedPrompt = [];
 
   @override
   void initState() {
     super.initState();
-
-    setState(() {
-      mainParagraph = widget.initMp;
-    });
   }
 
   @override
@@ -196,7 +190,6 @@ class _WeatherTemplateState extends State<WeatherTemplate> {
       if (theState is LoadedState) {
         setState(() {
           templateName = theState.answerJson.template_name;
-          mainParagraph = theState.answerJson.main_paragraph;
           subParagraph = theState.answerJson.sub_paragraph;
         });
       }
@@ -219,7 +212,7 @@ class _WeatherTemplateState extends State<WeatherTemplate> {
               Row(children: [
                 Expanded(
                     child: MarkdownBody(
-                  data: mainParagraph,
+                  data: widget.mainParagraph,
                   listItemCrossAxisAlignment:
                       MarkdownListItemCrossAxisAlignment.start,
                   styleSheet: MarkdownStyleSheet(
@@ -232,13 +225,6 @@ class _WeatherTemplateState extends State<WeatherTemplate> {
                 ))
               ]),
               const SizedBox(height: 28),
-              AdditionalAction(
-                  mainParagraph: mainParagraph,
-                  questionId: widget.questionId,
-                  threadId: widget.threadId,
-                  page: 0,
-                  answerArrLength: 0,
-                  setPage: () {})
             ]));
       } else {
         return Container();

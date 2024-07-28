@@ -11,4 +11,10 @@ class AnswerService {
   feedback(int questionId, bool? value) {
     return dio.patch('/v1/questions/$questionId', data: {"feedback": value});
   }
+
+  recreateAnswer(int questionId) {
+    return dio.get('/v1/answers/$questionId?existing=true',
+        options: Options(
+            responseType: ResponseType.stream, extra: {"skipSpinner": true}));
+  }
 }

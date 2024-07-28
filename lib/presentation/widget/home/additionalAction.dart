@@ -12,6 +12,7 @@ class AdditionalAction extends StatefulWidget {
   final int page;
   final int answerArrLength;
   final Function setPage;
+  final Function reCreate;
 
   const AdditionalAction(
       {super.key,
@@ -20,7 +21,8 @@ class AdditionalAction extends StatefulWidget {
       required this.threadId,
       required this.page,
       required this.answerArrLength,
-      required this.setPage});
+      required this.setPage,
+      required this.reCreate});
 
   @override
   _AdditionalActionState createState() => _AdditionalActionState();
@@ -30,16 +32,47 @@ class _AdditionalActionState extends State<AdditionalAction> {
   bool? feedback;
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Row(children: [
+    return Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+      widget.answerArrLength > 1
+          ? Row(children: [
+              IconButton(
+                  onPressed: () {
+                    widget.setPage(widget.page - 1);
+                  },
+                  icon: const Icon(Icons.arrow_back_ios_new, size: 20)),
+              Text('${widget.page + 1} / ${widget.answerArrLength}',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: Color(0xff000000),
+                  )),
+              IconButton(
+                  onPressed: () {
+                    widget.setPage(widget.page + 1);
+                  },
+                  icon: const Icon(Icons.arrow_forward_ios, size: 20)),
+            ])
+          : Container(),
       IconButton(
-        onPressed: () {},
+        onPressed: () {
+          widget.reCreate();
+        },
         icon: SizedBox(
             width: 20,
             height: 20,
             child: Image.asset('assets/icons/icon_reload.png')),
       ),
-      const SizedBox(width: 20),
       IconButton(
         onPressed: () {
           Clipboard.setData(ClipboardData(text: widget.mainParagraph));
@@ -52,7 +85,6 @@ class _AdditionalActionState extends State<AdditionalAction> {
             height: 20,
             child: Image.asset('assets/icons/icon_copy-clipboard.png')),
       ),
-      const SizedBox(width: 20),
       IconButton(
         onPressed: () async {
           if (feedback == null || feedback! == false) {
@@ -77,7 +109,6 @@ class _AdditionalActionState extends State<AdditionalAction> {
                     ? const Color(0xff000000)
                     : const Color(0xff666666))),
       ),
-      const SizedBox(width: 20),
       IconButton(
         onPressed: () async {
           await AnswerService().feedback(widget.questionId, false);

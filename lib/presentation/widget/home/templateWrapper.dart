@@ -13,6 +13,7 @@ import 'package:acebot_front/presentation/widget/home/template/placeTemplate.dar
 import 'package:acebot_front/presentation/widget/home/template/noteTemplate.dart';
 import 'package:acebot_front/presentation/widget/home/recommendPromptSection.dart';
 import 'package:acebot_front/presentation/widget/home/record/sttResult.dart';
+import 'package:acebot_front/presentation/widget/home/additionalAction.dart';
 
 import 'package:acebot_front/bloc/answer/answerState.dart';
 import 'package:acebot_front/bloc/answer/answerCubit.dart';
@@ -47,9 +48,10 @@ class TemplateWrapper extends StatefulWidget {
 
 class _TemplateWrapperState extends State<TemplateWrapper> {
   String? templateName = "";
-  String mainParagraph = "";
+  List<String> mainParagraph = [];
   List<dynamic> recommendPrompts = [];
   bool isOpenUploadedFiles = false;
+  int curPage = 0;
 
   @override
   void initState() {
@@ -59,6 +61,32 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void clearPrompts() {
+    setState(() {
+      recommendPrompts = [];
+    });
+  }
+
+  void setPage(int value) {
+    if (value >= 0 && value <= mainParagraph.length - 1) {
+      setState(() {
+        curPage = value;
+      });
+    }
+  }
+
+  void reCreate() async {
+    AnswerCubit answerCubit = BlocProvider.of<AnswerCubit>(context);
+
+    clearPrompts();
+    setState(() {
+      mainParagraph = [...mainParagraph, ""];
+      curPage += 1;
+    });
+
+    await answerCubit.reCreate(widget.idsArray['questionId']);
   }
 
   Widget _templateSelector() {
@@ -74,8 +102,8 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           threadId: widget.idsArray['threadId'],
           question: widget.question,
           setChatContent: widget.setChatContent,
-          initMp: mainParagraph,
           recommendPrompts: recommendPrompts,
+          mainParagraph: mainParagraph[curPage],
         );
 
       case 'cur_weather':
@@ -88,8 +116,9 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           questionId: widget.idsArray['questionId'],
           threadId: widget.idsArray['threadId'],
           question: widget.question,
-          setChatContent: widget.setChatContent, initMp: mainParagraph,
+          setChatContent: widget.setChatContent,
           recommendPrompts: recommendPrompts,
+          mainParagraph: mainParagraph[curPage],
         );
 
       case 'weekly_weather':
@@ -102,8 +131,9 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           questionId: widget.idsArray['questionId'],
           threadId: widget.idsArray['threadId'],
           question: widget.question,
-          setChatContent: widget.setChatContent, initMp: mainParagraph,
+          setChatContent: widget.setChatContent,
           recommendPrompts: recommendPrompts,
+          mainParagraph: mainParagraph[curPage],
         );
 
       case 'place_search':
@@ -116,8 +146,9 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           questionId: widget.idsArray['questionId'],
           threadId: widget.idsArray['threadId'],
           question: widget.question,
-          setChatContent: widget.setChatContent, initMp: mainParagraph,
+          setChatContent: widget.setChatContent,
           recommendPrompts: recommendPrompts,
+          mainParagraph: mainParagraph[curPage],
         );
 
       case 'note':
@@ -131,8 +162,8 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
           threadId: widget.idsArray['threadId'],
           question: widget.question,
           setChatContent: widget.setChatContent,
-          initMp: mainParagraph,
           recommendPrompts: recommendPrompts,
+          mainParagraph: mainParagraph[curPage],
         );
 
       default:
@@ -294,9 +325,18 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
       } else if (theState is LoadedState) {
         setState(() {
           templateName = theState.answerJson.template_name;
-          mainParagraph = theState.answerJson.main_paragraph;
           recommendPrompts = theState.answerJson.recommend_prompt;
         });
+
+        if (mainParagraph.isNotEmpty) {
+          setState(() {
+            mainParagraph[curPage] = theState.answerJson.main_paragraph;
+          });
+        } else {
+          setState(() {
+            mainParagraph = [theState.answerJson.main_paragraph];
+          });
+        }
 
         if (widget.answerListController.hasClients) {
           scrollToBottom(0);
@@ -405,6 +445,15 @@ class _TemplateWrapperState extends State<TemplateWrapper> {
                     widget.idsArray['threadId'] != null)
                 ? Column(children: [
                     _templateSelector(),
+                    AdditionalAction(
+                      mainParagraph: mainParagraph[curPage],
+                      questionId: widget.idsArray['questionId'],
+                      threadId: widget.idsArray['threadId'],
+                      page: curPage,
+                      answerArrLength: mainParagraph.length,
+                      setPage: setPage,
+                      reCreate: reCreate,
+                    ),
                     templateName != 'note'
                         ? RecommendPromptSection(
                             recommendPrompts: recommendPrompts,
